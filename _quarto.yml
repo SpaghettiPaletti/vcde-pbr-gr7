@@ -1,2 +1,26 @@
 project:
   type: website
+  output-dir: _site
+
+website:
+  title: "Physically Based Rendering (PBR) | Gruppe 7"
+  sidebar:
+    style: docked
+    contents:
+      - text: "Einleitung"
+        href: index.qmd
+      - text: "1. Phong und seine Schwächen"
+        href: pages/1_phong_grenzen.qmd
+      - text: "2. PBR-Prinzipien"
+        href: pages/2_pbr_prinzipien.qmd
+      - text: "3. Materialmodell"
+        href: pages/3_materialmodell.qmd
+      - text: "4. Image Based Lighting (IBL)"
+        href: pages/4_ibl.qmd
+      - text: "5. Interaktive Demo"
+        href: pages/5_interaktive_demo.qmd
+
+format:
+  html:
+    theme: cosmo
+    toc: true
