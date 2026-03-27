@@ -1,0 +1,22 @@
+---
+title: "Grenzen von Phong"
+author: "Stefan Jordan"
+format:
+  html:
+    theme: cosmo
+jupyter: python3
+bibliography: references.bib
+---
+
+## Phong vs PBR - ein direkter visueller Vergleich
+Gegenüberstellung eines Objektes jeweils gerendert mittels Phong und PBR
+
+### Abholen beim Vorlesungsthema Phong (Ambient, Diffuse, Specular)
+- war lange der Standard in der Computergrafik
+- heute noch in vielen Anwendungen im Einsatz
+
+### Fragen an das Publikum
+- Was fehlt am Phong Modell um realistischer zu wirken?
+   --> Klassische Modelle schätzen das Licht nur, ignorieren aber grundlegende physikalische Gesetze
+
+### Um vom plastischen Look (links) zum realistischen Bildern (rechts) zu kommen, müssen wir berücksichtigen, wie sich das Licht in der "echten" Welt verhält.  

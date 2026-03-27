@@ -1,0 +1,15 @@
+---
+title: "Grenzen von Phong"
+author: "Stefan Jordan"
+format:
+  html:
+    theme: cosmo
+jupyter: python3
+bibliography: references.bib
+---
+
+## Image Based Lighting (IBL) - Die Welt als Lichtquelle
+### 1. Warum Punktlichter nicht mehr realistischen
+### 2. Die Lösung: Was ist IBL?
+### 3. Wie IBL das Rendering verändert
+### 4. Anschauungsbeispiele
