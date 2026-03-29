@@ -9,7 +9,7 @@ website:
     contents:
       - text: "Einleitung"
         href: index.qmd
-      - text: "1. Phong und seine Schw‰chen"
+      - text: "1. Phong und seine Schw√§chen"
         href: pages/1_phong_grenzen.qmd
       - text: "2. PBR-Prinzipien"
         href: pages/2_pbr_prinzipien.qmd
@@ -17,10 +17,11 @@ website:
         href: pages/3_materialmodell.qmd
       - text: "4. Image Based Lighting (IBL)"
         href: pages/4_ibl.qmd
-      - text: "5. Interaktive Demo"
-        href: pages/5_interaktive_demo.qmd
+
+
 
 format:
   html:
     theme: cosmo
     toc: true
+

@@ -1,0 +1,188 @@
+﻿---
+title: "Kapitel 3: Das Materialmodell"
+format:
+  html:
+    toc: true
+---
+
+```{=html}
+<style>
+/* 
+  Transparenz-Notiz: 
+  Das CSS/Layout-Grid dieses Wireframes wurde zur schnelleren 
+  Visualisierung mit einem LLM generiert. Der didaktische Inhalt ist Eigenleistung (Autor: Alexander Kohl)
+*/
+.wireframe-container {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+.wf-box {
+  flex: 1;
+  padding: 20px;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 0.95em;
+  line-height: 1.5;
+  box-sizing: border-box;
+}
+.wf-text {
+  border: 2px dashed #007bff;
+  background-color: rgb(238, 246, 255);
+  color: #004085;
+}
+.wf-math {
+  border: 2px dashed #6c757d;
+  background-color: #f8f9fa;
+  color: #383d41;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+.wf-visual {
+  border: 2px dashed #28a745;
+  background-color: rgb(237, 250, 240);
+  color: #155724;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+.wf-demo {
+  border: 2px dashed #ffc107;
+  background-color: rgb(255, 252, 237);
+  color: #856404;
+  text-align: center;
+}
+.wf-quiz {
+  border: 2px dashed #dc3545;
+  background-color: rgb(253, 242, 243);
+  color: #721c24;
+  text-align: center;
+}
+@media (max-width: 900px) {
+  .wireframe-container {
+    flex-direction: column;
+  }
+}
+</style>
+```
+
+> **Autor:** Alexander Kohl <br>
+> **Zielsetzung:** Übersetzung der physikalischen Prinzipien (Kap. 2) in die BRDF und deren Steuerung durch Texturen.<br>
+> **Hinweis zur Abgrenzung:** Dieses Kapitel beschreibt explizit nur die Materialseite (Wie reagiert die Oberfläche?). Die komplexen Lichtquellen (IBL) folgen separiert in Kapitel 4.
+
+## 1. Intro-Sektion: Die BRDF und ihre Bausteine
+
+```{=html}
+<div class="wireframe-container" style="flex-direction: column;">
+  <div class="wf-box wf-text" style="margin-bottom: 20px;">
+    <strong>[Text-Block]</strong><br><br>
+    <em>Bezug Vorlesung (vc_syn_lighting.pdf):</em> Während die Grundprinzipien von Licht und Physik in Kap. 1 & 2 behandelt wurden, blicken wir hier auf das Materialmodell selbst. Die <strong>BRDF</strong> (Bidirectional Reflectance Distribution Function) berechnet, wie die Oberfläche reagiert.<br><br>
+    <strong>Zweiteilung der BRDF:</strong><br>
+    1. <strong>Diffuser Teil (Albedo):</strong> Licht, das in die Oberfläche eindringt und farbig streut (hierfür zeigen wir kurz das einfache, physikalisch angepasste Lambert-Modell: <code>Farbe / Pi</code>).<br>
+    2. <strong>Spekularer Teil (Der Glanzpunkt):</strong> Der weitaus komplexere reflektive Anteil, der entscheidet, ob ein Material wie Gummi, Plastik oder Chrom aussieht. Im modernen Cook-Torrance-Modell wird dieser Teil in drei physikalische Bausteine zerlegt: <strong>D (Streuung), F (Reflexion) und G (Schatten)</strong>.
+  </div>
+  <div class="wf-box wf-math">
+    <strong>[LaTeX-Block: Die Gesamt-BRDF]</strong><br><br>
+    BRDF = f_diffus + f_spekular<br><br>
+    <hr style="border: 0.5px dashed #ccc; margin: 10px 0;">
+    <em>1. Lambert-Modell (Diffus):</em><br>
+    f_diffus = c / π<br>
+    (c = Albedo/Farbe. Wir erklären das <em>Lambert'sche Cosinusgesetz</em>: Warum Flächen, die senkrecht zum Licht stehen, am hellsten sind.)<br><br>
+    <hr style="border: 0.5px dashed #ccc; margin: 10px 0;">
+    <em>2. Cook-Torrance (Spekular):</em><br>
+    f_spekular = (D * F * G) / (4 * (n·l) * (n·v))<br>
+    <em>[Notiz: Nach kurzer Abhandlung des Lambert-Gesetzes widmet sich der gesamte Rest dieses UI-Wireframes der interaktiven visuell-tiefen Erschließung dieses rechten, spekularen Monstrums.]</em>
+  </div>
+</div>
+```
+
+## 2. Herzstück: Die D-F-G Komponenten
+
+### (D) Normal Distribution Function
+
+```{=html}
+<div class="wireframe-container">
+  <div class="wf-box wf-text">
+    <strong>[Text-Block]</strong><br><br>
+    Erklärung der Mikrofazetten-Verteilung (z.B. GGX).
+  </div>
+  <div class="wf-box wf-visual">
+    <strong>[Jupyter Plotly: 2D-Graph]</strong><br><br>
+    [ x ] Interaktiver Graph (Rauigkeit vs. Streuung)
+  </div>
+</div>
+```
+
+### (F) Fresnel
+
+```{=html}
+<div class="wireframe-container">
+  <div class="wf-box wf-text">
+    <strong>[Text-Block]</strong><br><br>
+    Erklärung von F0 (Schlick's Approximation) & Leiter vs. Nicht-Leiter.
+  </div>
+  <div class="wf-box wf-visual">
+    <strong>[Visuelle Grafik]</strong><br><br>
+    [ Bild ] Strahlengang am Objektrand
+  </div>
+</div>
+```
+
+### (G) Geometry
+
+```{=html}
+<div class="wireframe-container">
+  <div class="wf-box wf-text">
+    <strong>[Text-Block]</strong><br><br>
+    Erklärung der Selbstbeschattung bei flachen Winkeln.
+  </div>
+  <div class="wf-box wf-visual">
+    <strong>[Skizze / Animation]</strong><br><br>
+    [ Anim ] Mikrofazetten-Verdeckung
+  </div>
+</div>
+```
+
+## 3. Synthesis: Der Map-Workflow & Finale Demo
+
+```{=html}
+<div class="wireframe-container">
+  <div class="wf-box wf-visual">
+    <strong>[Textur-Beispiele Map-Workflow]</strong><br><br>
+    [Bild] Albedo | Metallic | Roughness Maps
+  </div>
+  <div class="wf-box wf-text">
+    <strong>[Text-Block]</strong><br><br>
+    Synthese (Von der Theorie zur Anwendung): Wie die mathematischen Modelle (D, F, G) kombiniert und von globalen Schiebereglern auf die Pixel-Ebene eines 3D-Modells übertragen werden.<br><br>
+    <em>Bezug Vorlesung (vc_syn_sp_raster_frag_proc_texturing.pdf):</em> Hier wird das Textur-Konzept aus dem Fragment-Shader live angewandt. Die abstrakten Materialeigenschaften (Glätte/Metallizität) werden über 2D-Graustufenbilder (Texturen) pro Pixel gesteuert.
+  </div>
+</div>
+
+<div class="wireframe-container">
+  <div class="wf-box wf-demo" style="width: 100%;">
+    <strong>[3D WebGL Canvas: Babylon.js]</strong><br><br>
+    [ 3D Helm Objekt ]<br><br>
+    <hr style="border:1px dashed #cb9800"><br>
+    <em>UI-Kontrollen:</em><br>
+    [====O====] Metallic Slider (0-1)<br>
+    [==O======] Roughness Slider (0-1)
+  </div>
+</div>
+```
+
+## 4. Lernzielabfrage: Praktischer Wissenstransfer
+
+```{=html}
+<div class="wireframe-container">
+  <div class="wf-box wf-quiz" style="width: 100%;">
+    <strong>[Interaktives Live-Render-Quiz / Das "X"]</strong><br><br>
+    <em>Das Prinzip:</em> Drag & Drop von PBR-Maps (Metallic, Roughness, Albedo) auf ein 3D-Modell (z.B. ein rostiges Metallfass).<br><br>
+    <em>Der Clou (Live Feedback):</em> Zieht der User versehentlich die falsche Zuordnung in einen Slot, aktualisiert sich die WebGL-Engine sofort. Die physikalisch falsche Folge wird interaktiv gerendert (z.B. glänzt der Rost plötzlich wie ein nasser Spiegel). Echtes Reverse Engineering statt Formel-Auswendiglernen!
+  </div>
+</div>
+```
