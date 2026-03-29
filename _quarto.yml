@@ -5,7 +5,8 @@
 website:
   title: "Physically Based Rendering (PBR) | Gruppe 7"
   sidebar:
-    style: docked
+    style: floating
+    collapse-level: 1
     contents:
       - text: "Einleitung"
         href: index.qmd
