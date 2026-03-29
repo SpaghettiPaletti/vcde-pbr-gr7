@@ -1,78 +1,84 @@
----
-title: "My Awesome Paper Title"
-author: "Your Name"
+﻿---
+title: "Physically Based Rendering (PBR)"
+author: "Celia Baumann, Stefan Jordan, Alexander Kohl"
 format:
   html:
     theme: cosmo
-jupyter: python3
-bibliography: references.bib
 ---
 
-## Abstract
-Nach @knuth1984 ist TeX...
-This is a single-file Quarto website hosted on GitHub Pages. It combines Markdown text, LaTeX math, and interactive 3D elements.
+## Was ist PBR?
 
-```{python}
-#| label: fig-polar
-#| fig-cap: "A line plot on a polar axis"
+**Physically Based Rendering (PBR)** ist ein Ansatz in der Computergrafik, der die physikalische Interaktion zwischen Licht und Materialen mathematisch angenähert simuliert.
 
-import numpy as np
-import matplotlib.pyplot as plt
+Anstatt Lichteffekte nur visuell zu "schätzen", basiert PBR auf echten physikalischen Gesetzen wie Mikrofacetten und Energieerhaltung.
 
-r = np.arange(0, 2, 0.01)
-theta = 2 * np.pi * r
-fig, ax = plt.subplots(
-  subplot_kw = {'projection': 'polar'} 
-)
-ax.plot(theta, r)
-ax.set_rticks([0.5, 1, 1.5, 2])
-ax.grid(True)
-plt.show()
-```
+## Warum PBR?
 
-## Methodology
-You can include complex math like $$E = mc^2$$ and immediately follow it with an interactive 3D figure to visualize your results.
+Hier die wichtigsten Vorteile auf einen Blick:
+
+* **Fotorealismus:** PBR ist der absolute Industrie-Standard für moderne Echtzeitgrafik (Unreal Engine, Unity) und Filme.
+* **Physikalische Korrektheit:** Ein Objekt kann nie mehr Licht reflektieren, als es von der Lichtquelle empfängt.
+* **Konsistenz:** Ein einmal erstelltes PBR-Material sieht unter *jeder* Beleuchtungsbedingung physikalisch plausibel aus.
+* **Intuitive Workflows:** Materialeigenschaften werden über verständliche Parameter wie *Rauheit* (Roughness) und *Metallizität* (Metallic) gesteuert.
+
+## Das Ziel: Fotorealismus in Echtzeit
+
+Bevor wir in die Theorie eintauchen, hier ein Ausblick auf das, was PBR leisten kann. Die folgende interaktive 3D-Szene zeigt das finale Konzept im Einsatz: Sie kombiniert ein **Physikalisches Material** (Kapitel 3) mit komplexitätsfreier Umgebungsbeleuchtung durch **Image Based Lighting (IBL)** (Kapitel 4).
+
+*Die Kamera kann mit der Maus gedreht und gezoomt werden.*
 
 ```{=html}
-
 <script src="https://cdn.babylonjs.com/babylon.js"></script>
-
 <div style="width: 100%; height: 400px; position: relative; margin: 20px 0;">
-    <canvas id="renderCanvas" style="width: 100%; height: 100%; touch-action: none; border: 1px solid #ddd; display: block; border-radius: 8px;"></canvas>
+    <canvas id="renderCanvas" style="width: 100%; height: 100%; touch-action: none; border: 1px solid #ddd; border-radius: 8px;"></canvas>
 </div>
-
 <script>
     window.addEventListener('DOMContentLoaded', function() {
         const canvas = document.getElementById("renderCanvas");
         if (!canvas) return;
 
         const engine = new BABYLON.Engine(canvas, true);
-
         const createScene = function () {
             const scene = new BABYLON.Scene(engine);
-            scene.clearColor = new BABYLON.Color3(0.95, 0.95, 0.95);
-
-            const camera = new BABYLON.ArcRotateCamera("camera", -Math.PI/4, Math.PI/3, 5, BABYLON.Vector3.Zero(), scene);
-            camera.attachControl(canvas, true);
-
-            const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
             
-            const box = BABYLON.MeshBuilder.CreateBox("box", {size: 1.5}, scene);
-            const material = new BABYLON.StandardMaterial("mat", scene);
-            material.diffuseColor = new BABYLON.Color3(0.1, 0.4, 0.8);
-            box.material = material;
+            // Kamera-Setup
+            const camera = new BABYLON.ArcRotateCamera("camera", Math.PI/2, Math.PI/2.5, 4, BABYLON.Vector3.Zero(), scene);
+            camera.attachControl(canvas, true);
+            camera.minZ = 0.1;
+            camera.wheelPrecision = 50;
 
-            scene.registerBeforeRender(function () {
-                box.rotation.y += 0.01;
-                box.rotation.x += 0.005;
+            // Image Based Lighting (IBL) & Skybox automatisch erstellen
+            const envHelper = scene.createDefaultEnvironment({
+                createSkybox: true,
+                skyboxSize: 100,
+                skyboxColor: new BABYLON.Color3(0.05, 0.05, 0.05),
+                createGround: false
             });
+
+            // 3D-Modell: Eine Kugel mit vielen Segmenten für weiche Reflexionen
+            const sphere = BABYLON.MeshBuilder.CreateSphere("sphere", {diameter: 2, segments: 64}, scene);
+            
+            // PBR-Material (Gold, hochglänzend)
+            const pbr = new BABYLON.PBRMaterial("pbr", scene);
+            pbr.metallic = 1.0;
+            pbr.roughness = 0.1;
+            pbr.albedoColor = new BABYLON.Color3(1.0, 0.76, 0.33); // Gold-Farbe
+            sphere.material = pbr;
 
             return scene;
         };
 
         const scene = createScene();
-        engine.runRenderLoop(() => scene.render());
-        window.addEventListener("resize", () => engine.resize());
+        engine.runRenderLoop(() => {
+            scene.render();
+        });
+        window.addEventListener("resize", () => {
+            engine.resize();
+        });
     });
 </script>
 ```
+
+**Der Weg dorthin:** Starten wir zunächst damit, warum wir alte Modelle überhaupt hinter uns lassen mussten im Kapitel [1. Die Grenzen von Phong](pages/1_phong_grenzen.qmd).
+
+*Hinweis: Die interaktive 3D-Ansicht auf dieser Seite wird mit der Open-Source WebGL-Engine [Babylon.js](https://www.babylonjs.com/) gerendert.*
