@@ -1,4 +1,4 @@
-project:
+﻿project:
   type: website
   output-dir: _site
 
@@ -17,11 +17,10 @@ website:
         href: pages/3_materialmodell.qmd
       - text: "4. Image Based Lighting (IBL)"
         href: pages/4_ibl.qmd
-
-
+      - text: "X. Vertiefung"
+        href: pages/6_X.qmd
 
 format:
   html:
     theme: cosmo
     toc: true
-
