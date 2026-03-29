@@ -1,0 +1,149 @@
+---
+title: "PBR-Prinzipien"
+author: "Celia Baumann"
+format:
+  html:
+    theme: cosmo
+jupyter: python3
+bibliography: ../references.bib
+---
+
+# Einführung in die PBR-Prinzipien
+
+Diese Seite behandelt die **physikalischen Grundlagen von PBR**.  
+Ziel ist es, zu verstehen, warum Materialien realistisch reflektieren, ohne Materialparameter oder Beleuchtung zu behandeln.  
+Die drei zentralen Prinzipien sind:
+
+1. Energieerhaltung  
+2. Mikrofazetten-Theorie  
+3. Reziprozität  
+
+---
+
+# Energieerhaltung
+
+## Grundprinzip
+
+Die reflektierte Energie einer Oberfläche darf **nicht größer sein als die einfallende Energie**.  
+Diffus- und Spiegelanteile werden entsprechend verteilt.
+
+## Intuition
+
+- Mehr Spiegelung → weniger Diffusion  
+- Gesamtenergie bleibt konstant
+
+## Interaktive Visualisierung
+
+<div id="energy-demo" style="width: 100%; height: 400px;"></div>
+
+<label>Reflexion:</label>
+<input type="range" min="0" max="1" step="0.01" value="0.5" id="reflect">
+
+<p>
+Beobachtung: Wenn die Spiegelung zunimmt, reduziert sich der diffuse Anteil automatisch.
+</p>
+
+---
+
+# Mikrofazetten-Theorie
+
+## Grundidee
+
+Oberflächen bestehen aus vielen kleinen Mikrofacetten, die Licht wie winzige Spiegel reflektieren.  
+Die Rauheit bestimmt das Reflexionsverhalten.
+
+- glatt → scharf  
+- rau → diffus
+
+## Komponenten (konzeptionell)
+
+- **D (Distribution)** → Ausrichtung der Facetten  
+- **F (Fresnel)** → Winkelabhängige Reflexion  
+- **G (Geometrie)** → Abschattung und Maskierung  
+
+## Interaktive Visualisierung
+
+<div id="microfacet-demo" style="width: 100%; height: 400px;"></div>
+
+<label>Rauheit:</label>
+<input type="range" min="0" max="1" step="0.01" value="0.5" id="roughness">
+
+<p>
+Beobachtung: Geringe Rauheit erzeugt scharfe Spiegelungen, hohe Rauheit diffuse Reflexion.
+</p>
+
+---
+
+# Reziprozität
+
+## Grundprinzip
+
+Lichtwege sind umkehrbar: Wenn Lichtquelle und Kamera vertauscht werden, bleibt das Ergebnis unverändert.  
+
+## Interaktive Idee
+
+- Kleine Szene, in der Lichtquelle und Kamera getauscht werden  
+- Reflexion bleibt gleich  
+- Visualisierung zeigt konsistentes Verhalten
+
+---
+
+# Zusammenspiel der Prinzipien
+
+- Mikrofazetten bestimmen die **Struktur** der Reflexion  
+- Energieerhaltung bestimmt **wie viel** reflektiert wird  
+- Reziprozität sorgt für **Konsistenz**  
+
+Gemeinsam ermöglichen diese Prinzipien realistische, physikalisch korrekte Reflexionen.
+
+---
+
+# Babylon.js Integration
+
+```{=html}
+<script src="https://cdn.babylonjs.com/babylon.js"></script>
+<script>
+const setupScene = (containerId) => {
+  const container = document.getElementById(containerId);
+  const canvas = document.createElement("canvas");
+  canvas.style.width = "100%";
+  canvas.style.height = "100%";
+  container.appendChild(canvas);
+
+  const engine = new BABYLON.Engine(canvas, true);
+  const scene = new BABYLON.Scene(engine);
+
+  const camera = new BABYLON.ArcRotateCamera(
+    "camera",
+    Math.PI / 2,
+    Math.PI / 3,
+    3,
+    BABYLON.Vector3.Zero(),
+    scene
+  );
+  camera.attachControl(canvas, true);
+
+  new BABYLON.HemisphericLight("light", new BABYLON.Vector3(1,1,0), scene);
+
+  const sphere = BABYLON.MeshBuilder.CreateSphere("sphere", {}, scene);
+  const material = new BABYLON.PBRMaterial("material", scene);
+  sphere.material = material;
+
+  engine.runRenderLoop(() => scene.render());
+
+  return material;
+};
+
+const energyMaterial = setupScene("energy-demo");
+const microfacetMaterial = setupScene("microfacet-demo");
+
+document.getElementById("reflect").addEventListener("input", (e) => {
+  const value = parseFloat(e.target.value);
+  energyMaterial.metallic = value;
+});
+
+document.getElementById("roughness").addEventListener("input", (e) => {
+  const value = parseFloat(e.target.value);
+  microfacetMaterial.roughness = value;
+});
+</script>
