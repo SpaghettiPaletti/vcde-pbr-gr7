@@ -1,0 +1,27 @@
+---
+title: "Image Based Lighting"
+author: "Stefan Jordan"
+format:
+  html:
+    theme: cosmo
+---
+
+## Image Based Lighting (IBL)
+### Warum Punktlichter und der klassische Ambient-Term nicht mehr ausreichen
+- Phong nähert indirekte Beleuchtug nur über den sogenannten Ambient-Term an.
+- Dabei kommt das Licht aus allen Richtungen gleichmäßig her, weshalb Schattenbereiche dadurch flach und leblos wirken
+- Außerdem erzeugen klassische Punktlichter (Spekular-Term) nur einen künstlichen, extrem scharfen Glanzpunkt auf dem Objekt.
+
+### Die Lösung: Was genau ist Image Based Lighting?
+- Statt künstlicher Lichtpunkte nutzen wir 360° Fotos der echten Welt (sogenannte HDRIs)
+- Das Bild legt sich wie eine unsichtbare Kugel um die 3D-Szene.
+- Jeder Pixel des HDRIs fungiert dabei als eigene Lichtquelle mit individueller Farbe und Helligkeit.
+
+### Der visuelle Unterschied: Wie IBL das Rendering verändert
+- Echte Spiegellungen: Metallische Objekte spiegeln nun eine reale Umgebung wieder, anstatt nur einen künstlichen weißen Punkt.
+- Natürliches Streulicht (Diffuse IBL): Ein Objekt in einem Wald bekommt realistische grüne Lichtreflexionen vom Boden, in einem Fotostudio hartes, weißes Licht.
+- Materialien sehen erst durch IBL wirklich nach dem aus, was sie sein sollen (z.B. Chrom, Gold, Plastik).
+
+### Interaktive Demo
+- Per Knopfdruck kann ein Objekt in unterschiedlichen Umgebungen dargestellt werden (Studio, Wald, Stadt)
+- Hier sieht man, wie sich das Aussehen des Objekts anhand der wechselnden indirekten Beleuchtung anpasst.

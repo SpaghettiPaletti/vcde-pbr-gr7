@@ -1,0 +1,14 @@
+---
+title: "Alterungsslider"
+author: "Stefan Jordan"
+format:
+  html:
+    theme: cosmo
+jupyter: python3
+bibliography: references.bib
+---
+
+## Einen Alterungsslider
+- Darstellung beispielsweise eines Kupferobjekts.
+- Über einen Slider kann ein Alterungseffekt simuliert werden.
+- Zeigt, dass PBR-Parameter nicht starr sind, sondern sich kombinieren lassen.

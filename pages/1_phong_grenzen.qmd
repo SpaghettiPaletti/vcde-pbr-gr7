@@ -1,0 +1,32 @@
+---
+title: "Die Grenzen von Phong"
+author: "Stefan Jordan"
+format:
+  html:
+    theme: cosmo
+jupyter: python3
+bibliography: references.bib
+---
+
+## Phong vs PBR - ein direkter visueller Vergleich
+Gegenüberstellung eines Objektes jeweils gerendert mittels Phong und PBR
+
+### Was war Phing doch gleich wieder?
+- war lange der Standard in der Computergrafik
+- heute noch in vielen Anwendungen im Einsatz
+- Es ist ein lokales Beleuchtungsmodell
+- Die finale Farbe setzt sich aus 4 simplen Komponenten zusammen: Emissiv, Ambient, Diffus und Spekular.
+- Beleuchtung wird meist nur durch einfache Punktlichtquellen berechnet.
+
+### Fragen an das Publikum (Vergleich der beiden Objekte)
+- Was fehlt am Phong Modell um realistischer zu wirken?
+  --> Klassische Modelle schätzen das Licht nur, ignorieren aber grundlegende physikalische Gesetze
+- Warum sieht das Phong-Objekt eher aus wie Plastik?
+  --> Der Spekular-Term erzeugt Glanzpunkte nur über einen abstrakten Spiegelungsexponenten. Es gibt kein echtes physikalisches Materialverständnis
+- Warum wirken die Schatten beim Phong-Objekt flach?
+  --> Das indirekte Streulicht wird nur über einen konstanten Ambient-Term angenähert.
+
+### Warum müssen wir physikalische Gesetze berücksichtigen?
+- In Phong werden die Lichtwerte am Ende einfach addiert (Farbe = emissiv + ambient + diffus + spekular).
+- Das Problem: Dadurch kann ein Objekt am Ende mehr Licht reflektiren, als es von der Lichtquelle empfangen hat. Das ist physikalisch unmöglich!
+- Die PBR-Antwort: Wir brauchen das Gesetz der Energieerhaltung, damit Materialien unter allen Lichtbedingungen fotorealistisch und natürlich reagieren.
