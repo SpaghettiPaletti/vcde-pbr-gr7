@@ -182,7 +182,7 @@ format:
   <div class="wf-box wf-quiz" style="width: 100%;">
     <strong>[Interaktives Live-Render-Quiz / Das "X"]</strong><br><br>
     <em>Das Prinzip:</em> Drag & Drop von PBR-Maps (Metallic, Roughness, Albedo) auf ein 3D-Modell (z.B. ein rostiges Metallfass).<br><br>
-    <em>Der Clou (Live Feedback):</em> Zieht der User versehentlich die falsche Zuordnung in einen Slot, aktualisiert sich die WebGL-Engine sofort. Die physikalisch falsche Folge wird interaktiv gerendert (z.B. glänzt der Rost plötzlich wie ein nasser Spiegel). Echtes Reverse Engineering statt Formel-Auswendiglernen!
+    <em>Der Clou (Live Feedback):</em> Zieht der User versehentlich die falsche Zuordnung in einen Slot, aktualisiert sich die WebGL-Engine sofort. Die physikalisch falsche Folge wird interaktiv gerendert (z.B. glänzt der Rost plötzlich wie ein nasser Spiegel).
   </div>
 </div>
 ```
