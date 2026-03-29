@@ -100,6 +100,96 @@
     ]
   },
   {
+    "objectID": "pages/2_pbr_prinzipien.html",
+    "href": "pages/2_pbr_prinzipien.html",
+    "title": "PBR-Prinzipien",
+    "section": "",
+    "text": "Diese Seite behandelt die physikalischen Grundlagen von PBR.\nZiel ist es, zu verstehen, warum Materialien realistisch reflektieren, ohne Materialparameter oder Beleuchtung zu behandeln.\nDie drei zentralen Prinzipien sind:\n\nEnergieerhaltung\n\nMikrofazetten-Theorie\n\nReziprozität",
+    "crumbs": [
+      "2. PBR-Prinzipien"
+    ]
+  },
+  {
+    "objectID": "pages/2_pbr_prinzipien.html#grundprinzip",
+    "href": "pages/2_pbr_prinzipien.html#grundprinzip",
+    "title": "PBR-Prinzipien",
+    "section": "Grundprinzip",
+    "text": "Grundprinzip\nDie reflektierte Energie einer Oberfläche darf nicht größer sein als die einfallende Energie.\nDiffus- und Spiegelanteile werden entsprechend verteilt.",
+    "crumbs": [
+      "2. PBR-Prinzipien"
+    ]
+  },
+  {
+    "objectID": "pages/2_pbr_prinzipien.html#intuition",
+    "href": "pages/2_pbr_prinzipien.html#intuition",
+    "title": "PBR-Prinzipien",
+    "section": "Intuition",
+    "text": "Intuition\n\nMehr Spiegelung → weniger Diffusion\n\nGesamtenergie bleibt konstant",
+    "crumbs": [
+      "2. PBR-Prinzipien"
+    ]
+  },
+  {
+    "objectID": "pages/2_pbr_prinzipien.html#interaktive-visualisierung",
+    "href": "pages/2_pbr_prinzipien.html#interaktive-visualisierung",
+    "title": "PBR-Prinzipien",
+    "section": "Interaktive Visualisierung",
+    "text": "Interaktive Visualisierung\n\n\n\nReflexion: \n\nBeobachtung: Wenn die Spiegelung zunimmt, reduziert sich der diffuse Anteil automatisch.",
+    "crumbs": [
+      "2. PBR-Prinzipien"
+    ]
+  },
+  {
+    "objectID": "pages/2_pbr_prinzipien.html#grundidee",
+    "href": "pages/2_pbr_prinzipien.html#grundidee",
+    "title": "PBR-Prinzipien",
+    "section": "Grundidee",
+    "text": "Grundidee\nOberflächen bestehen aus vielen kleinen Mikrofacetten, die Licht wie winzige Spiegel reflektieren.\nDie Rauheit bestimmt das Reflexionsverhalten.\n\nglatt → scharf\n\nrau → diffus",
+    "crumbs": [
+      "2. PBR-Prinzipien"
+    ]
+  },
+  {
+    "objectID": "pages/2_pbr_prinzipien.html#komponenten-konzeptionell",
+    "href": "pages/2_pbr_prinzipien.html#komponenten-konzeptionell",
+    "title": "PBR-Prinzipien",
+    "section": "Komponenten (konzeptionell)",
+    "text": "Komponenten (konzeptionell)\n\nD (Distribution) → Ausrichtung der Facetten\n\nF (Fresnel) → Winkelabhängige Reflexion\n\nG (Geometrie) → Abschattung und Maskierung",
+    "crumbs": [
+      "2. PBR-Prinzipien"
+    ]
+  },
+  {
+    "objectID": "pages/2_pbr_prinzipien.html#interaktive-visualisierung-1",
+    "href": "pages/2_pbr_prinzipien.html#interaktive-visualisierung-1",
+    "title": "PBR-Prinzipien",
+    "section": "Interaktive Visualisierung",
+    "text": "Interaktive Visualisierung\n\n\n\nRauheit: \n\nBeobachtung: Geringe Rauheit erzeugt scharfe Spiegelungen, hohe Rauheit diffuse Reflexion.",
+    "crumbs": [
+      "2. PBR-Prinzipien"
+    ]
+  },
+  {
+    "objectID": "pages/2_pbr_prinzipien.html#grundprinzip-1",
+    "href": "pages/2_pbr_prinzipien.html#grundprinzip-1",
+    "title": "PBR-Prinzipien",
+    "section": "Grundprinzip",
+    "text": "Grundprinzip\nLichtwege sind umkehrbar: Wenn Lichtquelle und Kamera vertauscht werden, bleibt das Ergebnis unverändert.",
+    "crumbs": [
+      "2. PBR-Prinzipien"
+    ]
+  },
+  {
+    "objectID": "pages/2_pbr_prinzipien.html#interaktive-idee",
+    "href": "pages/2_pbr_prinzipien.html#interaktive-idee",
+    "title": "PBR-Prinzipien",
+    "section": "Interaktive Idee",
+    "text": "Interaktive Idee\n\nKleine Szene, in der Lichtquelle und Kamera getauscht werden\n\nReflexion bleibt gleich\n\nVisualisierung zeigt konsistentes Verhalten",
+    "crumbs": [
+      "2. PBR-Prinzipien"
+    ]
+  },
+  {
     "objectID": "pages/3_materialmodell.html",
     "href": "pages/3_materialmodell.html",
     "title": "Kapitel 3: Das Materialmodell",

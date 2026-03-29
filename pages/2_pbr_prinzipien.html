@@ -6,8 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Celia Baumann">
 
-<title>pbr_prinzipien – Physically Based Rendering (PBR) | Gruppe 7</title>
+<title>PBR-Prinzipien – Physically Based Rendering (PBR) | Gruppe 7</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -149,17 +150,218 @@ ul.task-list li input[type="checkbox"] {
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#einführung-in-die-pbr-prinzipien" id="toc-einführung-in-die-pbr-prinzipien" class="nav-link active" data-scroll-target="#einführung-in-die-pbr-prinzipien">Einführung in die PBR-Prinzipien</a></li>
+  <li><a href="#energieerhaltung" id="toc-energieerhaltung" class="nav-link" data-scroll-target="#energieerhaltung">Energieerhaltung</a>
+  <ul class="collapse">
+  <li><a href="#grundprinzip" id="toc-grundprinzip" class="nav-link" data-scroll-target="#grundprinzip">Grundprinzip</a></li>
+  <li><a href="#intuition" id="toc-intuition" class="nav-link" data-scroll-target="#intuition">Intuition</a></li>
+  <li><a href="#interaktive-visualisierung" id="toc-interaktive-visualisierung" class="nav-link" data-scroll-target="#interaktive-visualisierung">Interaktive Visualisierung</a></li>
+  </ul></li>
+  <li><a href="#mikrofazetten-theorie" id="toc-mikrofazetten-theorie" class="nav-link" data-scroll-target="#mikrofazetten-theorie">Mikrofazetten-Theorie</a>
+  <ul class="collapse">
+  <li><a href="#grundidee" id="toc-grundidee" class="nav-link" data-scroll-target="#grundidee">Grundidee</a></li>
+  <li><a href="#komponenten-konzeptionell" id="toc-komponenten-konzeptionell" class="nav-link" data-scroll-target="#komponenten-konzeptionell">Komponenten (konzeptionell)</a></li>
+  <li><a href="#interaktive-visualisierung-1" id="toc-interaktive-visualisierung-1" class="nav-link" data-scroll-target="#interaktive-visualisierung-1">Interaktive Visualisierung</a></li>
+  </ul></li>
+  <li><a href="#reziprozität" id="toc-reziprozität" class="nav-link" data-scroll-target="#reziprozität">Reziprozität</a>
+  <ul class="collapse">
+  <li><a href="#grundprinzip-1" id="toc-grundprinzip-1" class="nav-link" data-scroll-target="#grundprinzip-1">Grundprinzip</a></li>
+  <li><a href="#interaktive-idee" id="toc-interaktive-idee" class="nav-link" data-scroll-target="#interaktive-idee">Interaktive Idee</a></li>
+  </ul></li>
+  <li><a href="#zusammenspiel-der-prinzipien" id="toc-zusammenspiel-der-prinzipien" class="nav-link" data-scroll-target="#zusammenspiel-der-prinzipien">Zusammenspiel der Prinzipien</a></li>
+  <li><a href="#babylon.js-integration" id="toc-babylon.js-integration" class="nav-link" data-scroll-target="#babylon.js-integration">Babylon.js Integration</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">PBR-Prinzipien</h1>
+</div>
 
 
 
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Celia Baumann </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
 
 
+</header>
 
+
+<section id="einführung-in-die-pbr-prinzipien" class="level1">
+<h1>Einführung in die PBR-Prinzipien</h1>
+<p>Diese Seite behandelt die <strong>physikalischen Grundlagen von PBR</strong>.<br>
+Ziel ist es, zu verstehen, warum Materialien realistisch reflektieren, ohne Materialparameter oder Beleuchtung zu behandeln.<br>
+Die drei zentralen Prinzipien sind:</p>
+<ol type="1">
+<li>Energieerhaltung<br>
+</li>
+<li>Mikrofazetten-Theorie<br>
+</li>
+<li>Reziprozität</li>
+</ol>
+<hr>
+</section>
+<section id="energieerhaltung" class="level1">
+<h1>Energieerhaltung</h1>
+<section id="grundprinzip" class="level2">
+<h2 class="anchored" data-anchor-id="grundprinzip">Grundprinzip</h2>
+<p>Die reflektierte Energie einer Oberfläche darf <strong>nicht größer sein als die einfallende Energie</strong>.<br>
+Diffus- und Spiegelanteile werden entsprechend verteilt.</p>
+</section>
+<section id="intuition" class="level2">
+<h2 class="anchored" data-anchor-id="intuition">Intuition</h2>
+<ul>
+<li>Mehr Spiegelung → weniger Diffusion<br>
+</li>
+<li>Gesamtenergie bleibt konstant</li>
+</ul>
+</section>
+<section id="interaktive-visualisierung" class="level2">
+<h2 class="anchored" data-anchor-id="interaktive-visualisierung">Interaktive Visualisierung</h2>
+<div id="energy-demo" style="width: 100%; height: 400px;">
+
+</div>
+<p><label>Reflexion:</label> <input type="range" min="0" max="1" step="0.01" value="0.5" id="reflect"></p>
+<p>
+Beobachtung: Wenn die Spiegelung zunimmt, reduziert sich der diffuse Anteil automatisch.
+</p>
+<hr>
+</section>
+</section>
+<section id="mikrofazetten-theorie" class="level1">
+<h1>Mikrofazetten-Theorie</h1>
+<section id="grundidee" class="level2">
+<h2 class="anchored" data-anchor-id="grundidee">Grundidee</h2>
+<p>Oberflächen bestehen aus vielen kleinen Mikrofacetten, die Licht wie winzige Spiegel reflektieren.<br>
+Die Rauheit bestimmt das Reflexionsverhalten.</p>
+<ul>
+<li>glatt → scharf<br>
+</li>
+<li>rau → diffus</li>
+</ul>
+</section>
+<section id="komponenten-konzeptionell" class="level2">
+<h2 class="anchored" data-anchor-id="komponenten-konzeptionell">Komponenten (konzeptionell)</h2>
+<ul>
+<li><strong>D (Distribution)</strong> → Ausrichtung der Facetten<br>
+</li>
+<li><strong>F (Fresnel)</strong> → Winkelabhängige Reflexion<br>
+</li>
+<li><strong>G (Geometrie)</strong> → Abschattung und Maskierung</li>
+</ul>
+</section>
+<section id="interaktive-visualisierung-1" class="level2">
+<h2 class="anchored" data-anchor-id="interaktive-visualisierung-1">Interaktive Visualisierung</h2>
+<div id="microfacet-demo" style="width: 100%; height: 400px;">
+
+</div>
+<p><label>Rauheit:</label> <input type="range" min="0" max="1" step="0.01" value="0.5" id="roughness"></p>
+<p>
+Beobachtung: Geringe Rauheit erzeugt scharfe Spiegelungen, hohe Rauheit diffuse Reflexion.
+</p>
+<hr>
+</section>
+</section>
+<section id="reziprozität" class="level1">
+<h1>Reziprozität</h1>
+<section id="grundprinzip-1" class="level2">
+<h2 class="anchored" data-anchor-id="grundprinzip-1">Grundprinzip</h2>
+<p>Lichtwege sind umkehrbar: Wenn Lichtquelle und Kamera vertauscht werden, bleibt das Ergebnis unverändert.</p>
+</section>
+<section id="interaktive-idee" class="level2">
+<h2 class="anchored" data-anchor-id="interaktive-idee">Interaktive Idee</h2>
+<ul>
+<li>Kleine Szene, in der Lichtquelle und Kamera getauscht werden<br>
+</li>
+<li>Reflexion bleibt gleich<br>
+</li>
+<li>Visualisierung zeigt konsistentes Verhalten</li>
+</ul>
+<hr>
+</section>
+</section>
+<section id="zusammenspiel-der-prinzipien" class="level1">
+<h1>Zusammenspiel der Prinzipien</h1>
+<ul>
+<li>Mikrofazetten bestimmen die <strong>Struktur</strong> der Reflexion<br>
+</li>
+<li>Energieerhaltung bestimmt <strong>wie viel</strong> reflektiert wird<br>
+</li>
+<li>Reziprozität sorgt für <strong>Konsistenz</strong></li>
+</ul>
+<p>Gemeinsam ermöglichen diese Prinzipien realistische, physikalisch korrekte Reflexionen.</p>
+<hr>
+</section>
+<section id="babylon.js-integration" class="level1">
+<h1>Babylon.js Integration</h1>
+<script src="https://cdn.babylonjs.com/babylon.js"></script>
+<script>
+const setupScene = (containerId) => {
+  const container = document.getElementById(containerId);
+  const canvas = document.createElement("canvas");
+  canvas.style.width = "100%";
+  canvas.style.height = "100%";
+  container.appendChild(canvas);
+
+  const engine = new BABYLON.Engine(canvas, true);
+  const scene = new BABYLON.Scene(engine);
+
+  const camera = new BABYLON.ArcRotateCamera(
+    "camera",
+    Math.PI / 2,
+    Math.PI / 3,
+    3,
+    BABYLON.Vector3.Zero(),
+    scene
+  );
+  camera.attachControl(canvas, true);
+
+  new BABYLON.HemisphericLight("light", new BABYLON.Vector3(1,1,0), scene);
+
+  const sphere = BABYLON.MeshBuilder.CreateSphere("sphere", {}, scene);
+  const material = new BABYLON.PBRMaterial("material", scene);
+  sphere.material = material;
+
+  engine.runRenderLoop(() => scene.render());
+
+  return material;
+};
+
+const energyMaterial = setupScene("energy-demo");
+const microfacetMaterial = setupScene("microfacet-demo");
+
+document.getElementById("reflect").addEventListener("input", (e) => {
+  const value = parseFloat(e.target.value);
+  energyMaterial.metallic = value;
+});
+
+document.getElementById("roughness").addEventListener("input", (e) => {
+  const value = parseFloat(e.target.value);
+  microfacetMaterial.roughness = value;
+});
+</script>
+
+
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
