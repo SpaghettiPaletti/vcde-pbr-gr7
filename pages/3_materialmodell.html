@@ -6,9 +6,8 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Your Name">
 
-<title>My Awesome Paper Title – Physically Based Rendering (PBR) | Gruppe 7</title>
+<title>materialmodell – Physically Based Rendering (PBR) | Gruppe 7</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -24,80 +23,26 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-/* CSS for syntax highlighting */
-html { -webkit-text-size-adjust: 100%; }
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
-/* CSS for citations */
-div.csl-bib-body { }
-div.csl-entry {
-  clear: both;
-}
-.hanging-indent div.csl-entry {
-  margin-left:2em;
-  text-indent:-2em;
-}
-div.csl-left-margin {
-  min-width:2em;
-  float:left;
-}
-div.csl-right-inline {
-  margin-left:2em;
-  padding-left:1em;
-}
-div.csl-indent {
-  margin-left: 2em;
-}</style>
+</style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<script src="site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-845c23b38eaddc0f92fda52bfe77a8c8.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-2a8600961620fb22bbdc41287d7e474a.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-845c23b38eaddc0f92fda52bfe77a8c8.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-2a8600961620fb22bbdc41287d7e474a.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -126,35 +71,6 @@ div.csl-indent {
   }
 }</script>
 
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
 
 </head>
 
@@ -167,7 +83,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html">Einleitung</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../pages/3_materialmodell.html">3. Materialmodell</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -182,7 +98,7 @@ window.Quarto = {
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">Physically Based Rendering (PBR) | Gruppe 7</a> 
+      <a href="../">Physically Based Rendering (PBR) | Gruppe 7</a> 
     </div>
       </div>
         <div class="mt-2 flex-shrink-0 align-items-center">
@@ -194,37 +110,37 @@ window.Quarto = {
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./index.html" class="sidebar-item-text sidebar-link active">
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Einleitung</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./pages/1_phong_grenzen.html" class="sidebar-item-text sidebar-link">
+  <a href="../pages/1_phong_grenzen.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">1. Phong und seine Schwächen</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./pages/2_pbr_prinzipien.html" class="sidebar-item-text sidebar-link">
+  <a href="../pages/2_pbr_prinzipien.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">2. PBR-Prinzipien</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./pages/3_materialmodell.html" class="sidebar-item-text sidebar-link">
+  <a href="../pages/3_materialmodell.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">3. Materialmodell</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./pages/4_ibl.html" class="sidebar-item-text sidebar-link">
+  <a href="../pages/4_ibl.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">4. Image Based Lighting (IBL)</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./pages/6_X.html" class="sidebar-item-text sidebar-link">
+  <a href="../pages/6_X.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">X. Vertiefung</span></a>
   </div>
 </li>
@@ -238,8 +154,15 @@ window.Quarto = {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#abstract" id="toc-abstract" class="nav-link active" data-scroll-target="#abstract">Abstract</a></li>
-  <li><a href="#methodology" id="toc-methodology" class="nav-link" data-scroll-target="#methodology">Methodology</a></li>
+  <li><a href="#intro-sektion-die-brdf-und-ihre-bausteine" id="toc-intro-sektion-die-brdf-und-ihre-bausteine" class="nav-link active" data-scroll-target="#intro-sektion-die-brdf-und-ihre-bausteine">1. Intro-Sektion: Die BRDF und ihre Bausteine</a></li>
+  <li><a href="#herzstück-die-d-f-g-komponenten" id="toc-herzstück-die-d-f-g-komponenten" class="nav-link" data-scroll-target="#herzstück-die-d-f-g-komponenten">2. Herzstück: Die D-F-G Komponenten</a>
+  <ul class="collapse">
+  <li><a href="#d-normal-distribution-function" id="toc-d-normal-distribution-function" class="nav-link" data-scroll-target="#d-normal-distribution-function">(D) Normal Distribution Function</a></li>
+  <li><a href="#f-fresnel" id="toc-f-fresnel" class="nav-link" data-scroll-target="#f-fresnel">(F) Fresnel</a></li>
+  <li><a href="#g-geometry" id="toc-g-geometry" class="nav-link" data-scroll-target="#g-geometry">(G) Geometry</a></li>
+  </ul></li>
+  <li><a href="#synthesis-der-map-workflow-finale-demo" id="toc-synthesis-der-map-workflow-finale-demo" class="nav-link" data-scroll-target="#synthesis-der-map-workflow-finale-demo">3. Synthesis: Der Map-Workflow &amp; Finale Demo</a></li>
+  <li><a href="#lernzielabfrage-praktischer-wissenstransfer" id="toc-lernzielabfrage-praktischer-wissenstransfer" class="nav-link" data-scroll-target="#lernzielabfrage-praktischer-wissenstransfer">4. Lernzielabfrage: Praktischer Wissenstransfer</a></li>
   </ul>
 </nav>
     </div>
@@ -248,19 +171,13 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">My Awesome Paper Title</h1>
+<h1 class="title">Kapitel 3: Das Materialmodell</h1>
 </div>
 
 
 
 <div class="quarto-title-meta">
 
-    <div>
-    <div class="quarto-title-meta-heading">Author</div>
-    <div class="quarto-title-meta-contents">
-             <p>Your Name </p>
-          </div>
-  </div>
     
   
     
@@ -271,90 +188,177 @@ window.Quarto = {
 </header>
 
 
-<section id="abstract" class="level2">
-<h2 class="anchored" data-anchor-id="abstract">Abstract</h2>
-<p>Nach <span class="citation" data-cites="knuth1984">Knuth (<a href="#ref-knuth1984" role="doc-biblioref">1984</a>)</span> ist TeX… This is a single-file Quarto website hosted on GitHub Pages. It combines Markdown text, LaTeX math, and interactive 3D elements.</p>
-<div id="cell-fig-polar" class="cell" data-execution_count="1">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>r <span class="op">=</span> np.arange(<span class="dv">0</span>, <span class="dv">2</span>, <span class="fl">0.01</span>)</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>theta <span class="op">=</span> <span class="dv">2</span> <span class="op">*</span> np.pi <span class="op">*</span> r</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  subplot_kw <span class="op">=</span> {<span class="st">'projection'</span>: <span class="st">'polar'</span>} </span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>ax.plot(theta, r)</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>ax.set_rticks([<span class="fl">0.5</span>, <span class="dv">1</span>, <span class="fl">1.5</span>, <span class="dv">2</span>])</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>ax.grid(<span class="va">True</span>)</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display">
-<div id="fig-polar" class="quarto-float quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-polar-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="index_files/figure-html/fig-polar-output-1.png" width="450" height="439" class="figure-img">
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-polar-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;1: A line plot on a polar axis
-</figcaption>
-</figure>
-</div>
-</div>
+<style>
+/* 
+  Transparenz-Notiz: 
+  Das CSS/Layout-Grid dieses Wireframes wurde zur schnelleren 
+  Visualisierung mit einem LLM generiert. Der didaktische Inhalt ist Eigenleistung (Autor: Alexander Kohl)
+*/
+.wireframe-container {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+.wf-box {
+  flex: 1;
+  padding: 20px;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 0.95em;
+  line-height: 1.5;
+  box-sizing: border-box;
+}
+.wf-text {
+  border: 2px dashed #007bff;
+  background-color: rgb(238, 246, 255);
+  color: #004085;
+}
+.wf-math {
+  border: 2px dashed #6c757d;
+  background-color: #f8f9fa;
+  color: #383d41;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+.wf-visual {
+  border: 2px dashed #28a745;
+  background-color: rgb(237, 250, 240);
+  color: #155724;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+.wf-demo {
+  border: 2px dashed #ffc107;
+  background-color: rgb(255, 252, 237);
+  color: #856404;
+  text-align: center;
+}
+.wf-quiz {
+  border: 2px dashed #dc3545;
+  background-color: rgb(253, 242, 243);
+  color: #721c24;
+  text-align: center;
+}
+@media (max-width: 900px) {
+  .wireframe-container {
+    flex-direction: column;
+  }
+}
+</style>
+<blockquote class="blockquote">
+<p><strong>Autor:</strong> Alexander Kohl <br> <strong>Zielsetzung:</strong> Übersetzung der physikalischen Prinzipien (Kap. 2) in die BRDF und deren Steuerung durch Texturen.<br> <strong>Hinweis zur Abgrenzung:</strong> Dieses Kapitel beschreibt explizit nur die Materialseite (Wie reagiert die Oberfläche?). Die komplexen Lichtquellen (IBL) folgen separiert in Kapitel 4.</p>
+</blockquote>
+<section id="intro-sektion-die-brdf-und-ihre-bausteine" class="level2">
+<h2 class="anchored" data-anchor-id="intro-sektion-die-brdf-und-ihre-bausteine">1. Intro-Sektion: Die BRDF und ihre Bausteine</h2>
+<div class="wireframe-container" style="flex-direction: column;">
+  <div class="wf-box wf-text" style="margin-bottom: 20px;">
+    <strong>[Text-Block]</strong><br><br>
+    <em>Bezug Vorlesung (vc_syn_lighting.pdf):</em> Während die Grundprinzipien von Licht und Physik in Kap. 1 &amp; 2 behandelt wurden, blicken wir hier auf das Materialmodell selbst. Die <strong>BRDF</strong> (Bidirectional Reflectance Distribution Function) berechnet, wie die Oberfläche reagiert.<br><br>
+    <strong>Zweiteilung der BRDF:</strong><br>
+    1. <strong>Diffuser Teil (Albedo):</strong> Licht, das in die Oberfläche eindringt und farbig streut (hierfür zeigen wir kurz das einfache, physikalisch angepasste Lambert-Modell: <code>Farbe / Pi</code>).<br>
+    2. <strong>Spekularer Teil (Der Glanzpunkt):</strong> Der weitaus komplexere reflektive Anteil, der entscheidet, ob ein Material wie Gummi, Plastik oder Chrom aussieht. Im modernen Cook-Torrance-Modell wird dieser Teil in drei physikalische Bausteine zerlegt: <strong>D (Streuung), F (Reflexion) und G (Schatten)</strong>.
+  </div>
+  <div class="wf-box wf-math">
+    <strong>[LaTeX-Block: Die Gesamt-BRDF]</strong><br><br>
+    BRDF = f_diffus + f_spekular<br><br>
+    <hr style="border: 0.5px dashed #ccc; margin: 10px 0;">
+    <em>1. Lambert-Modell (Diffus):</em><br>
+    f_diffus = c / π<br>
+    (c = Albedo/Farbe. Wir erklären das <em>Lambert'sche Cosinusgesetz</em>: Warum Flächen, die senkrecht zum Licht stehen, am hellsten sind.)<br><br>
+    <hr style="border: 0.5px dashed #ccc; margin: 10px 0;">
+    <em>2. Cook-Torrance (Spekular):</em><br>
+    f_spekular = (D * F * G) / (4 * (n·l) * (n·v))<br>
+    <em>[Notiz: Nach kurzer Abhandlung des Lambert-Gesetzes widmet sich der gesamte Rest dieses UI-Wireframes der interaktiven visuell-tiefen Erschließung dieses rechten, spekularen Monstrums.]</em>
+  </div>
 </div>
 </section>
-<section id="methodology" class="level2">
-<h2 class="anchored" data-anchor-id="methodology">Methodology</h2>
-<p>You can include complex math like <span class="math display">\[E = mc^2\]</span> and immediately follow it with an interactive 3D figure to visualize your results.</p>
-
-<script src="https://cdn.babylonjs.com/babylon.js"></script>
-
-<div style="width: 100%; height: 400px; position: relative; margin: 20px 0;">
-    <canvas id="renderCanvas" style="width: 100%; height: 100%; touch-action: none; border: 1px solid #ddd; display: block; border-radius: 8px;"></canvas>
+<section id="herzstück-die-d-f-g-komponenten" class="level2">
+<h2 class="anchored" data-anchor-id="herzstück-die-d-f-g-komponenten">2. Herzstück: Die D-F-G Komponenten</h2>
+<section id="d-normal-distribution-function" class="level3">
+<h3 class="anchored" data-anchor-id="d-normal-distribution-function">(D) Normal Distribution Function</h3>
+<div class="wireframe-container">
+  <div class="wf-box wf-text">
+    <strong>[Text-Block]</strong><br><br>
+    Erklärung der Mikrofazetten-Verteilung (z.B. GGX).
+  </div>
+  <div class="wf-box wf-visual">
+    <strong>[Jupyter Plotly: 2D-Graph]</strong><br><br>
+    [ x ] Interaktiver Graph (Rauigkeit vs. Streuung)
+  </div>
+</div>
+</section>
+<section id="f-fresnel" class="level3">
+<h3 class="anchored" data-anchor-id="f-fresnel">(F) Fresnel</h3>
+<div class="wireframe-container">
+  <div class="wf-box wf-text">
+    <strong>[Text-Block]</strong><br><br>
+    Erklärung von F0 (Schlick's Approximation) &amp; Leiter vs. Nicht-Leiter.
+  </div>
+  <div class="wf-box wf-visual">
+    <strong>[Visuelle Grafik]</strong><br><br>
+    [ Bild ] Strahlengang am Objektrand
+  </div>
+</div>
+</section>
+<section id="g-geometry" class="level3">
+<h3 class="anchored" data-anchor-id="g-geometry">(G) Geometry</h3>
+<div class="wireframe-container">
+  <div class="wf-box wf-text">
+    <strong>[Text-Block]</strong><br><br>
+    Erklärung der Selbstbeschattung bei flachen Winkeln.
+  </div>
+  <div class="wf-box wf-visual">
+    <strong>[Skizze / Animation]</strong><br><br>
+    [ Anim ] Mikrofazetten-Verdeckung
+  </div>
+</div>
+</section>
+</section>
+<section id="synthesis-der-map-workflow-finale-demo" class="level2">
+<h2 class="anchored" data-anchor-id="synthesis-der-map-workflow-finale-demo">3. Synthesis: Der Map-Workflow &amp; Finale Demo</h2>
+<div class="wireframe-container">
+  <div class="wf-box wf-visual">
+    <strong>[Textur-Beispiele Map-Workflow]</strong><br><br>
+    [Bild] Albedo | Metallic | Roughness Maps
+  </div>
+  <div class="wf-box wf-text">
+    <strong>[Text-Block]</strong><br><br>
+    Synthese (Von der Theorie zur Anwendung): Wie die mathematischen Modelle (D, F, G) kombiniert und von globalen Schiebereglern auf die Pixel-Ebene eines 3D-Modells übertragen werden.<br><br>
+    <em>Bezug Vorlesung (vc_syn_sp_raster_frag_proc_texturing.pdf):</em> Hier wird das Textur-Konzept aus dem Fragment-Shader live angewandt. Die abstrakten Materialeigenschaften (Glätte/Metallizität) werden über 2D-Graustufenbilder (Texturen) pro Pixel gesteuert.
+  </div>
 </div>
 
-<script>
-    window.addEventListener('DOMContentLoaded', function() {
-        const canvas = document.getElementById("renderCanvas");
-        if (!canvas) return;
-
-        const engine = new BABYLON.Engine(canvas, true);
-
-        const createScene = function () {
-            const scene = new BABYLON.Scene(engine);
-            scene.clearColor = new BABYLON.Color3(0.95, 0.95, 0.95);
-
-            const camera = new BABYLON.ArcRotateCamera("camera", -Math.PI/4, Math.PI/3, 5, BABYLON.Vector3.Zero(), scene);
-            camera.attachControl(canvas, true);
-
-            const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
-            
-            const box = BABYLON.MeshBuilder.CreateBox("box", {size: 1.5}, scene);
-            const material = new BABYLON.StandardMaterial("mat", scene);
-            material.diffuseColor = new BABYLON.Color3(0.1, 0.4, 0.8);
-            box.material = material;
-
-            scene.registerBeforeRender(function () {
-                box.rotation.y += 0.01;
-                box.rotation.x += 0.005;
-            });
-
-            return scene;
-        };
-
-        const scene = createScene();
-        engine.runRenderLoop(() => scene.render());
-        window.addEventListener("resize", () => engine.resize());
-    });
-</script>
-
+<div class="wireframe-container">
+  <div class="wf-box wf-demo" style="width: 100%;">
+    <strong>[3D WebGL Canvas: Babylon.js]</strong><br><br>
+    [ 3D Helm Objekt ]<br><br>
+    <hr style="border:1px dashed #cb9800"><br>
+    <em>UI-Kontrollen:</em><br>
+    [====O====] Metallic Slider (0-1)<br>
+    [==O======] Roughness Slider (0-1)
+  </div>
+</div>
+</section>
+<section id="lernzielabfrage-praktischer-wissenstransfer" class="level2">
+<h2 class="anchored" data-anchor-id="lernzielabfrage-praktischer-wissenstransfer">4. Lernzielabfrage: Praktischer Wissenstransfer</h2>
+<div class="wireframe-container">
+  <div class="wf-box wf-quiz" style="width: 100%;">
+    <strong>[Interaktives Live-Render-Quiz / Das "X"]</strong><br><br>
+    <em>Das Prinzip:</em> Drag &amp; Drop von PBR-Maps (Metallic, Roughness, Albedo) auf ein 3D-Modell (z.B. ein rostiges Metallfass).<br><br>
+    <em>Der Clou (Live Feedback):</em> Zieht der User versehentlich die falsche Zuordnung in einen Slot, aktualisiert sich die WebGL-Engine sofort. Die physikalisch falsche Folge wird interaktiv gerendert (z.B. glänzt der Rost plötzlich wie ein nasser Spiegel).
+  </div>
+</div>
 
 
 </section>
 
-<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="list">
-<div id="ref-knuth1984" class="csl-entry" role="listitem">
-Knuth, Donald E. 1984. <em>The TeXbook</em>. Addison-Wesley.
-</div>
-</div></section></div></main> <!-- /main -->
+</main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";
