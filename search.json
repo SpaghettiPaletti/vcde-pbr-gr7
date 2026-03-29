@@ -62,29 +62,39 @@
   {
     "objectID": "index.html",
     "href": "index.html",
-    "title": "My Awesome Paper Title",
+    "title": "Physically Based Rendering (PBR)",
     "section": "",
-    "text": "Nach Knuth (1984) ist TeX… This is a single-file Quarto website hosted on GitHub Pages. It combines Markdown text, LaTeX math, and interactive 3D elements.\n\nimport numpy as np\nimport matplotlib.pyplot as plt\n\nr = np.arange(0, 2, 0.01)\ntheta = 2 * np.pi * r\nfig, ax = plt.subplots(\n  subplot_kw = {'projection': 'polar'} \n)\nax.plot(theta, r)\nax.set_rticks([0.5, 1, 1.5, 2])\nax.grid(True)\nplt.show()\n\n\n\n\n\n\n\nFigure 1: A line plot on a polar axis",
+    "text": "Physically Based Rendering (PBR) ist ein Ansatz in der Computergrafik, der die physikalische Interaktion zwischen Licht und Materialen mathematisch angenähert simuliert.\nAnstatt Lichteffekte nur visuell zu “schätzen”, basiert PBR auf echten physikalischen Gesetzen wie Mikrofacetten und Energieerhaltung.",
     "crumbs": [
       "Einleitung"
     ]
   },
   {
-    "objectID": "index.html#abstract",
-    "href": "index.html#abstract",
-    "title": "My Awesome Paper Title",
+    "objectID": "index.html#was-ist-pbr",
+    "href": "index.html#was-ist-pbr",
+    "title": "Physically Based Rendering (PBR)",
     "section": "",
-    "text": "Nach Knuth (1984) ist TeX… This is a single-file Quarto website hosted on GitHub Pages. It combines Markdown text, LaTeX math, and interactive 3D elements.\n\nimport numpy as np\nimport matplotlib.pyplot as plt\n\nr = np.arange(0, 2, 0.01)\ntheta = 2 * np.pi * r\nfig, ax = plt.subplots(\n  subplot_kw = {'projection': 'polar'} \n)\nax.plot(theta, r)\nax.set_rticks([0.5, 1, 1.5, 2])\nax.grid(True)\nplt.show()\n\n\n\n\n\n\n\nFigure 1: A line plot on a polar axis",
+    "text": "Physically Based Rendering (PBR) ist ein Ansatz in der Computergrafik, der die physikalische Interaktion zwischen Licht und Materialen mathematisch angenähert simuliert.\nAnstatt Lichteffekte nur visuell zu “schätzen”, basiert PBR auf echten physikalischen Gesetzen wie Mikrofacetten und Energieerhaltung.",
     "crumbs": [
       "Einleitung"
     ]
   },
   {
-    "objectID": "index.html#methodology",
-    "href": "index.html#methodology",
-    "title": "My Awesome Paper Title",
-    "section": "Methodology",
-    "text": "Methodology\nYou can include complex math like \\[E = mc^2\\] and immediately follow it with an interactive 3D figure to visualize your results.",
+    "objectID": "index.html#warum-pbr",
+    "href": "index.html#warum-pbr",
+    "title": "Physically Based Rendering (PBR)",
+    "section": "Warum PBR?",
+    "text": "Warum PBR?\nHier die wichtigsten Vorteile auf einen Blick:\n\nFotorealismus: PBR ist der absolute Industrie-Standard für moderne Echtzeitgrafik (Unreal Engine, Unity) und Filme.\nPhysikalische Korrektheit: Ein Objekt kann nie mehr Licht reflektieren, als es von der Lichtquelle empfängt.\nKonsistenz: Ein einmal erstelltes PBR-Material sieht unter jeder Beleuchtungsbedingung physikalisch plausibel aus.\nIntuitive Workflows: Materialeigenschaften werden über verständliche Parameter wie Rauheit (Roughness) und Metallizität (Metallic) gesteuert.",
+    "crumbs": [
+      "Einleitung"
+    ]
+  },
+  {
+    "objectID": "index.html#das-ziel-fotorealismus-in-echtzeit",
+    "href": "index.html#das-ziel-fotorealismus-in-echtzeit",
+    "title": "Physically Based Rendering (PBR)",
+    "section": "Das Ziel: Fotorealismus in Echtzeit",
+    "text": "Das Ziel: Fotorealismus in Echtzeit\nBevor wir in die Theorie eintauchen, hier ein Ausblick auf das, was PBR leisten kann. Die folgende interaktive 3D-Szene zeigt das finale Konzept im Einsatz: Sie kombiniert ein Physikalisches Material (Kapitel 3) mit komplexitätsfreier Umgebungsbeleuchtung durch Image Based Lighting (IBL) (Kapitel 4).\nDie Kamera kann mit der Maus gedreht und gezoomt werden.\n\n\n    \n\n\nDer Weg dorthin: Starten wir zunächst damit, warum wir alte Modelle überhaupt hinter uns lassen mussten im Kapitel 1. Die Grenzen von Phong.\nHinweis: Die interaktive 3D-Ansicht auf dieser Seite wird mit der Open-Source WebGL-Engine Babylon.js gerendert.",
     "crumbs": [
       "Einleitung"
     ]
