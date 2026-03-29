@@ -1,5 +1,5 @@
 ---
-title: "Grenzen von Phong"
+title: "Alterungsslider"
 author: "Stefan Jordan"
 format:
   html:
