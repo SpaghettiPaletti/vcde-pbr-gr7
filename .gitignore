@@ -5,3 +5,4 @@
 __pycache__/
 *.html
 **/*.quarto_ipynb
+/.vscode/
