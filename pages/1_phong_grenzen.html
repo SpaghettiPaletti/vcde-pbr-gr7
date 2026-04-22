@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.36">
+<meta name="generator" content="quarto-1.9.37">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -40,10 +40,10 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-845c23b38eaddc0f92fda52bfe77a8c8.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-be3771519f21acc1c5b6733774c6dcd8.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-4897d45d2f75ed4f519693be625836c5.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -72,6 +72,35 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
@@ -157,7 +186,8 @@ ul.task-list li input[type="checkbox"] {
   <ul>
   <li><a href="#phong-vs-pbr---ein-direkter-visueller-vergleich" id="toc-phong-vs-pbr---ein-direkter-visueller-vergleich" class="nav-link active" data-scroll-target="#phong-vs-pbr---ein-direkter-visueller-vergleich">Phong vs PBR - ein direkter visueller Vergleich</a>
   <ul class="collapse">
-  <li><a href="#was-war-phing-doch-gleich-wieder" id="toc-was-war-phing-doch-gleich-wieder" class="nav-link" data-scroll-target="#was-war-phing-doch-gleich-wieder">Was war Phing doch gleich wieder?</a></li>
+  <li><a href="#was-war-phong-doch-gleich-wieder" id="toc-was-war-phong-doch-gleich-wieder" class="nav-link" data-scroll-target="#was-war-phong-doch-gleich-wieder">Was war Phong doch gleich wieder?</a></li>
+  <li><a href="#interaktive-analyse-der-komponenten" id="toc-interaktive-analyse-der-komponenten" class="nav-link" data-scroll-target="#interaktive-analyse-der-komponenten">Interaktive Analyse der Komponenten</a></li>
   <li><a href="#fragen-an-das-publikum-vergleich-der-beiden-objekte" id="toc-fragen-an-das-publikum-vergleich-der-beiden-objekte" class="nav-link" data-scroll-target="#fragen-an-das-publikum-vergleich-der-beiden-objekte">Fragen an das Publikum (Vergleich der beiden Objekte)</a></li>
   <li><a href="#warum-müssen-wir-physikalische-gesetze-berücksichtigen" id="toc-warum-müssen-wir-physikalische-gesetze-berücksichtigen" class="nav-link" data-scroll-target="#warum-müssen-wir-physikalische-gesetze-berücksichtigen">Warum müssen wir physikalische Gesetze berücksichtigen?</a></li>
   </ul></li>
@@ -194,32 +224,224 @@ ul.task-list li input[type="checkbox"] {
 
 <section id="phong-vs-pbr---ein-direkter-visueller-vergleich" class="level2">
 <h2 class="anchored" data-anchor-id="phong-vs-pbr---ein-direkter-visueller-vergleich">Phong vs PBR - ein direkter visueller Vergleich</h2>
-<p>Gegenüberstellung eines Objektes jeweils gerendert mittels Phong und PBR</p>
-<section id="was-war-phing-doch-gleich-wieder" class="level3">
-<h3 class="anchored" data-anchor-id="was-war-phing-doch-gleich-wieder">Was war Phing doch gleich wieder?</h3>
+<p>Bevor wir in die Theorie abtauchen, lassen wir die Bilder für sich sprechen. Unten sieht man dasselbe Objekt, gerendert mit zwei völlig unterschiedlichen Ansätzen.</p>
+<div style="display: flex; justify-content: space-between; gap: 20px;">
+  <div style="flex: 1; text-align: center;">
+    <h4 class="anchored">klassisches Phong</h4>
+    <canvas id="canvasPhong" style="width: 100%; height: 400px; border-radius: 8px; outline: none;"></canvas>
+    <p style="font-size: 0.9em; color: #666;">Harter Glanzpunkt, keine Energieerhaltung.</p>
+  </div>
+
+  <div style="flex: 1; text-align: center;">
+    <h4 class="anchored">Physically Based Rendering (PBR)</h4>
+    <canvas id="canvasPBR" style="width: 100%; height: 400px; border-radius: 8px; outline: none;"></canvas>
+    <p style="font-size: 0.9em; color: #666;">Realistische Lichtverteilung und Energieerhaltung.</p>
+  </div>
+</div>
+<script src="https://cdn.babylonjs.com/babylon.js"></script>
+<script>
+  const setupScene = (canvasId, usePBR) => {
+    const canvas = document.getElementById(canvasId);
+    const engine = new BABYLON.Engine(canvas, true);
+    const scene = new BABYLON.Scene(engine);
+    const env = scene.createDefaultEnvironment({
+      createGround: true,
+      groundSize: 20,
+      groundColor: new BABYLON.Color3(0.2, 0.2, 0.2),
+      createSkybox: true,
+      skyboxSize: 100,
+      skyboxColor: new BABYLON.Color3(0.05, 0.05, 0.05)
+    });
+
+    if (env.ground) {env.ground.position.y = -2;}
+
+    const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
+
+    const camera = new BABYLON.ArcRotateCamera("camera", -Math.PI /2, Math.PI / 2.5, 8, new BABYLON.Vector3(0, 0, 0), scene);
+    camera.attachControl(canvas, true);
+    camera.lowerRadiusLimit = camera.radius;
+    camera.upperRadiusLimit = camera.radius;
+
+    const knot = BABYLON.MeshBuilder.CreateTorusKnot("knot", {
+      radius: 1, 
+      tube: 0.3,
+      radialSegments: 128,
+      tubularSegments: 64
+      }, scene);
+
+    if (usePBR) {
+      const pbr = new BABYLON.PBRMaterial("pbr", scene);
+      pbr.albedoColor = new BABYLON.Color3(0.9, 0.9, 0.9);
+      pbr.metallic = 1.0;
+      pbr.roughness = 0.05;
+      knot.material = pbr;
+    } else {
+      const phong = new BABYLON.StandardMaterial("phong", scene);
+      phong.diffuseColor = new BABYLON.Color3(0.1, 0.1, 0.1);
+      phong.reflectionTexture = scene.environmentTexture;
+      phong.reflectionLevel = 1.0;
+      phong.specularColor = new BABYLON.Color3(1, 1, 1);
+      phong.specularPower = 128;
+      knot.material = phong;
+    }
+
+    engine.runRenderLoop(() => scene.render());
+    return engine;
+  };
+
+  const enginePhong = setupScene("canvasPhong", false);
+  const enginePBR = setupScene("canvasPBR", true);
+  
+  window.addEventListener("resize", () => {
+    enginePhong.resize();
+    enginePBR.resize();
+  });
+</script>
+<p><strong>Die Lichtverhältnisse</strong></p>
+<p>Beide Szenen nutzen eine identische Beleuchtungssituation: Ein <strong>Hemispheric Light</strong> dient als Grundlicht, während eine <strong>globale Umgebungskarte</strong> für komplexe Lichtinformationen und Reflexionen aus dem Raum sorgt.</p>
+<p><strong>Warum sehen die Objekte so unterschiedlich aus?</strong></p>
+<p>Chrom ist ein Material, das seine Erscheinung fast vollständig aus der Spiegelung der Umgebung bezieht. Hier werden die theoretischen Grenzen von Phong besonders deutlich:</p>
 <ul>
-<li>war lange der Standard in der Computergrafik</li>
-<li>heute noch in vielen Anwendungen im Einsatz</li>
-<li>Es ist ein lokales Beleuchtungsmodell</li>
-<li>Die finale Farbe setzt sich aus 4 simplen Komponenten zusammen: Emissiv, Ambient, Diffus und Spekular.</li>
-<li>Beleuchtung wird meist nur durch einfache Punktlichtquellen berechnet.</li>
+<li><p><strong>Klassisches Phong:</strong> Hier wird die Umgebung als einfache Textur über das Objekt gelegt. Da das Modell kein Verständnis für echtes Metall hat, wirkt die Reflexion wie ein “Aufkleber”. Es fehlt die physikalische Tiefe und das Objekt wirkt unnatürlich hell, weil das einfallende Licht der Umgebung ohne Begrenzung auf die Pixelfarbe addiert wird.</p></li>
+<li><p><strong>Physically Based Rendering:</strong> Bei PBR erkennt man, dass die Reflexionen an den Rändern des Knotens (flacher Blickwinkel) stärker und klarer als in der Mitte sind. Zudem sorgt die <strong>Energieerhaltung</strong> dafür, dass das Material “schwer” und massiv wirkt. Das gespiegelte Licht kann nicht gleichzeitig die Oberfläche erhellen. Dadurch ensteht ein tiefer, realistischer Metall-Look.</p></li>
 </ul>
+<section id="was-war-phong-doch-gleich-wieder" class="level3">
+<h3 class="anchored" data-anchor-id="was-war-phong-doch-gleich-wieder">Was war Phong doch gleich wieder?</h3>
+<p>Das Phong-Beleuchtungsmodell, benannt nach seinem Erfinder Bui Tuong Phong (1973) war über Jahrzehnte der unangefochtene Standard in der Computergrafik. Auch heute noch findet es aufgrund seiner extrem geringen Rechenkosten in vielen Mobile-Games oder einfachen Web-Anwendungen Einsatz.</p>
+<p>Es handelt sich um ein <strong>lokales Beleuchtungsmodell</strong>. Das bedeutet: Die Farbe jedes Pixels wird nur anhand der direkten Beziehung zwischen Lichtquelle, Oberfläche und Kamera berechnet - Reflexionen anderer Objekte im Raum werden ignoriert.</p>
+<p>Die finale Farbe berechnet sich dabei als simple Addition aus vir Komponenten:</p>
+<ol type="1">
+<li><strong>Emissiv:</strong> Eigenleuchten des Materials.</li>
+<li><strong>Ambient:</strong> Eine konstante für das globale, indirekte Grundlicht.</li>
+<li><strong>Diffus:</strong> Die raue, matte Lichtstreuung (Lambert).</li>
+<li><strong>Spekular:</strong> Der glänzende, spiegelnde Lichtfleck.</li>
+</ol>
+<p>Lichtquellen sind in diesem Modell meist einfache, infinit kleine Punktlichtquellen.</p>
+<p><span class="math display">\[I = \underbrace{k_a \cdot I_a}_{\text{Ambient}} + \sum_{Lichter} (\underbrace{k_d \cdot (L \cdot N) \cdot I_d}_{\text{Diffus}} + \underbrace{k_s \cdot (R \cdot V)^n \cdot I_s}_{\text{Spekular}})\]</span></p>
+</section>
+<section id="interaktive-analyse-der-komponenten" class="level3">
+<h3 class="anchored" data-anchor-id="interaktive-analyse-der-komponenten">Interaktive Analyse der Komponenten</h3>
+<p>Probiere es selbst aus: Schalte die einzelnen Komponenten der Phong-Gleichung ein und aus oder verändere ihre Werte, um zu sehen, wie sie das finale Rendering beeinflussen.</p>
+<div style="display: flex; gap: 20px; background: #f8f9fa; padding: 15px; border-radius: 8px; margin-top: 20px; margin-bottom: 30px;">
+    
+    <canvas id="phongCanvas" style="width: 60%; height: 400px; border-radius: 4px; touch-action: none; outline: none;"></canvas>
+    
+    <div style="width: 40%; display: flex; flex-direction: column; justify-content: center; gap: 15px;">
+        <h4 style="margin-top: 0;" class="anchored">Phong Parameter</h4>
+        
+        <label>
+            <input type="checkbox" id="cbAmbient" checked=""> Ambient (Grundlicht)
+            <input type="range" id="slAmbient" min="0" max="1" step="0.1" value="0.2" style="width: 100%;">
+        </label>
+        
+        <label>
+            <input type="checkbox" id="cbDiffuse" checked=""> Diffus (Streuung)
+            <input type="range" id="slDiffuse" min="0" max="1" step="0.1" value="0.8" style="width: 100%;">
+        </label>
+
+        <label>
+            <input type="checkbox" id="cbSpecular" checked=""> Spekular (Glanzpunkt)
+            <input type="range" id="slSpecular" min="0" max="1" step="0.1" value="1.0" style="width: 100%;">
+        </label>
+
+        <label>
+            Exponent (Shininess / Glanzschärfe)
+            <input type="range" id="slPower" min="1" max="100" step="1" value="32" style="width: 100%;">
+        </label>
+    </div>
+</div>
+
+<script src="https://cdn.babylonjs.com/babylon.js"></script>
+<script>
+    const canvas = document.getElementById("phongCanvas");
+    const engine = new BABYLON.Engine(canvas, true);
+
+    const createScene = function () {
+        const scene = new BABYLON.Scene(engine);
+        scene.clearColor = new BABYLON.Color4(0.1, 0.1, 0.12, 1);
+        scene.ambientColor = new BABYLON.Color3(1, 1, 1);
+
+        const camera = new BABYLON.ArcRotateCamera("camera", -Math.PI / 2, Math.PI / 2.5, 5, BABYLON.Vector3.Zero(), scene);
+        camera.attachControl(canvas, true);
+        camera.lowerRadiusLimit = camera.radius;
+        camera.upperRadiusLimit = camera.radius;
+        const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
+        light.intensity = 0.8;
+
+        const knot = BABYLON.MeshBuilder.CreateTorusKnot("knot", {
+          radius: 0.8,
+          tube: 0.25,
+          radialSegments: 128,
+          tubularSegments: 64
+        }, scene);
+        
+        const material = new BABYLON.StandardMaterial("phongMat", scene);
+        const baseColor = new BABYLON.Color3(0.8, 0.1, 0.1);
+        
+        material.diffuseColor = baseColor;
+        material.ambientColor = new BABYLON.Color3(0.2, 0.2, 0.2);
+        material.specularColor = new BABYLON.Color3(1, 1, 1);
+        material.specularPower = 32;
+        knot.material = material;
+
+        const updateMaterial = () => {
+            const ambVal = document.getElementById('cbAmbient').checked ? document.getElementById('slAmbient').value : 0;
+            material.ambientColor = new BABYLON.Color3(ambVal, ambVal, ambVal);
+            
+            const diffVal = document.getElementById('cbDiffuse').checked ? document.getElementById('slDiffuse').value : 0;
+            material.diffuseColor = baseColor.scale(diffVal);
+            
+            const specVal = document.getElementById('cbSpecular').checked ? document.getElementById('slSpecular').value : 0;
+            material.specularColor = new BABYLON.Color3(specVal, specVal, specVal);
+            
+            material.specularPower = document.getElementById('slPower').value;
+        };
+
+        const inputs = document.querySelectorAll('#phongCanvas ~ div input');
+        inputs.forEach(input => input.addEventListener('input', updateMaterial));
+
+        return scene;
+    };
+
+    const scene = createScene();
+    engine.runRenderLoop(function () {
+        scene.render();
+    });
+    window.addEventListener("resize", function () {
+        engine.resize();
+    });
+</script>
 </section>
 <section id="fragen-an-das-publikum-vergleich-der-beiden-objekte" class="level3">
 <h3 class="anchored" data-anchor-id="fragen-an-das-publikum-vergleich-der-beiden-objekte">Fragen an das Publikum (Vergleich der beiden Objekte)</h3>
-<ul>
-<li>Was fehlt am Phong Modell um realistischer zu wirken? –&gt; Klassische Modelle schätzen das Licht nur, ignorieren aber grundlegende physikalische Gesetze</li>
-<li>Warum sieht das Phong-Objekt eher aus wie Plastik? –&gt; Der Spekular-Term erzeugt Glanzpunkte nur über einen abstrakten Spiegelungsexponenten. Es gibt kein echtes physikalisches Materialverständnis</li>
-<li>Warum wirken die Schatten beim Phong-Objekt flach? –&gt; Das indirekte Streulicht wird nur über einen konstanten Ambient-Term angenähert.</li>
-</ul>
+<div class="callout-question" title="Fragen an das Publikum">
+<details>
+<summary>
+<b>Warum sieht das Phong-Objekt eher aus wie Plastik?</b>
+</summary>
+Das liegt am Spekular-Term. Phong erzeugt Glanzpunkte lediglich über einen mathematisch abstrakten Spiegelungsexponenten (Shininess). Es gibt kein echtes physikalisches Verständnis davon, woraus das Material besteht (z.B. Metall vs.&nbsp;Nicht-Metall).
+</details>
+<br>
+<details>
+<summary>
+<b>Warum wirken die Schatten beim Phong-Objekt so flach?</b>
+</summary>
+In der Realität wird Licht von Wänden und Böden in den Schattenbereich zurückgeworfen (Global Illumination). Phong simuliert dieses komplexe indirekte Streulicht stark vereinfacht über einen simplen Ambient-Term, was Schatten oft unnatürlich flach wirken lässt.
+</details>
+<br>
+<details>
+<summary>
+<b>Was fehlt dem Modell grundsätzlich, um realistisch zu wirken?</b>
+</summary>
+Die Physik. Klassische Modelle wie Phong <em>schätzen</em> das Licht nur ab, ignorieren aber grundlegende physikalische Gesetze der Optik.
+</details>
+</div>
 </section>
 <section id="warum-müssen-wir-physikalische-gesetze-berücksichtigen" class="level3">
 <h3 class="anchored" data-anchor-id="warum-müssen-wir-physikalische-gesetze-berücksichtigen">Warum müssen wir physikalische Gesetze berücksichtigen?</h3>
-<ul>
-<li>In Phong werden die Lichtwerte am Ende einfach addiert (Farbe = emissiv + ambient + diffus + spekular).</li>
-<li>Das Problem: Dadurch kann ein Objekt am Ende mehr Licht reflektiren, als es von der Lichtquelle empfangen hat. Das ist physikalisch unmöglich!</li>
-<li>Die PBR-Antwort: Wir brauchen das Gesetz der Energieerhaltung, damit Materialien unter allen Lichtbedingungen fotorealistisch und natürlich reagieren.</li>
-</ul>
+<p>Der größte Fehler des Phong-Modells liegt in seiner Mathematik: Die Lichtwerte werden am Ende einfach stur addiert (<code>Farbe = Emissiv + Ambient + Diffus + Spekular</code>).</p>
+<p>Das führt zu einem massiven Problem: <strong>Dadurch kann ein Objekt am Ende mehr Licht reflektieren, als es von der Lichtquelle überhaupt empfangen hat!</strong> In der realen Welt ist das physikalisch absolut unmöglich und führt in der Computergrafik dazu, dass Materlialien unter hellen Lichtern plötzlich anfangen unnatürlich zu glühen.</p>
+<p><strong>Die Antwort von PBR:</strong> Wir brauchen das Gesetz der Energieerhaltung. Das eintreffende Licht wird aufgeteilt in reflektierendes Licht (Spekular) und gestreutes Licht (Diffus). Was spiegelnd reflektiert wird, kann nicht mehr im Material gestreut werden. Nur durch die strikte Einhaltung dieser Regel reagieren Materialien unter <em>allen</em> erdenklichen Lichtbedingungen fotorealistisch und natürlich.</p>
 
 
 </section>
