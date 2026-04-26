@@ -154,15 +154,10 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#intro-sektion-die-brdf-und-ihre-bausteine" id="toc-intro-sektion-die-brdf-und-ihre-bausteine" class="nav-link active" data-scroll-target="#intro-sektion-die-brdf-und-ihre-bausteine">1. Intro-Sektion: Die BRDF und ihre Bausteine</a></li>
-  <li><a href="#herzstück-die-d-f-g-komponenten" id="toc-herzstück-die-d-f-g-komponenten" class="nav-link" data-scroll-target="#herzstück-die-d-f-g-komponenten">2. Herzstück: Die D-F-G Komponenten</a>
-  <ul class="collapse">
-  <li><a href="#d-normal-distribution-function" id="toc-d-normal-distribution-function" class="nav-link" data-scroll-target="#d-normal-distribution-function">(D) Normal Distribution Function</a></li>
-  <li><a href="#f-fresnel" id="toc-f-fresnel" class="nav-link" data-scroll-target="#f-fresnel">(F) Fresnel</a></li>
-  <li><a href="#g-geometry" id="toc-g-geometry" class="nav-link" data-scroll-target="#g-geometry">(G) Geometry</a></li>
-  </ul></li>
-  <li><a href="#synthesis-der-map-workflow-finale-demo" id="toc-synthesis-der-map-workflow-finale-demo" class="nav-link" data-scroll-target="#synthesis-der-map-workflow-finale-demo">3. Synthesis: Der Map-Workflow &amp; Finale Demo</a></li>
-  <li><a href="#lernzielabfrage-praktischer-wissenstransfer" id="toc-lernzielabfrage-praktischer-wissenstransfer" class="nav-link" data-scroll-target="#lernzielabfrage-praktischer-wissenstransfer">4. Lernzielabfrage: Praktischer Wissenstransfer</a></li>
+  <li><a href="#von-der-formel-zum-shader-das-interface" id="toc-von-der-formel-zum-shader-das-interface" class="nav-link active" data-scroll-target="#von-der-formel-zum-shader-das-interface">1. Von der Formel zum Shader (Das Interface)</a></li>
+  <li><a href="#der-standard-blender-principled-bsdf-openpbr" id="toc-der-standard-blender-principled-bsdf-openpbr" class="nav-link" data-scroll-target="#der-standard-blender-principled-bsdf-openpbr">2. Der Standard: Blender Principled BSDF &amp; OpenPBR</a></li>
+  <li><a href="#das-texture-mapping-der-praxis-workflow" id="toc-das-texture-mapping-der-praxis-workflow" class="nav-link" data-scroll-target="#das-texture-mapping-der-praxis-workflow">3. Das Texture-Mapping (Der Praxis-Workflow)</a></li>
+  <li><a href="#vertiefung-live-rendering-das-map-quiz" id="toc-vertiefung-live-rendering-das-map-quiz" class="nav-link" data-scroll-target="#vertiefung-live-rendering-das-map-quiz">4. Vertiefung: Live-Rendering &amp; Das Map-Quiz</a></li>
   </ul>
 </nav>
     </div>
@@ -171,7 +166,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Kapitel 3: Das Materialmodell</h1>
+<h1 class="title">Kapitel 3: Das Materialmodell &amp; Mapping</h1>
 </div>
 
 
@@ -191,167 +186,82 @@ ul.task-list li input[type="checkbox"] {
 <style>
 /* 
   Transparenz-Notiz: 
-  Das CSS/Layout-Grid dieses Wireframes wurde zur schnelleren 
-  Visualisierung mit einem LLM generiert. Der didaktische Inhalt ist Eigenleistung (Autor: Alexander Kohl)
+  Das CSS/Layout-Grid dieses Wireframes wurde zur schnellen Konzept-Visualisierung generiert. 
+  Inhaltliches Konzept: Alexander Kohl (Anpassung gem. Prof-Feedback)
 */
-.wireframe-container {
-  display: flex;
-  gap: 20px;
-  margin-bottom: 30px;
-}
-.wf-box {
-  flex: 1;
-  padding: 20px;
-  border-radius: 8px;
-  font-family: inherit;
-  font-size: 0.95em;
-  line-height: 1.5;
-  box-sizing: border-box;
-}
-.wf-text {
-  border: 2px dashed #007bff;
-  background-color: rgb(238, 246, 255);
-  color: #004085;
-}
-.wf-math {
-  border: 2px dashed #6c757d;
-  background-color: #f8f9fa;
-  color: #383d41;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-}
-.wf-visual {
-  border: 2px dashed #28a745;
-  background-color: rgb(237, 250, 240);
-  color: #155724;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-}
-.wf-demo {
-  border: 2px dashed #ffc107;
-  background-color: rgb(255, 252, 237);
-  color: #856404;
-  text-align: center;
-}
-.wf-quiz {
-  border: 2px dashed #dc3545;
-  background-color: rgb(253, 242, 243);
-  color: #721c24;
-  text-align: center;
-}
-@media (max-width: 900px) {
-  .wireframe-container {
-    flex-direction: column;
-  }
-}
+.wireframe-container { display: flex; gap: 20px; margin-bottom: 30px; flex-wrap: wrap; }
+.wf-box { flex: 1; padding: 20px; border-radius: 8px; font-family: inherit; font-size: 0.95em; line-height: 1.5; box-sizing: border-box; min-width: 300px; }
+.wf-text { border: 2px dashed #007bff; background-color: rgb(238, 246, 255); color: #004085; }
+.wf-visual { border: 2px dashed #28a745; background-color: rgb(237, 250, 240); color: #155724; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+.wf-demo { border: 2px dashed #ffc107; background-color: rgb(255, 252, 237); color: #856404; text-align: center; }
+.wf-quiz { border: 2px dashed #dc3545; background-color: rgb(253, 242, 243); color: #721c24; text-align: center; }
 </style>
 <blockquote class="blockquote">
-<p><strong>Autor:</strong> Alexander Kohl <br> <strong>Zielsetzung:</strong> Übersetzung der physikalischen Prinzipien (Kap. 2) in die BRDF und deren Steuerung durch Texturen.<br> <strong>Hinweis zur Abgrenzung:</strong> Dieses Kapitel beschreibt explizit nur die Materialseite (Wie reagiert die Oberfläche?). Die komplexen Lichtquellen (IBL) folgen separiert in Kapitel 4.</p>
+<p><strong>Autor:</strong> Alexander Kohl <br> <strong>Zielsetzung:</strong> Die physikalische Cook-Torrance Mathematik (Kapitel 2) wird hier in den anwendungsnahen Industrie-Standard (Blender / OpenPBR) “abstrahiert” und über das Texture-Mapping auf 3D-Modelle angewandt.</p>
 </blockquote>
-<section id="intro-sektion-die-brdf-und-ihre-bausteine" class="level2">
-<h2 class="anchored" data-anchor-id="intro-sektion-die-brdf-und-ihre-bausteine">1. Intro-Sektion: Die BRDF und ihre Bausteine</h2>
-<div class="wireframe-container" style="flex-direction: column;">
-  <div class="wf-box wf-text" style="margin-bottom: 20px;">
-    <strong>[Text-Block]</strong><br><br>
-    <em>Bezug Vorlesung (vc_syn_lighting.pdf):</em> Während die Grundprinzipien von Licht und Physik in Kap. 1 &amp; 2 behandelt wurden, blicken wir hier auf das Materialmodell selbst. Die <strong>BRDF</strong> (Bidirectional Reflectance Distribution Function) berechnet, wie die Oberfläche reagiert.<br><br>
-    <strong>Zweiteilung der BRDF:</strong><br>
-    1. <strong>Diffuser Teil (Albedo):</strong> Licht, das in die Oberfläche eindringt und farbig streut (hierfür zeigen wir kurz das einfache, physikalisch angepasste Lambert-Modell: <code>Farbe / Pi</code>).<br>
-    2. <strong>Spekularer Teil (Der Glanzpunkt):</strong> Der weitaus komplexere reflektive Anteil, der entscheidet, ob ein Material wie Gummi, Plastik oder Chrom aussieht. Im modernen Cook-Torrance-Modell wird dieser Teil in drei physikalische Bausteine zerlegt: <strong>D (Streuung), F (Reflexion) und G (Schatten)</strong>.
-  </div>
-  <div class="wf-box wf-math">
-    <strong>[LaTeX-Block: Die Gesamt-BRDF]</strong><br><br>
-    BRDF = f_diffus + f_spekular<br><br>
-    <hr style="border: 0.5px dashed #ccc; margin: 10px 0;">
-    <em>1. Lambert-Modell (Diffus):</em><br>
-    f_diffus = c / π<br>
-    (c = Albedo/Farbe. Wir erklären das <em>Lambert'sche Cosinusgesetz</em>: Warum Flächen, die senkrecht zum Licht stehen, am hellsten sind.)<br><br>
-    <hr style="border: 0.5px dashed #ccc; margin: 10px 0;">
-    <em>2. Cook-Torrance (Spekular):</em><br>
-    f_spekular = (D * F * G) / (4 * (n·l) * (n·v))<br>
-    <em>[Notiz: Nach kurzer Abhandlung des Lambert-Gesetzes widmet sich der gesamte Rest dieses UI-Wireframes der interaktiven visuell-tiefen Erschließung dieses rechten, spekularen Monstrums.]</em>
-  </div>
-</div>
-</section>
-<section id="herzstück-die-d-f-g-komponenten" class="level2">
-<h2 class="anchored" data-anchor-id="herzstück-die-d-f-g-komponenten">2. Herzstück: Die D-F-G Komponenten</h2>
-<section id="d-normal-distribution-function" class="level3">
-<h3 class="anchored" data-anchor-id="d-normal-distribution-function">(D) Normal Distribution Function</h3>
+<section id="von-der-formel-zum-shader-das-interface" class="level2">
+<h2 class="anchored" data-anchor-id="von-der-formel-zum-shader-das-interface">1. Von der Formel zum Shader (Das Interface)</h2>
 <div class="wireframe-container">
   <div class="wf-box wf-text">
     <strong>[Text-Block]</strong><br><br>
-    Erklärung der Mikrofazetten-Verteilung (z.B. GGX).
-  </div>
-  <div class="wf-box wf-visual">
-    <strong>[Jupyter Plotly: 2D-Graph]</strong><br><br>
-    [ x ] Interaktiver Graph (Rauigkeit vs. Streuung)
-  </div>
-</div>
-</section>
-<section id="f-fresnel" class="level3">
-<h3 class="anchored" data-anchor-id="f-fresnel">(F) Fresnel</h3>
-<div class="wireframe-container">
-  <div class="wf-box wf-text">
-    <strong>[Text-Block]</strong><br><br>
-    Erklärung von F0 (Schlick's Approximation) &amp; Leiter vs. Nicht-Leiter.
+    <em>Die Brücke zu Kapitel 2:</em> In den physikalischen PBR-Prinzipien wurde hergeleitet, wie die Lichtberechnung mathematisch tief im Code durch die Komponenten D, F und G funktioniert. In der Praxis berechnen Anwender jedoch keine Fresnel-Integrale händisch.<br><br>
+    Wir brauchen ein <strong>Materialmodell</strong>: Ein Interface (einen "Shader"), das diese komplexe Mathematik kapselt und über einfache, verständliche Parameter steuerbar macht.
   </div>
   <div class="wf-box wf-visual">
     <strong>[Visuelle Grafik]</strong><br><br>
-    [ Bild ] Strahlengang am Objektrand
+    [ Skizze: Physik (Zahlen/Formeln) ➔ Shader (Blackbox) ➔ Anwender (Sliders) ]
   </div>
 </div>
 </section>
-<section id="g-geometry" class="level3">
-<h3 class="anchored" data-anchor-id="g-geometry">(G) Geometry</h3>
+<section id="der-standard-blender-principled-bsdf-openpbr" class="level2">
+<h2 class="anchored" data-anchor-id="der-standard-blender-principled-bsdf-openpbr">2. Der Standard: Blender Principled BSDF &amp; OpenPBR</h2>
 <div class="wireframe-container">
   <div class="wf-box wf-text">
     <strong>[Text-Block]</strong><br><br>
-    Erklärung der Selbstbeschattung bei flachen Winkeln.
+    <em>Worum geht es hier? (Q&amp;A 1 Feedback):</em> Vor den PBR-Standards gab es verschiedene veraltete Workflows (z.B. "Specular/Glossiness"). Dort war die Materialerstellung extrem fehleranfällig und oft physikalisch inkorrekt.<br><br>
+    Mit dem <strong>Principled BSDF</strong> (Disney, als Standard-Shader in Blender) und der modernen Industrie-Initiative <strong>OpenPBR</strong> hat sich jedoch ein neuer Goldstandard etabliert.<br><br>
+    <strong>Der Metallic-Roughness-Workflow:</strong><br>
+    Der massive architektonische Vorteil dieses Standards ist, dass er <em>inhärent energieerhaltend</em> ist. Ein Anwender <u>kann</u> über diese Eingabeparameter im Grunde kein physikalisch unmögliches Material mehr in den Shader speisen.
   </div>
   <div class="wf-box wf-visual">
-    <strong>[Skizze / Animation]</strong><br><br>
-    [ Anim ] Mikrofazetten-Verdeckung
+    <strong>[Die 3 Heiligen Parameter]</strong><br><br>
+    <strong>Base Color (Albedo):</strong> Grundfarbe bei Dielektrika / Reflexionsfarbe bei Metallen.<br>
+    <strong>Metallic:</strong> Binärer Maskenwert (Ist es Metall oder nicht?).<br>
+    <strong>Roughness:</strong> Streuung der Mikrofacetten (matt vs. glatt).
   </div>
 </div>
 </section>
-</section>
-<section id="synthesis-der-map-workflow-finale-demo" class="level2">
-<h2 class="anchored" data-anchor-id="synthesis-der-map-workflow-finale-demo">3. Synthesis: Der Map-Workflow &amp; Finale Demo</h2>
+<section id="das-texture-mapping-der-praxis-workflow" class="level2">
+<h2 class="anchored" data-anchor-id="das-texture-mapping-der-praxis-workflow">3. Das Texture-Mapping (Der Praxis-Workflow)</h2>
 <div class="wireframe-container">
-  <div class="wf-box wf-visual">
-    <strong>[Textur-Beispiele Map-Workflow]</strong><br><br>
-    [Bild] Albedo | Metallic | Roughness Maps
-  </div>
   <div class="wf-box wf-text">
     <strong>[Text-Block]</strong><br><br>
-    Synthese (Von der Theorie zur Anwendung): Wie die mathematischen Modelle (D, F, G) kombiniert und von globalen Schiebereglern auf die Pixel-Ebene eines 3D-Modells übertragen werden.<br><br>
-    <em>Bezug Vorlesung (vc_syn_sp_raster_frag_proc_texturing.pdf):</em> Hier wird das Textur-Konzept aus dem Fragment-Shader live angewandt. Die abstrakten Materialeigenschaften (Glätte/Metallizität) werden über 2D-Graustufenbilder (Texturen) pro Pixel gesteuert.
+    Globale Schieberegler reichen für eine saubere Goldkugel, aber nicht für ein rostiges, zerkratztes Metallfass.<br><br>
+    <strong>Texture Maps:</strong> Wir lösen die globalen Parameter in 2D-Bilddateien auf. Jeder Pixel der Textur steuert den Shader-Parameter für genau diesen Punkt auf dem 3D-Modell (Rotwert in der Metallic-Textur = Grad der Metallizität an dieser Stelle).
+  </div>
+  <div class="wf-box wf-visual">
+    <strong>[Visuelle Matrix: Maps]</strong><br><br>
+    [ Bild: Das Objekt ]<br>
+    aufgeteilt in:<br>
+    [ Albedo Map ] | [ Metallic Map ] | [ Roughness Map ] | [ Normal Map ]
+  </div>
+</div>
+</section>
+<section id="vertiefung-live-rendering-das-map-quiz" class="level2">
+<h2 class="anchored" data-anchor-id="vertiefung-live-rendering-das-map-quiz">4. Vertiefung: Live-Rendering &amp; Das Map-Quiz</h2>
+<div class="wireframe-container">
+  <div class="wf-box wf-demo" style="width: 100%;">
+    <strong>[WebGL Canvas: Parameter vs Maps im direkten Vergleich]</strong><br><br>
+    Links: Eine pure Kugel mit UI-Slidern (Metallic / Roughness ändern).<br>
+    Rechts: Das rostige Fass (mit festen Maps), das auf dieselbe Umgebung reagiert.
   </div>
 </div>
 
 <div class="wireframe-container">
-  <div class="wf-box wf-demo" style="width: 100%;">
-    <strong>[3D WebGL Canvas: Babylon.js]</strong><br><br>
-    [ 3D Helm Objekt ]<br><br>
-    <hr style="border:1px dashed #cb9800"><br>
-    <em>UI-Kontrollen:</em><br>
-    [====O====] Metallic Slider (0-1)<br>
-    [==O======] Roughness Slider (0-1)
-  </div>
-</div>
-</section>
-<section id="lernzielabfrage-praktischer-wissenstransfer" class="level2">
-<h2 class="anchored" data-anchor-id="lernzielabfrage-praktischer-wissenstransfer">4. Lernzielabfrage: Praktischer Wissenstransfer</h2>
-<div class="wireframe-container">
   <div class="wf-box wf-quiz" style="width: 100%;">
     <strong>[Interaktives Live-Render-Quiz / Das "X"]</strong><br><br>
-    <em>Das Prinzip:</em> Drag &amp; Drop von PBR-Maps (Metallic, Roughness, Albedo) auf ein 3D-Modell (z.B. ein rostiges Metallfass).<br><br>
-    <em>Der Clou (Live Feedback):</em> Zieht der User versehentlich die falsche Zuordnung in einen Slot, aktualisiert sich die WebGL-Engine sofort. Die physikalisch falsche Folge wird interaktiv gerendert (z.B. glänzt der Rost plötzlich wie ein nasser Spiegel).
+    <em>Das Prinzip:</em> Drag &amp; Drop von "nackten" 2D-PBR-Maps auf die leeren Material-Slots ("Metallizität", "Farbe", "Rauheit") eines komplexen 3D-Modells.<br><br>
+    <em>Live Feedback:</em> Zieht der User die Roughness-Map versehentlich in den Metallic-Slot, rendert die WebGL-Engine diesen physikalischen Blödsinn live im Browser (Material ist an den zerkratzten Stellen plötzlich reinstes Metall).
   </div>
 </div>
 

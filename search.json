@@ -42,49 +42,49 @@
   {
     "objectID": "pages/3_materialmodell.html",
     "href": "pages/3_materialmodell.html",
-    "title": "Kapitel 3: Das Materialmodell",
+    "title": "Kapitel 3: Das Materialmodell & Mapping",
     "section": "",
-    "text": "Autor: Alexander Kohl  Zielsetzung: Übersetzung der physikalischen Prinzipien (Kap. 2) in die BRDF und deren Steuerung durch Texturen. Hinweis zur Abgrenzung: Dieses Kapitel beschreibt explizit nur die Materialseite (Wie reagiert die Oberfläche?). Die komplexen Lichtquellen (IBL) folgen separiert in Kapitel 4.",
+    "text": "Autor: Alexander Kohl  Zielsetzung: Die physikalische Cook-Torrance Mathematik (Kapitel 2) wird hier in den anwendungsnahen Industrie-Standard (Blender / OpenPBR) “abstrahiert” und über das Texture-Mapping auf 3D-Modelle angewandt.",
     "crumbs": [
       "3. Materialmodell"
     ]
   },
   {
-    "objectID": "pages/3_materialmodell.html#intro-sektion-die-brdf-und-ihre-bausteine",
-    "href": "pages/3_materialmodell.html#intro-sektion-die-brdf-und-ihre-bausteine",
-    "title": "Kapitel 3: Das Materialmodell",
-    "section": "1. Intro-Sektion: Die BRDF und ihre Bausteine",
-    "text": "1. Intro-Sektion: Die BRDF und ihre Bausteine\n\n  \n    [Text-Block]\n    Bezug Vorlesung (vc_syn_lighting.pdf): Während die Grundprinzipien von Licht und Physik in Kap. 1 & 2 behandelt wurden, blicken wir hier auf das Materialmodell selbst. Die BRDF (Bidirectional Reflectance Distribution Function) berechnet, wie die Oberfläche reagiert.\n    Zweiteilung der BRDF:\n    1. Diffuser Teil (Albedo): Licht, das in die Oberfläche eindringt und farbig streut (hierfür zeigen wir kurz das einfache, physikalisch angepasste Lambert-Modell: Farbe / Pi).\n    2. Spekularer Teil (Der Glanzpunkt): Der weitaus komplexere reflektive Anteil, der entscheidet, ob ein Material wie Gummi, Plastik oder Chrom aussieht. Im modernen Cook-Torrance-Modell wird dieser Teil in drei physikalische Bausteine zerlegt: D (Streuung), F (Reflexion) und G (Schatten).\n  \n  \n    [LaTeX-Block: Die Gesamt-BRDF]\n    BRDF = f_diffus + f_spekular\n    \n    1. Lambert-Modell (Diffus):\n    f_diffus = c / π\n    (c = Albedo/Farbe. Wir erklären das Lambert'sche Cosinusgesetz: Warum Flächen, die senkrecht zum Licht stehen, am hellsten sind.)\n    \n    2. Cook-Torrance (Spekular):\n    f_spekular = (D * F * G) / (4 * (n·l) * (n·v))\n    [Notiz: Nach kurzer Abhandlung des Lambert-Gesetzes widmet sich der gesamte Rest dieses UI-Wireframes der interaktiven visuell-tiefen Erschließung dieses rechten, spekularen Monstrums.]",
+    "objectID": "pages/3_materialmodell.html#von-der-formel-zum-shader-das-interface",
+    "href": "pages/3_materialmodell.html#von-der-formel-zum-shader-das-interface",
+    "title": "Kapitel 3: Das Materialmodell & Mapping",
+    "section": "1. Von der Formel zum Shader (Das Interface)",
+    "text": "1. Von der Formel zum Shader (Das Interface)\n\n  \n    [Text-Block]\n    Die Brücke zu Kapitel 2: In den physikalischen PBR-Prinzipien wurde hergeleitet, wie die Lichtberechnung mathematisch tief im Code durch die Komponenten D, F und G funktioniert. In der Praxis berechnen Anwender jedoch keine Fresnel-Integrale händisch.\n    Wir brauchen ein Materialmodell: Ein Interface (einen \"Shader\"), das diese komplexe Mathematik kapselt und über einfache, verständliche Parameter steuerbar macht.\n  \n  \n    [Visuelle Grafik]\n    [ Skizze: Physik (Zahlen/Formeln) ➔ Shader (Blackbox) ➔ Anwender (Sliders) ]",
     "crumbs": [
       "3. Materialmodell"
     ]
   },
   {
-    "objectID": "pages/3_materialmodell.html#herzstück-die-d-f-g-komponenten",
-    "href": "pages/3_materialmodell.html#herzstück-die-d-f-g-komponenten",
-    "title": "Kapitel 3: Das Materialmodell",
-    "section": "2. Herzstück: Die D-F-G Komponenten",
-    "text": "2. Herzstück: Die D-F-G Komponenten\n\n(D) Normal Distribution Function\n\n  \n    [Text-Block]\n    Erklärung der Mikrofazetten-Verteilung (z.B. GGX).\n  \n  \n    [Jupyter Plotly: 2D-Graph]\n    [ x ] Interaktiver Graph (Rauigkeit vs. Streuung)\n  \n\n\n\n(F) Fresnel\n\n  \n    [Text-Block]\n    Erklärung von F0 (Schlick's Approximation) & Leiter vs. Nicht-Leiter.\n  \n  \n    [Visuelle Grafik]\n    [ Bild ] Strahlengang am Objektrand\n  \n\n\n\n(G) Geometry\n\n  \n    [Text-Block]\n    Erklärung der Selbstbeschattung bei flachen Winkeln.\n  \n  \n    [Skizze / Animation]\n    [ Anim ] Mikrofazetten-Verdeckung",
+    "objectID": "pages/3_materialmodell.html#der-standard-blender-principled-bsdf-openpbr",
+    "href": "pages/3_materialmodell.html#der-standard-blender-principled-bsdf-openpbr",
+    "title": "Kapitel 3: Das Materialmodell & Mapping",
+    "section": "2. Der Standard: Blender Principled BSDF & OpenPBR",
+    "text": "2. Der Standard: Blender Principled BSDF & OpenPBR\n\n  \n    [Text-Block]\n    Worum geht es hier? (Q&A 1 Feedback): Vor den PBR-Standards gab es verschiedene veraltete Workflows (z.B. \"Specular/Glossiness\"). Dort war die Materialerstellung extrem fehleranfällig und oft physikalisch inkorrekt.\n    Mit dem Principled BSDF (Disney, als Standard-Shader in Blender) und der modernen Industrie-Initiative OpenPBR hat sich jedoch ein neuer Goldstandard etabliert.\n    Der Metallic-Roughness-Workflow:\n    Der massive architektonische Vorteil dieses Standards ist, dass er inhärent energieerhaltend ist. Ein Anwender kann über diese Eingabeparameter im Grunde kein physikalisch unmögliches Material mehr in den Shader speisen.\n  \n  \n    [Die 3 Heiligen Parameter]\n    Base Color (Albedo): Grundfarbe bei Dielektrika / Reflexionsfarbe bei Metallen.\n    Metallic: Binärer Maskenwert (Ist es Metall oder nicht?).\n    Roughness: Streuung der Mikrofacetten (matt vs. glatt).",
     "crumbs": [
       "3. Materialmodell"
     ]
   },
   {
-    "objectID": "pages/3_materialmodell.html#synthesis-der-map-workflow-finale-demo",
-    "href": "pages/3_materialmodell.html#synthesis-der-map-workflow-finale-demo",
-    "title": "Kapitel 3: Das Materialmodell",
-    "section": "3. Synthesis: Der Map-Workflow & Finale Demo",
-    "text": "3. Synthesis: Der Map-Workflow & Finale Demo\n\n  \n    [Textur-Beispiele Map-Workflow]\n    [Bild] Albedo | Metallic | Roughness Maps\n  \n  \n    [Text-Block]\n    Synthese (Von der Theorie zur Anwendung): Wie die mathematischen Modelle (D, F, G) kombiniert und von globalen Schiebereglern auf die Pixel-Ebene eines 3D-Modells übertragen werden.\n    Bezug Vorlesung (vc_syn_sp_raster_frag_proc_texturing.pdf): Hier wird das Textur-Konzept aus dem Fragment-Shader live angewandt. Die abstrakten Materialeigenschaften (Glätte/Metallizität) werden über 2D-Graustufenbilder (Texturen) pro Pixel gesteuert.\n  \n\n\n\n  \n    [3D WebGL Canvas: Babylon.js]\n    [ 3D Helm Objekt ]\n    \n    UI-Kontrollen:\n    [====O====] Metallic Slider (0-1)\n    [==O======] Roughness Slider (0-1)",
+    "objectID": "pages/3_materialmodell.html#das-texture-mapping-der-praxis-workflow",
+    "href": "pages/3_materialmodell.html#das-texture-mapping-der-praxis-workflow",
+    "title": "Kapitel 3: Das Materialmodell & Mapping",
+    "section": "3. Das Texture-Mapping (Der Praxis-Workflow)",
+    "text": "3. Das Texture-Mapping (Der Praxis-Workflow)\n\n  \n    [Text-Block]\n    Globale Schieberegler reichen für eine saubere Goldkugel, aber nicht für ein rostiges, zerkratztes Metallfass.\n    Texture Maps: Wir lösen die globalen Parameter in 2D-Bilddateien auf. Jeder Pixel der Textur steuert den Shader-Parameter für genau diesen Punkt auf dem 3D-Modell (Rotwert in der Metallic-Textur = Grad der Metallizität an dieser Stelle).\n  \n  \n    [Visuelle Matrix: Maps]\n    [ Bild: Das Objekt ]\n    aufgeteilt in:\n    [ Albedo Map ] | [ Metallic Map ] | [ Roughness Map ] | [ Normal Map ]",
     "crumbs": [
       "3. Materialmodell"
     ]
   },
   {
-    "objectID": "pages/3_materialmodell.html#lernzielabfrage-praktischer-wissenstransfer",
-    "href": "pages/3_materialmodell.html#lernzielabfrage-praktischer-wissenstransfer",
-    "title": "Kapitel 3: Das Materialmodell",
-    "section": "4. Lernzielabfrage: Praktischer Wissenstransfer",
-    "text": "4. Lernzielabfrage: Praktischer Wissenstransfer\n\n  \n    [Interaktives Live-Render-Quiz / Das \"X\"]\n    Das Prinzip: Drag & Drop von PBR-Maps (Metallic, Roughness, Albedo) auf ein 3D-Modell (z.B. ein rostiges Metallfass).\n    Der Clou (Live Feedback): Zieht der User versehentlich die falsche Zuordnung in einen Slot, aktualisiert sich die WebGL-Engine sofort. Die physikalisch falsche Folge wird interaktiv gerendert (z.B. glänzt der Rost plötzlich wie ein nasser Spiegel).",
+    "objectID": "pages/3_materialmodell.html#vertiefung-live-rendering-das-map-quiz",
+    "href": "pages/3_materialmodell.html#vertiefung-live-rendering-das-map-quiz",
+    "title": "Kapitel 3: Das Materialmodell & Mapping",
+    "section": "4. Vertiefung: Live-Rendering & Das Map-Quiz",
+    "text": "4. Vertiefung: Live-Rendering & Das Map-Quiz\n\n  \n    [WebGL Canvas: Parameter vs Maps im direkten Vergleich]\n    Links: Eine pure Kugel mit UI-Slidern (Metallic / Roughness ändern).\n    Rechts: Das rostige Fass (mit festen Maps), das auf dieselbe Umgebung reagiert.\n  \n\n\n\n  \n    [Interaktives Live-Render-Quiz / Das \"X\"]\n    Das Prinzip: Drag & Drop von \"nackten\" 2D-PBR-Maps auf die leeren Material-Slots (\"Metallizität\", \"Farbe\", \"Rauheit\") eines komplexen 3D-Modells.\n    Live Feedback: Zieht der User die Roughness-Map versehentlich in den Metallic-Slot, rendert die WebGL-Engine diesen physikalischen Blödsinn live im Browser (Material ist an den zerkratzten Stellen plötzlich reinstes Metall).",
     "crumbs": [
       "3. Materialmodell"
     ]
