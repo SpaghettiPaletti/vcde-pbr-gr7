@@ -4,7 +4,7 @@ author: "Celia Baumann"
 format:
   html:
     theme: cosmo
-jupyter: python3
+    toc: true
 bibliography: ../references.bib
 ---
 
@@ -59,15 +59,32 @@ Im klassischen Phong-Modell werden Ambient, Diffuse und Specular einfach addiert
 ## Grundidee
 
 Reale Oberflächen sind auf mikroskopischer Ebene rau und bestehen aus vielen kleinen Facetten, die wie winzige Spiegel wirken. Nur Facetten, deren Normale exakt dem Halfway-Vektor $\mathbf{h}$ entspricht, reflektieren Licht direkt vom Licht zum Betrachter.
+::: columns
 
+::: column
 ![](images/PBR-Makroskopisches-Verhalten.svg){width=300px}
+
+**Makroskopisches Verhalten**
+
+v: Blickrichtungsvektor  
+l: Lichtrichtungsvektor  
+n: Normalenvektor  
+h: normierte Mittelrichtung zwischen v und l
+:::
+
+::: column
 ![](images/Mikrofacette.svg){width=250px}
+
+**Mikrofacettenstruktur**
+:::
+
+::: column
 ![](images/Mikrofacette-Licht.svg){width=250px}
 
-v: Blickrichtungsvektor
-l: Lichtrichtungsvektor
-n: Normalenvektor
-h: normierte Mittelrichtung zwischen v und l
+**Lichtinteraktion**
+:::
+
+:::
 
 ## Cook-Torrance BRDF (spekularer Anteil)
 
