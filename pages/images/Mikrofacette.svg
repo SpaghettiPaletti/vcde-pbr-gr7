@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="93.012161mm"
+   height="44.366169mm"
+   viewBox="0 0 93.012161 44.366169"
+   version="1.1"
+   id="svg1"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs1" />
+  <g
+     id="layer1"
+     transform="translate(-33.026909,-66.838094)">
+    <path
+       style="fill:#ae00e9;fill-opacity:0.424699;stroke:#000000;stroke-width:0.813415;stroke-linejoin:round"
+       d="m 33.808407,74.574361 -0.374792,25.246484 91.449155,1.221605 0.74959,-32.98331 -4.87229,3.664812 -5.62188,-2.036007 -4.4975,2.85041 -7.87062,-4.479215 -6.746251,2.036007 1.124375,2.036006 h -6.746249 l 3.373124,-3.664812 h -2.998333 l -1.873958,1.628806 -7.870625,1.628805 -0.374791,-2.850409 -5.247083,1.221604 -0.749583,-2.036007 -4.4975,1.221604 -0.374792,4.072013 h -5.247083 l -0.749583,-4.479214 -6.371458,3.25761 -3.373124,-2.443208 -0.749584,3.257611 -5.247083,-5.700819 v 4.479215 l -6.371458,1.628805 -1.499166,-4.072013 -1.499167,5.293617 -2.24875,-2.850409 z"
+       id="path1" />
+    <text
+       xml:space="preserve"
+       style="font-size:7.05556px;font-family:Calibri;-inkscape-font-specification:Calibri;text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.2;stroke-linejoin:round;stroke-dasharray:none"
+       x="57.248379"
+       y="111.0388"
+       id="text1"><tspan
+         id="tspan1"
+         style="fill:#000000;fill-opacity:1;stroke-width:0.2;stroke-dasharray:none"
+         x="57.248379"
+         y="111.0388">Mikrofacette</tspan></text>
+  </g>
+</svg>

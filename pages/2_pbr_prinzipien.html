@@ -72,6 +72,35 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
@@ -150,8 +179,33 @@ ul.task-list li input[type="checkbox"] {
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#grundlagen" id="toc-grundlagen" class="nav-link active" data-scroll-target="#grundlagen">Grundlagen</a>
+  <ul class="collapse">
+  <li><a href="#rendering-gleichung" id="toc-rendering-gleichung" class="nav-link" data-scroll-target="#rendering-gleichung">Rendering-Gleichung</a></li>
+  </ul></li>
+  <li><a href="#energieerhaltung" id="toc-energieerhaltung" class="nav-link" data-scroll-target="#energieerhaltung">Energieerhaltung</a>
+  <ul class="collapse">
+  <li><a href="#grundprinzip" id="toc-grundprinzip" class="nav-link" data-scroll-target="#grundprinzip">Grundprinzip</a></li>
+  </ul></li>
+  <li><a href="#mikrofacettentheorie" id="toc-mikrofacettentheorie" class="nav-link" data-scroll-target="#mikrofacettentheorie">Mikrofacettentheorie</a>
+  <ul class="collapse">
+  <li><a href="#grundidee" id="toc-grundidee" class="nav-link" data-scroll-target="#grundidee">Grundidee</a></li>
+  <li><a href="#cook-torrance-brdf-spekularer-anteil" id="toc-cook-torrance-brdf-spekularer-anteil" class="nav-link" data-scroll-target="#cook-torrance-brdf-spekularer-anteil">Cook-Torrance BRDF (spekularer Anteil)</a>
+  <ul class="collapse">
+  <li><a href="#fresnel-term-f" id="toc-fresnel-term-f" class="nav-link" data-scroll-target="#fresnel-term-f">1. Fresnel-Term <span class="math inline">\(F\)</span></a></li>
+  <li><a href="#normal-distribution-function-ndf-d" id="toc-normal-distribution-function-ndf-d" class="nav-link" data-scroll-target="#normal-distribution-function-ndf-d">2. Normal Distribution Function (NDF) <span class="math inline">\(D\)</span></a></li>
+  <li><a href="#geometry-term-g-shadowing-masking" id="toc-geometry-term-g-shadowing-masking" class="nav-link" data-scroll-target="#geometry-term-g-shadowing-masking">3. Geometry-Term <span class="math inline">\(G\)</span> (Shadowing &amp; Masking)</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#der-diffuse-anteil" id="toc-der-diffuse-anteil" class="nav-link" data-scroll-target="#der-diffuse-anteil">Der diffuse Anteil</a></li>
+  <li><a href="#zusammenspiel-der-prinzipien" id="toc-zusammenspiel-der-prinzipien" class="nav-link" data-scroll-target="#zusammenspiel-der-prinzipien">Zusammenspiel der Prinzipien</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -181,8 +235,137 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
+<p>Im Gegensatz zum klassischen Phong-Modell basiert PBR auf messbaren physikalischen Prinzipien. Die drei zentralen Säulen sind:</p>
+<ul>
+<li><strong>Energieerhaltung</strong></li>
+<li><strong>Fresnel-Effekt</strong></li>
+<li><strong>Mikrofacettentheorie</strong></li>
+</ul>
+<p>Diese Prinzipien führen zu realistischen und unter verschiedenen Beleuchtungsbedingungen konsistenten Materialdarstellungen.</p>
+<hr>
+<section id="grundlagen" class="level1">
+<h1>Grundlagen</h1>
+<section id="rendering-gleichung" class="level2">
+<h2 class="anchored" data-anchor-id="rendering-gleichung">Rendering-Gleichung</h2>
+<p>Die Grundlage jeder Beleuchtungsberechnung ist die <strong>Rendering-Gleichung</strong>:</p>
+<p><span class="math display">\[
+L_o(x,\omega_o) = L_e(x,\omega_o) + \int_{\Omega} f_r(x,\omega_i,\omega_o) \, L_i(x,\omega_i) \, (n \cdot \omega_i) \, d\omega_i
+\]</span></p>
+<p>Dabei beschreibt die <strong>Bidirectional Reflectance Distribution Function (BRDF)</strong> <span class="math inline">\(f_r\)</span> das Reflexionsverhalten der Oberfläche für einfallendes Licht aus Richtung <span class="math inline">\(\omega_i\)</span> in Richtung <span class="math inline">\(\omega_o\)</span>.</p>
+<p>In PBR wird die BRDF üblicherweise in zwei Anteile aufgeteilt:</p>
+<p><span class="math display">\[
+f_r(\mathbf{v}, \mathbf{l}) = f_d(\mathbf{v}, \mathbf{l}) + f_s(\mathbf{v}, \mathbf{l})
+\]</span></p>
+<ul>
+<li><span class="math inline">\(f_d\)</span>: <strong>diffuser Anteil</strong> (matte, richtungsunabhängige Reflexion)</li>
+<li><span class="math inline">\(f_s\)</span>: <strong>spekularer Anteil</strong> (gerichtete Spiegelreflexion)</li>
+</ul>
+<p>Der diffuse Anteil wird meist mit einem normierten Lambert-Modell berechnet, der spekularer Anteil mit der Cook-Torrance-BRDF.</p>
+<hr>
+</section>
+</section>
+<section id="energieerhaltung" class="level1">
+<h1>Energieerhaltung</h1>
+<section id="grundprinzip" class="level2">
+<h2 class="anchored" data-anchor-id="grundprinzip">Grundprinzip</h2>
+<p>Eine Oberfläche darf <strong>nie mehr Licht reflektieren, als sie empfängt</strong>. Die Summe aus diffusem und spiegelndem Anteil muss physikalisch plausibel bleiben.</p>
+<p><strong>Vergleich mit Phong:</strong><br>
+Im klassischen Phong-Modell werden Ambient, Diffuse und Specular einfach addiert. Dadurch ist es möglich, dass die reflektierte Energie die einfallende übersteigt – das Material leuchtet dann unnatürlich. In PBR wird diese Verletzung der Energieerhaltung durch die Abhängigkeit der Anteile voneinander systematisch verhindert.</p>
+<hr>
+</section>
+</section>
+<section id="mikrofacettentheorie" class="level1">
+<h1>Mikrofacettentheorie</h1>
+<section id="grundidee" class="level2">
+<h2 class="anchored" data-anchor-id="grundidee">Grundidee</h2>
+<p>Reale Oberflächen sind auf mikroskopischer Ebene rau und bestehen aus vielen kleinen Facetten, die wie winzige Spiegel wirken. Nur Facetten, deren Normale exakt dem Halfway-Vektor <span class="math inline">\(\mathbf{h}\)</span> entspricht, reflektieren Licht direkt vom Licht zum Betrachter. ::: columns</p>
+<div class="column">
+<p><img src="images/PBR-Makroskopisches-Verhalten.svg" class="img-fluid" width="300"></p>
+<p><strong>Makroskopisches Verhalten</strong></p>
+<p>v: Blickrichtungsvektor<br>
+l: Lichtrichtungsvektor<br>
+n: Normalenvektor<br>
+h: normierte Mittelrichtung zwischen v und l</p>
+</div>
+<div class="column">
+<p><img src="images/Mikrofacette.svg" class="img-fluid" width="250"></p>
+<p><strong>Mikrofacettenstruktur</strong></p>
+</div>
+<div class="column">
+<p><img src="images/Mikrofacette-Licht.svg" class="img-fluid" width="250"></p>
+<p><strong>Lichtinteraktion</strong></p>
+</div>
+<p>:::</p>
+</section>
+<section id="cook-torrance-brdf-spekularer-anteil" class="level2">
+<h2 class="anchored" data-anchor-id="cook-torrance-brdf-spekularer-anteil">Cook-Torrance BRDF (spekularer Anteil)</h2>
+<p>Der spekularer Anteil <span class="math inline">\(f_s\)</span> in PBR wird mit der Cook-Torrance-Formel berechnet:</p>
+<p><span id="eq-cook-torrance"><span class="math display">\[
+f_s(\mathbf{v}, \mathbf{l}) = \frac{F(\mathbf{v}, \mathbf{h}) \, D(\mathbf{h}) \, G(\mathbf{l}, \mathbf{v})}{4 \, (\mathbf{n} \cdot \mathbf{l}) \, (\mathbf{n} \cdot \mathbf{v})}
+\tag{1}\]</span></span></p>
+<p>Dieser Term setzt sich aus drei physikalisch begründeten Komponenten zusammen. Jede wird im Folgenden mit dem Phong-Modell verglichen.</p>
+<section id="fresnel-term-f" class="level3">
+<h3 class="anchored" data-anchor-id="fresnel-term-f">1. Fresnel-Term <span class="math inline">\(F\)</span></h3>
+<p>Der <strong>Fresnel-Effekt</strong> beschreibt, dass der Reflexionsanteil mit flacherem Einfallswinkel zunimmt. Bei grazing angles reflektiert nahezu jedes Material fast das gesamte Licht spiegelnd.</p>
+<p>In der Praxis wird meist die <strong>Schlick-Approximation</strong> verwendet:</p>
+<p><span class="math display">\[
+F(\theta) = F_0 + (1 - F_0)(1 - \cos\theta)^5
+\]</span></p>
+<p><strong>Vergleich mit Phong:</strong><br>
+Das Phong-Modell kennt keinen Fresnel-Effekt. Das Glanzlicht hat bei jedem Betrachtungswinkel die gleiche Intensität – unabhängig davon, ob man senkrecht oder flach auf die Oberfläche schaut. Dies führt zu unnatürlich gleichmäßigen und oft zu hellen Glanzlichtern an den Rändern.</p>
+</section>
+<section id="normal-distribution-function-ndf-d" class="level3">
+<h3 class="anchored" data-anchor-id="normal-distribution-function-ndf-d">2. Normal Distribution Function (NDF) <span class="math inline">\(D\)</span></h3>
+<p>Die NDF beschreibt die statistische Verteilung der Mikrofacets. Der heutige Standard ist die <strong>GGX (Trowbridge-Reitz)</strong>-Verteilung:</p>
+<p><span class="math display">\[
+D(\mathbf{h}) = \frac{\alpha^2}{\pi \left( (\mathbf{n} \cdot \mathbf{h})^2 (\alpha^2 - 1) + 1 \right)^2}
+\]</span></p>
+<p><span class="math inline">\(\alpha\)</span> entspricht der Roughness (0 = glatt, 1 = rau).</p>
+<p><strong>Vergleich mit Phong:</strong><br>
+Phong verwendet die einfache Potenzfunktion <span class="math inline">\((\mathbf{n} \cdot \mathbf{h})^S\)</span>. Diese hat keine physikalische Grundlage und ist nicht energieerhaltend. Wird das Glanzlicht breiter, bleibt die Helligkeit gleich oder nimmt sogar zu – physikalisch falsch.<br>
+Bei GGX wird das Glanzlicht mit zunehmender Rauheit automatisch dunkler, weil die Funktion normiert ist und die Energieerhaltung einhält.</p>
+</section>
+<section id="geometry-term-g-shadowing-masking" class="level3">
+<h3 class="anchored" data-anchor-id="geometry-term-g-shadowing-masking">3. Geometry-Term <span class="math inline">\(G\)</span> (Shadowing &amp; Masking)</h3>
+<p>Auf rauen Oberflächen verdecken sich Mikrofacets gegenseitig (Shadowing und Masking). Der Geometry-Term modelliert diese Abschattung und Blockierung.</p>
+<p>In modernen PBR-Systemen wird meist die <strong>Smith-Schlick-GGX</strong>-Approximation verwendet:</p>
+<p><span class="math display">\[
+G_1(v) = \frac{\mathbf{n} \cdot \mathbf{v}}{(\mathbf{n} \cdot \mathbf{v})(1 - k) + k}
+\]</span></p>
+<p>Der volle Term lautet <span class="math inline">\(G(\mathbf{l}, \mathbf{v}) = G_1(\mathbf{l}) \cdot G_1(\mathbf{v})\)</span>.</p>
+<p><strong>Vergleich mit Phong:</strong><br>
+Das Phong-Modell enthält keinen Geometry-Term. Dadurch entsteht bei flachen Betrachtungswinkeln ein unnatürlicher Helligkeitsanstieg an den Rändern („bright edges“). Der G-Term in PBR kompensiert diesen Effekt und hält die reflektierte Energie physikalisch plausibel.</p>
+<hr>
+</section>
+</section>
+</section>
+<section id="der-diffuse-anteil" class="level1">
+<h1>Der diffuse Anteil</h1>
+<p>Durch den Fresnel-Term ist bekannt, wie viel Licht spiegelnd reflektiert wird. Der verbleibende Anteil wird diffus gestreut:</p>
+<p><span class="math display">\[
+k_d = (1 - F) \cdot (1 - \text{metalness})
+\]</span></p>
+<p><strong>Vergleich mit Phong:</strong><br>
+Im Phong-Modell sind Diffuse und Specular unabhängige Parameter. Man kann beide gleichzeitig auf hohe Werte setzen, sodass das Material mehr Licht reflektiert als es erhält. In PBR sind beide Anteile über die Energieerhaltung und den Fresnel-Term miteinander verknüpft. Metalle haben zudem praktisch keinen diffusen Anteil.</p>
+<p>Für den diffusen Teil wird meist das normierte <strong>Lambert-Modell</strong> verwendet:</p>
+<p><span class="math display">\[
+f_{\text{diffuse}} = \frac{c}{\pi}
+\]</span></p>
+<p>Der Faktor <span class="math inline">\(1/\pi\)</span> stellt sicher, dass auch der diffuse Anteil die Energieerhaltung einhält.</p>
+<hr>
+</section>
+<section id="zusammenspiel-der-prinzipien" class="level1">
+<h1>Zusammenspiel der Prinzipien</h1>
+<ul>
+<li>Die <strong>Mikrofacettentheorie</strong> (über D und G) bestimmt die <em>Struktur</em> und Schärfe der Reflexion.</li>
+<li>Der <strong>Fresnel-Effekt</strong> (F) regelt die winkelabhängige Verteilung zwischen Spiegelung und Diffusion.</li>
+<li>Die <strong>Energieerhaltung</strong> stellt sicher, dass die Gesamtreflexion physikalisch plausibel bleibt.</li>
+</ul>
+<p>Zusammen ermöglichen diese Prinzipien deutlich realistischere und konsistentere Materialien als das klassische Phong-Modell.</p>
+<hr>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

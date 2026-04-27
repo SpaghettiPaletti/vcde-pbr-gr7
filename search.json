@@ -120,6 +120,56 @@
     ]
   },
   {
+    "objectID": "pages/2_pbr_prinzipien.html",
+    "href": "pages/2_pbr_prinzipien.html",
+    "title": "PBR-Prinzipien",
+    "section": "",
+    "text": "Im Gegensatz zum klassischen Phong-Modell basiert PBR auf messbaren physikalischen Prinzipien. Die drei zentralen Säulen sind:\nDiese Prinzipien führen zu realistischen und unter verschiedenen Beleuchtungsbedingungen konsistenten Materialdarstellungen.",
+    "crumbs": [
+      "2. PBR-Prinzipien"
+    ]
+  },
+  {
+    "objectID": "pages/2_pbr_prinzipien.html#rendering-gleichung",
+    "href": "pages/2_pbr_prinzipien.html#rendering-gleichung",
+    "title": "PBR-Prinzipien",
+    "section": "Rendering-Gleichung",
+    "text": "Rendering-Gleichung\nDie Grundlage jeder Beleuchtungsberechnung ist die Rendering-Gleichung:\n\\[\nL_o(x,\\omega_o) = L_e(x,\\omega_o) + \\int_{\\Omega} f_r(x,\\omega_i,\\omega_o) \\, L_i(x,\\omega_i) \\, (n \\cdot \\omega_i) \\, d\\omega_i\n\\]\nDabei beschreibt die Bidirectional Reflectance Distribution Function (BRDF) \\(f_r\\) das Reflexionsverhalten der Oberfläche für einfallendes Licht aus Richtung \\(\\omega_i\\) in Richtung \\(\\omega_o\\).\nIn PBR wird die BRDF üblicherweise in zwei Anteile aufgeteilt:\n\\[\nf_r(\\mathbf{v}, \\mathbf{l}) = f_d(\\mathbf{v}, \\mathbf{l}) + f_s(\\mathbf{v}, \\mathbf{l})\n\\]\n\n\\(f_d\\): diffuser Anteil (matte, richtungsunabhängige Reflexion)\n\\(f_s\\): spekularer Anteil (gerichtete Spiegelreflexion)\n\nDer diffuse Anteil wird meist mit einem normierten Lambert-Modell berechnet, der spekularer Anteil mit der Cook-Torrance-BRDF.",
+    "crumbs": [
+      "2. PBR-Prinzipien"
+    ]
+  },
+  {
+    "objectID": "pages/2_pbr_prinzipien.html#grundprinzip",
+    "href": "pages/2_pbr_prinzipien.html#grundprinzip",
+    "title": "PBR-Prinzipien",
+    "section": "Grundprinzip",
+    "text": "Grundprinzip\nEine Oberfläche darf nie mehr Licht reflektieren, als sie empfängt. Die Summe aus diffusem und spiegelndem Anteil muss physikalisch plausibel bleiben.\nVergleich mit Phong:\nIm klassischen Phong-Modell werden Ambient, Diffuse und Specular einfach addiert. Dadurch ist es möglich, dass die reflektierte Energie die einfallende übersteigt – das Material leuchtet dann unnatürlich. In PBR wird diese Verletzung der Energieerhaltung durch die Abhängigkeit der Anteile voneinander systematisch verhindert.",
+    "crumbs": [
+      "2. PBR-Prinzipien"
+    ]
+  },
+  {
+    "objectID": "pages/2_pbr_prinzipien.html#grundidee",
+    "href": "pages/2_pbr_prinzipien.html#grundidee",
+    "title": "PBR-Prinzipien",
+    "section": "Grundidee",
+    "text": "Grundidee\nReale Oberflächen sind auf mikroskopischer Ebene rau und bestehen aus vielen kleinen Facetten, die wie winzige Spiegel wirken. Nur Facetten, deren Normale exakt dem Halfway-Vektor \\(\\mathbf{h}\\) entspricht, reflektieren Licht direkt vom Licht zum Betrachter. ::: columns\n\n\nMakroskopisches Verhalten\nv: Blickrichtungsvektor\nl: Lichtrichtungsvektor\nn: Normalenvektor\nh: normierte Mittelrichtung zwischen v und l\n\n\n\nMikrofacettenstruktur\n\n\n\nLichtinteraktion\n\n:::",
+    "crumbs": [
+      "2. PBR-Prinzipien"
+    ]
+  },
+  {
+    "objectID": "pages/2_pbr_prinzipien.html#cook-torrance-brdf-spekularer-anteil",
+    "href": "pages/2_pbr_prinzipien.html#cook-torrance-brdf-spekularer-anteil",
+    "title": "PBR-Prinzipien",
+    "section": "Cook-Torrance BRDF (spekularer Anteil)",
+    "text": "Cook-Torrance BRDF (spekularer Anteil)\nDer spekularer Anteil \\(f_s\\) in PBR wird mit der Cook-Torrance-Formel berechnet:\n\\[\nf_s(\\mathbf{v}, \\mathbf{l}) = \\frac{F(\\mathbf{v}, \\mathbf{h}) \\, D(\\mathbf{h}) \\, G(\\mathbf{l}, \\mathbf{v})}{4 \\, (\\mathbf{n} \\cdot \\mathbf{l}) \\, (\\mathbf{n} \\cdot \\mathbf{v})}\n\\tag{1}\\]\nDieser Term setzt sich aus drei physikalisch begründeten Komponenten zusammen. Jede wird im Folgenden mit dem Phong-Modell verglichen.\n\n1. Fresnel-Term \\(F\\)\nDer Fresnel-Effekt beschreibt, dass der Reflexionsanteil mit flacherem Einfallswinkel zunimmt. Bei grazing angles reflektiert nahezu jedes Material fast das gesamte Licht spiegelnd.\nIn der Praxis wird meist die Schlick-Approximation verwendet:\n\\[\nF(\\theta) = F_0 + (1 - F_0)(1 - \\cos\\theta)^5\n\\]\nVergleich mit Phong:\nDas Phong-Modell kennt keinen Fresnel-Effekt. Das Glanzlicht hat bei jedem Betrachtungswinkel die gleiche Intensität – unabhängig davon, ob man senkrecht oder flach auf die Oberfläche schaut. Dies führt zu unnatürlich gleichmäßigen und oft zu hellen Glanzlichtern an den Rändern.\n\n\n2. Normal Distribution Function (NDF) \\(D\\)\nDie NDF beschreibt die statistische Verteilung der Mikrofacets. Der heutige Standard ist die GGX (Trowbridge-Reitz)-Verteilung:\n\\[\nD(\\mathbf{h}) = \\frac{\\alpha^2}{\\pi \\left( (\\mathbf{n} \\cdot \\mathbf{h})^2 (\\alpha^2 - 1) + 1 \\right)^2}\n\\]\n\\(\\alpha\\) entspricht der Roughness (0 = glatt, 1 = rau).\nVergleich mit Phong:\nPhong verwendet die einfache Potenzfunktion \\((\\mathbf{n} \\cdot \\mathbf{h})^S\\). Diese hat keine physikalische Grundlage und ist nicht energieerhaltend. Wird das Glanzlicht breiter, bleibt die Helligkeit gleich oder nimmt sogar zu – physikalisch falsch.\nBei GGX wird das Glanzlicht mit zunehmender Rauheit automatisch dunkler, weil die Funktion normiert ist und die Energieerhaltung einhält.\n\n\n3. Geometry-Term \\(G\\) (Shadowing & Masking)\nAuf rauen Oberflächen verdecken sich Mikrofacets gegenseitig (Shadowing und Masking). Der Geometry-Term modelliert diese Abschattung und Blockierung.\nIn modernen PBR-Systemen wird meist die Smith-Schlick-GGX-Approximation verwendet:\n\\[\nG_1(v) = \\frac{\\mathbf{n} \\cdot \\mathbf{v}}{(\\mathbf{n} \\cdot \\mathbf{v})(1 - k) + k}\n\\]\nDer volle Term lautet \\(G(\\mathbf{l}, \\mathbf{v}) = G_1(\\mathbf{l}) \\cdot G_1(\\mathbf{v})\\).\nVergleich mit Phong:\nDas Phong-Modell enthält keinen Geometry-Term. Dadurch entsteht bei flachen Betrachtungswinkeln ein unnatürlicher Helligkeitsanstieg an den Rändern („bright edges“). Der G-Term in PBR kompensiert diesen Effekt und hält die reflektierte Energie physikalisch plausibel.",
+    "crumbs": [
+      "2. PBR-Prinzipien"
+    ]
+  },
+  {
     "objectID": "pages/1_phong_grenzen.html",
     "href": "pages/1_phong_grenzen.html",
     "title": "Die Grenzen von Phong",
