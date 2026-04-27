@@ -96,10 +96,10 @@ Beide Szenen nutzen eine identische Beleuchtungssituation: Ein **Hemispheric Lig
 Chrom ist ein Material, das seine Erscheinung fast vollständig aus der Spiegelung der Umgebung bezieht. Hier werden die theoretischen Grenzen von Phong besonders deutlich:
 
 - **Klassisches Phong:**
-Hier wird die Umgebung als einfache Textur über das Objekt gelegt. Da das Modell kein Verständnis für echtes Metall hat, wirkt die Reflexion wie ein "Aufkleber". Es fehlt die physikalische Tiefe und das Objekt wirkt unnatürlich hell, weil das einfallende Licht der Umgebung ohne Begrenzung auf die Pixelfarbe addiert wird.
+Damit Phing überhaupt eine Möglichkeit hat, Chrom darzustellen, wird es hier mit einer Reflection Map kombiniert. Da das Modell kein Verständnis für echtes Metall hat, wirkt die Reflexion wie ein "Aufkleber". Es fehlt die physikalische Tiefe und das Objekt wirkt unnatürlich hell, weil das einfallende Licht der Umgebung ohne Begrenzung (keine Energieerhaltung) auf die Pixelfarbe addiert wird.
 
 - **Physically Based Rendering:**
-Bei PBR erkennt man, dass die Reflexionen an den Rändern des Knotens (flacher Blickwinkel) stärker und klarer als in der Mitte sind. Zudem sorgt die **Energieerhaltung** dafür, dass das Material "schwer" und massiv wirkt. Das gespiegelte Licht kann nicht gleichzeitig die Oberfläche erhellen. Dadurch ensteht ein tiefer, realistischer Metall-Look.
+Bei PBR erkennt man, dass die Reflexionen an den Rändern des Knotens (flacher Blickwinkel) stärker und klarer als in der Mitte sind (Fresnel-Effekt). Zudem sorgt die **Energieerhaltung** dafür, dass das Material "schwer" und massiv wirkt. Das gespiegelte Licht kann nicht gleichzeitig die Oberfläche erhellen. Dadurch entsteht ein tiefer, realistischer Metall-Look.
 
 ### Was war Phong doch gleich wieder?
 Das Phong-Beleuchtungsmodell, benannt nach seinem Erfinder Bui Tuong Phong (1973) war über Jahrzehnte der unangefochtene Standard in der Computergrafik. Auch heute noch findet es aufgrund seiner extrem geringen Rechenkosten in vielen Mobile-Games oder einfachen Web-Anwendungen Einsatz.
@@ -107,16 +107,16 @@ Das Phong-Beleuchtungsmodell, benannt nach seinem Erfinder Bui Tuong Phong (1973
 Es handelt sich um ein **lokales Beleuchtungsmodell**. Das bedeutet:
 Die Farbe jedes Pixels wird nur anhand der direkten Beziehung zwischen Lichtquelle, Oberfläche und Kamera berechnet - Reflexionen anderer Objekte im Raum werden ignoriert.
 
-Die finale Farbe berechnet sich dabei als simple Addition aus vir Komponenten:
+Die finale Farbe berechnet sich dabei als simple Addition aus vier Komponenten:
 
 1. **Emissiv:** Eigenleuchten des Materials.
 2. **Ambient:** Eine konstante für das globale, indirekte Grundlicht.
 3. **Diffus:** Die raue, matte Lichtstreuung (Lambert).
 4. **Spekular:** Der glänzende, spiegelnde Lichtfleck.
 
-Lichtquellen sind in diesem Modell meist einfache, infinit kleine Punktlichtquellen.
+Lichtquellen sind in diesem Modell meist einfache, kleine Punktlichtquellen.
 
-$$I = \underbrace{k_a \cdot I_a}_{\text{Ambient}} + \sum_{Lichter} (\underbrace{k_d \cdot (L \cdot N) \cdot I_d}_{\text{Diffus}} + \underbrace{k_s \cdot (R \cdot V)^n \cdot I_s}_{\text{Spekular}})$$
+$$\mathbf{Farbe} = \underbrace{e_{mat}}_{\text{Emissiv}} + \underbrace{a_{light} * a_{mat}}_{\text{Ambient}} + \underbrace{\max(l \cdot n, 0) \cdot d_{light} * d_{mat}}_{\text{Diffus}} + \underbrace{(\max(h \cdot n, 0))^S \cdot s_{light} * s_{mat}}_{\text{Spekular}}$$
 
 ### Interaktive Analyse der Komponenten
 
@@ -221,13 +221,13 @@ Probiere es selbst aus: Schalte die einzelnen Komponenten der Phong-Gleichung ei
 <details>
 <summary><b>Warum sieht das Phong-Objekt eher aus wie Plastik?</b></summary>
 
-Das liegt am Spekular-Term. Phong erzeugt Glanzpunkte lediglich über einen mathematisch abstrakten Spiegelungsexponenten (Shininess). Es gibt kein echtes physikalisches Verständnis davon, woraus das Material besteht (z.B. Metall vs. Nicht-Metall).
+Das liegt am Spekular-Term, welcher immer die Farbe der Lichtquelle hat. Bei echten Metallen werden die Spiegelungen hingegen eingefärbt (Gold spiegelt golden). Phong erzeugt Glanzpunkte lediglich über einen mathematisch abstrakten Spiegelungsexponenten (Shininess). Es gibt kein echtes physikalisches Verständnis davon, woraus das Material besteht (z.B. Metall vs. Nicht-Metall).
 </details>
 <br>
 <details>
 <summary><b>Warum wirken die Schatten beim Phong-Objekt so flach?</b></summary>
 
-In der Realität wird Licht von Wänden und Böden in den Schattenbereich zurückgeworfen (Global Illumination). Phong simuliert dieses komplexe indirekte Streulicht stark vereinfacht über einen simplen Ambient-Term, was Schatten oft unnatürlich flach wirken lässt.
+In der Realität wird Licht von Wänden und Böden in den Schattenbereich zurückgeworfen (Global Illumination --> siehe IBL). Phong simuliert dieses komplexe indirekte Streulicht stark vereinfacht über einen simplen Ambient-Term, was Schatten oft unnatürlich flach wirken lässt.
 </details>
 <br>
 <details>
@@ -241,7 +241,7 @@ Die Physik. Klassische Modelle wie Phong *schätzen* das Licht nur ab, ignoriere
 ### Warum müssen wir physikalische Gesetze berücksichtigen?
 Der größte Fehler des Phong-Modells liegt in seiner Mathematik: Die Lichtwerte werden am Ende einfach stur addiert (`Farbe = Emissiv + Ambient + Diffus + Spekular`).
 
-Das führt zu einem massiven Problem: **Dadurch kann ein Objekt am Ende mehr Licht reflektieren, als es von der Lichtquelle überhaupt empfangen hat!** In der realen Welt ist das physikalisch absolut unmöglich und führt in der Computergrafik dazu, dass Materlialien unter hellen Lichtern plötzlich anfangen unnatürlich zu glühen.
+Das führt zu einem massiven Problem: **Dadurch kann ein Objekt am Ende mehr Licht reflektieren, als es von der Lichtquelle überhaupt empfangen hat!** In der realen Welt ist das physikalisch absolut unmöglich und führt in der Computergrafik dazu, dass Materialien unter hellen Lichtern übersättigt wirken.
 
 **Die Antwort von PBR:**
-Wir brauchen das Gesetz der Energieerhaltung. Das eintreffende Licht wird aufgeteilt in reflektierendes Licht (Spekular) und gestreutes Licht (Diffus). Was spiegelnd reflektiert wird, kann nicht mehr im Material gestreut werden. Nur durch die strikte Einhaltung dieser Regel reagieren Materialien unter *allen* erdenklichen Lichtbedingungen fotorealistisch und natürlich.
+Wir brauchen das Gesetz der Energieerhaltung. Das eintreffende Licht wird aufgeteilt in reflektierendes Licht (Spekular) und gestreutes Licht (Diffus). Was spiegelnd reflektiert wird, kann nicht mehr im Material gestreut werden. Energieerhaltung ist also die Grundlage, auf der die weiteren PBR-Bausteine aufbauen. Diese lernen wir auf den weiteren Seiten kennen. 

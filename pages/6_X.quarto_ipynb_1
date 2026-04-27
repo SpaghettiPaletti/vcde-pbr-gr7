@@ -1,0 +1,35 @@
+{
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "---\n",
+        "title: \"Alterungsslider\"\n",
+        "author: \"Stefan Jordan\"\n",
+        "format:\n",
+        "  html:\n",
+        "    theme: cosmo\n",
+        "jupyter: python3\n",
+        "bibliography: ../references.bib\n",
+        "---\n",
+        "\n",
+        "## Einen Alterungsslider\n",
+        "- Darstellung beispielsweise eines Kupferobjekts.\n",
+        "- Über einen Slider kann ein Alterungseffekt simuliert werden.\n",
+        "- Zeigt, dass PBR-Parameter nicht starr sind, sondern sich kombinieren lassen."
+      ],
+      "id": "d4a77c2d"
+    }
+  ],
+  "metadata": {
+    "kernelspec": {
+      "name": "python3",
+      "language": "python",
+      "display_name": "Python 3",
+      "path": "/Users/dedde/Library/Jupyter/kernels/python3"
+    }
+  },
+  "nbformat": 4,
+  "nbformat_minor": 5
+}
