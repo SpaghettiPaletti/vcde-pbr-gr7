@@ -8,15 +8,38 @@ jupyter: python3
 bibliography: ../references.bib
 ---
 
-# Einführung in die PBR-Prinzipien
+Im Gegensatz zum klassischen Phong-Modell basiert PBR auf messbaren physikalischen Prinzipien. Die drei zentralen Säulen sind:
 
-Diese Seite behandelt die **physikalischen Grundlagen von PBR**.  
-Ziel ist es, zu verstehen, warum Materialien realistisch reflektieren, ohne Materialparameter oder Beleuchtung zu behandeln.  
-Die drei zentralen Prinzipien sind:
+- **Energieerhaltung**
+- **Fresnel-Effekt**
+- **Mikrofacettentheorie**
 
-1. Energieerhaltung  
-2. Mikrofazetten-Theorie  
-3. Reziprozität  
+Diese Prinzipien führen zu realistischen und unter verschiedenen Beleuchtungsbedingungen konsistenten Materialdarstellungen.
+
+---
+
+# Grundlagen
+
+## Rendering-Gleichung
+
+Die Grundlage jeder Beleuchtungsberechnung ist die **Rendering-Gleichung**:
+
+$$
+L_o(x,\omega_o) = L_e(x,\omega_o) + \int_{\Omega} f_r(x,\omega_i,\omega_o) \, L_i(x,\omega_i) \, (n \cdot \omega_i) \, d\omega_i
+$$
+
+Dabei beschreibt die **Bidirectional Reflectance Distribution Function (BRDF)** $f_r$ das Reflexionsverhalten der Oberfläche für einfallendes Licht aus Richtung $\omega_i$ in Richtung $\omega_o$.
+
+In PBR wird die BRDF üblicherweise in zwei Anteile aufgeteilt:
+
+$$
+f_r(\mathbf{v}, \mathbf{l}) = f_d(\mathbf{v}, \mathbf{l}) + f_s(\mathbf{v}, \mathbf{l})
+$$
+
+- $f_d$: **diffuser Anteil** (matte, richtungsunabhängige Reflexion)
+- $f_s$: **spekularer Anteil** (gerichtete Spiegelreflexion)
+
+Der diffuse Anteil wird meist mit einem normierten Lambert-Modell berechnet, der spekularer Anteil mit der Cook-Torrance-BRDF.
 
 ---
 
@@ -24,126 +47,109 @@ Die drei zentralen Prinzipien sind:
 
 ## Grundprinzip
 
-Die reflektierte Energie einer Oberfläche darf **nicht größer sein als die einfallende Energie**.  
-Diffus- und Spiegelanteile werden entsprechend verteilt.
+Eine Oberfläche darf **nie mehr Licht reflektieren, als sie empfängt**. Die Summe aus diffusem und spiegelndem Anteil muss physikalisch plausibel bleiben.
 
-## Intuition
-
-- Mehr Spiegelung → weniger Diffusion  
-- Gesamtenergie bleibt konstant
-
-## Interaktive Visualisierung
-
-<div id="energy-demo" style="width: 100%; height: 400px;"></div>
-
-<label>Reflexion:</label>
-<input type="range" min="0" max="1" step="0.01" value="0.5" id="reflect">
-
-<p>
-Beobachtung: Wenn die Spiegelung zunimmt, reduziert sich der diffuse Anteil automatisch.
-</p>
+**Vergleich mit Phong:**  
+Im klassischen Phong-Modell werden Ambient, Diffuse und Specular einfach addiert. Dadurch ist es möglich, dass die reflektierte Energie die einfallende übersteigt – das Material leuchtet dann unnatürlich. In PBR wird diese Verletzung der Energieerhaltung durch die Abhängigkeit der Anteile voneinander systematisch verhindert.
 
 ---
 
-# Mikrofazetten-Theorie
+# Mikrofacettentheorie
 
 ## Grundidee
 
-Oberflächen bestehen aus vielen kleinen Mikrofacetten, die Licht wie winzige Spiegel reflektieren.  
-Die Rauheit bestimmt das Reflexionsverhalten.
+Reale Oberflächen sind auf mikroskopischer Ebene rau und bestehen aus vielen kleinen Facetten, die wie winzige Spiegel wirken. Nur Facetten, deren Normale exakt dem Halfway-Vektor $\mathbf{h}$ entspricht, reflektieren Licht direkt vom Licht zum Betrachter.
 
-- glatt → scharf  
-- rau → diffus
+![](images/PBR-Makroskopisches-Verhalten.svg){width=300px}
+![](images/Mikrofacette.svg){width=250px}
+![](images/Mikrofacette-Licht.svg){width=250px}
 
-## Komponenten (konzeptionell)
+v: Blickrichtungsvektor
+l: Lichtrichtungsvektor
+n: Normalenvektor
+h: normierte Mittelrichtung zwischen v und l
 
-- **D (Distribution)** → Ausrichtung der Facetten  
-- **F (Fresnel)** → Winkelabhängige Reflexion  
-- **G (Geometrie)** → Abschattung und Maskierung  
+## Cook-Torrance BRDF (spekularer Anteil)
 
-## Interaktive Visualisierung
+Der spekularer Anteil $f_s$ in PBR wird mit der Cook-Torrance-Formel berechnet:
 
-<div id="microfacet-demo" style="width: 100%; height: 400px;"></div>
+$$
+f_s(\mathbf{v}, \mathbf{l}) = \frac{F(\mathbf{v}, \mathbf{h}) \, D(\mathbf{h}) \, G(\mathbf{l}, \mathbf{v})}{4 \, (\mathbf{n} \cdot \mathbf{l}) \, (\mathbf{n} \cdot \mathbf{v})}
+$$ {#eq-cook-torrance}
 
-<label>Rauheit:</label>
-<input type="range" min="0" max="1" step="0.01" value="0.5" id="roughness">
+Dieser Term setzt sich aus drei physikalisch begründeten Komponenten zusammen. Jede wird im Folgenden mit dem Phong-Modell verglichen.
 
-<p>
-Beobachtung: Geringe Rauheit erzeugt scharfe Spiegelungen, hohe Rauheit diffuse Reflexion.
-</p>
+### 1. Fresnel-Term $F$
+
+Der **Fresnel-Effekt** beschreibt, dass der Reflexionsanteil mit flacherem Einfallswinkel zunimmt. Bei grazing angles reflektiert nahezu jedes Material fast das gesamte Licht spiegelnd.
+
+In der Praxis wird meist die **Schlick-Approximation** verwendet:
+
+$$
+F(\theta) = F_0 + (1 - F_0)(1 - \cos\theta)^5
+$$
+
+**Vergleich mit Phong:**  
+Das Phong-Modell kennt keinen Fresnel-Effekt. Das Glanzlicht hat bei jedem Betrachtungswinkel die gleiche Intensität – unabhängig davon, ob man senkrecht oder flach auf die Oberfläche schaut. Dies führt zu unnatürlich gleichmäßigen und oft zu hellen Glanzlichtern an den Rändern.
+
+### 2. Normal Distribution Function (NDF) $D$
+
+Die NDF beschreibt die statistische Verteilung der Mikrofacets. Der heutige Standard ist die **GGX (Trowbridge-Reitz)**-Verteilung:
+
+$$
+D(\mathbf{h}) = \frac{\alpha^2}{\pi \left( (\mathbf{n} \cdot \mathbf{h})^2 (\alpha^2 - 1) + 1 \right)^2}
+$$
+
+$\alpha$ entspricht der Roughness (0 = glatt, 1 = rau).
+
+**Vergleich mit Phong:**  
+Phong verwendet die einfache Potenzfunktion $(\mathbf{n} \cdot \mathbf{h})^S$. Diese hat keine physikalische Grundlage und ist nicht energieerhaltend. Wird das Glanzlicht breiter, bleibt die Helligkeit gleich oder nimmt sogar zu – physikalisch falsch.  
+Bei GGX wird das Glanzlicht mit zunehmender Rauheit automatisch dunkler, weil die Funktion normiert ist und die Energieerhaltung einhält.
+
+### 3. Geometry-Term $G$ (Shadowing & Masking)
+
+Auf rauen Oberflächen verdecken sich Mikrofacets gegenseitig (Shadowing und Masking). Der Geometry-Term modelliert diese Abschattung und Blockierung.
+
+In modernen PBR-Systemen wird meist die **Smith-Schlick-GGX**-Approximation verwendet:
+
+$$
+G_1(v) = \frac{\mathbf{n} \cdot \mathbf{v}}{(\mathbf{n} \cdot \mathbf{v})(1 - k) + k}
+$$
+
+Der volle Term lautet $G(\mathbf{l}, \mathbf{v}) = G_1(\mathbf{l}) \cdot G_1(\mathbf{v})$.
+
+**Vergleich mit Phong:**  
+Das Phong-Modell enthält keinen Geometry-Term. Dadurch entsteht bei flachen Betrachtungswinkeln ein unnatürlicher Helligkeitsanstieg an den Rändern („bright edges“). Der G-Term in PBR kompensiert diesen Effekt und hält die reflektierte Energie physikalisch plausibel.
 
 ---
 
-# Reziprozität
+# Der diffuse Anteil
 
-## Grundprinzip
+Durch den Fresnel-Term ist bekannt, wie viel Licht spiegelnd reflektiert wird. Der verbleibende Anteil wird diffus gestreut:
 
-Lichtwege sind umkehrbar: Wenn Lichtquelle und Kamera vertauscht werden, bleibt das Ergebnis unverändert.  
+$$
+k_d = (1 - F) \cdot (1 - \text{metalness})
+$$
 
-## Interaktive Idee
+**Vergleich mit Phong:**  
+Im Phong-Modell sind Diffuse und Specular unabhängige Parameter. Man kann beide gleichzeitig auf hohe Werte setzen, sodass das Material mehr Licht reflektiert als es erhält. In PBR sind beide Anteile über die Energieerhaltung und den Fresnel-Term miteinander verknüpft. Metalle haben zudem praktisch keinen diffusen Anteil.
 
-- Kleine Szene, in der Lichtquelle und Kamera getauscht werden  
-- Reflexion bleibt gleich  
-- Visualisierung zeigt konsistentes Verhalten
+Für den diffusen Teil wird meist das normierte **Lambert-Modell** verwendet:
+
+$$
+f_{\text{diffuse}} = \frac{c}{\pi}
+$$
+
+Der Faktor $1/\pi$ stellt sicher, dass auch der diffuse Anteil die Energieerhaltung einhält.
 
 ---
 
 # Zusammenspiel der Prinzipien
 
-- Mikrofazetten bestimmen die **Struktur** der Reflexion  
-- Energieerhaltung bestimmt **wie viel** reflektiert wird  
-- Reziprozität sorgt für **Konsistenz**  
+- Die **Mikrofacettentheorie** (über D und G) bestimmt die *Struktur* und Schärfe der Reflexion.
+- Der **Fresnel-Effekt** (F) regelt die winkelabhängige Verteilung zwischen Spiegelung und Diffusion.
+- Die **Energieerhaltung** stellt sicher, dass die Gesamtreflexion physikalisch plausibel bleibt.
 
-Gemeinsam ermöglichen diese Prinzipien realistische, physikalisch korrekte Reflexionen.
+Zusammen ermöglichen diese Prinzipien deutlich realistischere und konsistentere Materialien als das klassische Phong-Modell.
 
 ---
-
-# Babylon.js Integration
-
-```{=html}
-<script src="https://cdn.babylonjs.com/babylon.js"></script>
-<script>
-const setupScene = (containerId) => {
-  const container = document.getElementById(containerId);
-  const canvas = document.createElement("canvas");
-  canvas.style.width = "100%";
-  canvas.style.height = "100%";
-  container.appendChild(canvas);
-
-  const engine = new BABYLON.Engine(canvas, true);
-  const scene = new BABYLON.Scene(engine);
-
-  const camera = new BABYLON.ArcRotateCamera(
-    "camera",
-    Math.PI / 2,
-    Math.PI / 3,
-    3,
-    BABYLON.Vector3.Zero(),
-    scene
-  );
-  camera.attachControl(canvas, true);
-
-  new BABYLON.HemisphericLight("light", new BABYLON.Vector3(1,1,0), scene);
-
-  const sphere = BABYLON.MeshBuilder.CreateSphere("sphere", {}, scene);
-  const material = new BABYLON.PBRMaterial("material", scene);
-  sphere.material = material;
-
-  engine.runRenderLoop(() => scene.render());
-
-  return material;
-};
-
-const energyMaterial = setupScene("energy-demo");
-const microfacetMaterial = setupScene("microfacet-demo");
-
-document.getElementById("reflect").addEventListener("input", (e) => {
-  const value = parseFloat(e.target.value);
-  energyMaterial.metallic = value;
-});
-
-document.getElementById("roughness").addEventListener("input", (e) => {
-  const value = parseFloat(e.target.value);
-  microfacetMaterial.roughness = value;
-});
-</script>
