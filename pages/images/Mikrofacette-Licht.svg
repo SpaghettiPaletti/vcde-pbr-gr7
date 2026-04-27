@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="102.58062mm"
+   height="59.06768mm"
+   viewBox="0 0 102.58062 59.06768"
+   version="1.1"
+   id="svg1"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs1">
+    <marker
+       style="overflow:visible"
+       id="marker2"
+       refX="0"
+       refY="0"
+       orient="auto-start-reverse"
+       markerWidth="1"
+       markerHeight="1"
+       viewBox="0 0 1 1"
+       preserveAspectRatio="xMidYMid">
+      <path
+         transform="scale(0.5)"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 5.77,0 -2.88,5 V -5 Z"
+         id="path2" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="marker2-9"
+       refX="0"
+       refY="0"
+       orient="auto-start-reverse"
+       markerWidth="1"
+       markerHeight="1"
+       viewBox="0 0 1 1"
+       preserveAspectRatio="xMidYMid">
+      <path
+         transform="scale(0.5)"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 5.77,0 -2.88,5 V -5 Z"
+         id="path2-5" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="marker2-8"
+       refX="0"
+       refY="0"
+       orient="auto-start-reverse"
+       markerWidth="1"
+       markerHeight="1"
+       viewBox="0 0 1 1"
+       preserveAspectRatio="xMidYMid">
+      <path
+         transform="scale(0.5)"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 5.77,0 -2.88,5 V -5 Z"
+         id="path2-7" />
+    </marker>
+  </defs>
+  <g
+     id="layer1"
+     transform="translate(-32.357142,-149.14906)">
+    <path
+       style="fill:#ae00e9;fill-opacity:0.424699;stroke:#000000;stroke-width:0.813415;stroke-linejoin:round"
+       d="m 33.138643,171.58684 -0.374792,25.24648 91.449159,1.22161 0.74959,-32.98331 -4.87229,3.66481 -5.62188,-2.03601 -4.4975,2.85041 -7.87062,-4.47921 -6.746255,2.036 1.124375,2.03601 h -6.746249 l 3.373124,-3.66481 h -2.998333 l -1.873958,1.6288 -7.870625,1.62881 -0.374791,-2.85041 -5.247083,1.2216 -0.749583,-2.036 -4.4975,1.2216 -0.374792,4.07201 h -5.247083 l -0.749583,-4.47921 -6.371458,3.25761 -3.373124,-2.44321 -0.749584,3.25761 -5.247083,-5.70082 v 4.47922 l -6.371458,1.6288 -1.499166,-4.07201 -1.499167,5.29362 -2.24875,-2.85041 z"
+       id="path1-1" />
+    <text
+       xml:space="preserve"
+       style="font-size:7.05556px;font-family:Calibri;-inkscape-font-specification:Calibri;text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.2;stroke-linejoin:round;stroke-dasharray:none"
+       x="56.578617"
+       y="208.05127"
+       id="text1-1"><tspan
+         id="tspan1-5"
+         style="fill:#000000;fill-opacity:1;stroke-width:0.2;stroke-dasharray:none"
+         x="56.578617"
+         y="208.05127">Mikrofacette</tspan></text>
+    <g
+       id="g1"
+       transform="matrix(0.27248786,0,0,0.26432239,2.2005976,96.239315)">
+      <path
+         style="fill:#ffff00;fill-opacity:1;fill-rule:nonzero;stroke:#f5ec00;stroke-width:2.044;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker2)"
+         d="m 119.5758,222.46499 30.27318,47.95274"
+         id="path6" />
+      <path
+         style="fill:#ffff00;fill-opacity:1;fill-rule:nonzero;stroke:#0089d9;stroke-width:2.044;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker2)"
+         d="m 153.00707,270.81625 45.27487,-23.20804"
+         id="path7" />
+      <path
+         style="fill:#ffff00;fill-opacity:1;fill-rule:nonzero;stroke:#00c029;stroke-width:2.044;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker2)"
+         d="m 150.79856,270.18044 11.87083,-54.99993"
+         id="path8">
+        <title
+           id="title5">h</title>
+      </path>
+    </g>
+    <g
+       id="g1-2"
+       transform="matrix(0.27248786,0,0,0.26432239,51.985608,95.790018)">
+      <path
+         style="fill:#ffff00;fill-opacity:1;fill-rule:nonzero;stroke:#f5ec00;stroke-width:2.044;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker2-9)"
+         d="m 119.5758,222.46499 30.27318,47.95274"
+         id="path6-3" />
+      <path
+         style="fill:#ffff00;fill-opacity:1;fill-rule:nonzero;stroke:#0089d9;stroke-width:2.044;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker2-9)"
+         d="m 153.00707,270.81625 45.27487,-23.20804"
+         id="path7-3" />
+      <path
+         style="fill:#ffff00;fill-opacity:1;fill-rule:nonzero;stroke:#00c029;stroke-width:2.044;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker2-9)"
+         d="m 150.79856,270.18044 11.87083,-54.99993"
+         id="path8-4">
+        <title
+           id="title5-1">h</title>
+      </path>
+    </g>
+    <g
+       id="g1-7"
+       transform="matrix(0.27248786,0,0,0.26432239,79.148285,94.1474)">
+      <path
+         style="fill:#ffff00;fill-opacity:1;fill-rule:nonzero;stroke:#f5ec00;stroke-width:2.044;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker2-8)"
+         d="m 119.5758,222.46499 30.27318,47.95274"
+         id="path6-9" />
+      <path
+         style="fill:#ffff00;fill-opacity:1;fill-rule:nonzero;stroke:#0089d9;stroke-width:2.044;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker2-8)"
+         d="m 153.00707,270.81625 45.27487,-23.20804"
+         id="path7-31" />
+      <path
+         style="fill:#ffff00;fill-opacity:1;fill-rule:nonzero;stroke:#00c029;stroke-width:2.044;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker2-8)"
+         d="m 150.79856,270.18044 11.87083,-54.99993"
+         id="path8-9">
+        <title
+           id="title5-8">h</title>
+      </path>
+    </g>
+  </g>
+</svg>
