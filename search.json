@@ -44,7 +44,7 @@
     "href": "pages/3_materialmodell.html",
     "title": "Kapitel 3: Das Materialmodell & Mapping",
     "section": "",
-    "text": "Autor: Alexander Kohl  Zielsetzung: Die physikalische Cook-Torrance Mathematik (Kapitel 2) wird hier in den anwendungsnahen Industrie-Standard (Blender / OpenPBR) “abstrahiert” und über das Texture-Mapping auf 3D-Modelle angewandt.",
+    "text": "Autor: Alexander Kohl  Zielsetzung: “Das Material-Labor”. Hier klären wir die Frage: Was bin ich? Wir erforschen die physikalischen Materialeigenschaften unter strikt neutralen Laborbedingungen (starres Studiolicht). Die Reaktion auf reale Umwelteinflüsse (Wo bin ich?) folgt im nächsten Kapitel (IBL).",
     "crumbs": [
       "3. Materialmodell"
     ]
@@ -54,7 +54,7 @@
     "href": "pages/3_materialmodell.html#von-der-formel-zum-shader-das-interface",
     "title": "Kapitel 3: Das Materialmodell & Mapping",
     "section": "1. Von der Formel zum Shader (Das Interface)",
-    "text": "1. Von der Formel zum Shader (Das Interface)\n\n  \n    [Text-Block]\n    Die Brücke zu Kapitel 2: In den physikalischen PBR-Prinzipien wurde hergeleitet, wie die Lichtberechnung mathematisch tief im Code durch die Komponenten D, F und G funktioniert. In der Praxis berechnen Anwender jedoch keine Fresnel-Integrale händisch.\n    Wir brauchen ein Materialmodell: Ein Interface (einen \"Shader\"), das diese komplexe Mathematik kapselt und über einfache, verständliche Parameter steuerbar macht.\n  \n  \n    [Visuelle Grafik]\n    [ Skizze: Physik (Zahlen/Formeln) ➔ Shader (Blackbox) ➔ Anwender (Sliders) ]",
+    "text": "1. Von der Formel zum Shader (Das Interface)\n\n  \n    [Text-Block]\n    Die Brücke zu Kapitel 2: In den physikalischen PBR-Prinzipien wurde hergeleitet, wie Lichtberechnung mathematisch durch die Komponenten D, F und G funktioniert. In der Praxis berechnen Anwender jedoch keine Fresnel-Integrale händisch.\n    Wir brauchen ein Materialmodell: Ein Interface (einen \"Shader\"), das diese komplexe Mathematik kapselt und über einfache, verständliche Parameter steuerbar macht.\n  \n  \n    [Visuelle Grafik]\n    [ Skizze: Physik (Zahlen/Formeln) ➔ Shader (Blackbox) ➔ Anwender (Sliders) ]",
     "crumbs": [
       "3. Materialmodell"
     ]
@@ -64,27 +64,37 @@
     "href": "pages/3_materialmodell.html#der-standard-blender-principled-bsdf-openpbr",
     "title": "Kapitel 3: Das Materialmodell & Mapping",
     "section": "2. Der Standard: Blender Principled BSDF & OpenPBR",
-    "text": "2. Der Standard: Blender Principled BSDF & OpenPBR\n\n  \n    [Text-Block]\n    Worum geht es hier? (Q&A 1 Feedback): Vor den PBR-Standards gab es verschiedene veraltete Workflows (z.B. \"Specular/Glossiness\"). Dort war die Materialerstellung extrem fehleranfällig und oft physikalisch inkorrekt.\n    Mit dem Principled BSDF (Disney, als Standard-Shader in Blender) und der modernen Industrie-Initiative OpenPBR hat sich jedoch ein neuer Goldstandard etabliert.\n    Der Metallic-Roughness-Workflow:\n    Der massive architektonische Vorteil dieses Standards ist, dass er inhärent energieerhaltend ist. Ein Anwender kann über diese Eingabeparameter im Grunde kein physikalisch unmögliches Material mehr in den Shader speisen.\n  \n  \n    [Die 3 Heiligen Parameter]\n    Base Color (Albedo): Grundfarbe bei Dielektrika / Reflexionsfarbe bei Metallen.\n    Metallic: Binärer Maskenwert (Ist es Metall oder nicht?).\n    Roughness: Streuung der Mikrofacetten (matt vs. glatt).",
+    "text": "2. Der Standard: Blender Principled BSDF & OpenPBR\n\n  \n    [Text-Block]\n    Worum geht es hier? (Q&A 1 Feedback): Vor den PBR-Standards gab es veraltete Workflows (z.B. \"Specular/Glossiness\"). Dort war die Materialerstellung extrem fehleranfällig und oft physikalisch inkorrekt.\n    Mit dem Principled BSDF (Disney/Blender) und OpenPBR hat sich ein neuer Goldstandard etabliert: Der Metallic-Roughness-Workflow.\n    Der massive architektonische Vorteil: Er ist inhärent energieerhaltend. Ein Anwender kann im Grunde kein physikalisch unmögliches Material mehr mischen.\n  \n  \n    [Die 3 Heiligen Parameter]\n    Base Color (Albedo): Grundfarbe (Dielektrika) / Reflexionsfarbe (Metalle).\n    Metallic: Binärer Maskenwert (Metall oder nicht?).\n    Roughness: Streuung der Mikrofacetten (matt vs. glatt).",
     "crumbs": [
       "3. Materialmodell"
     ]
   },
   {
-    "objectID": "pages/3_materialmodell.html#das-texture-mapping-der-praxis-workflow",
-    "href": "pages/3_materialmodell.html#das-texture-mapping-der-praxis-workflow",
+    "objectID": "pages/3_materialmodell.html#das-material-labor-parameter-in-aktion",
+    "href": "pages/3_materialmodell.html#das-material-labor-parameter-in-aktion",
     "title": "Kapitel 3: Das Materialmodell & Mapping",
-    "section": "3. Das Texture-Mapping (Der Praxis-Workflow)",
-    "text": "3. Das Texture-Mapping (Der Praxis-Workflow)\n\n  \n    [Text-Block]\n    Globale Schieberegler reichen für eine saubere Goldkugel, aber nicht für ein rostiges, zerkratztes Metallfass.\n    Texture Maps: Wir lösen die globalen Parameter in 2D-Bilddateien auf. Jeder Pixel der Textur steuert den Shader-Parameter für genau diesen Punkt auf dem 3D-Modell (Rotwert in der Metallic-Textur = Grad der Metallizität an dieser Stelle).\n  \n  \n    [Visuelle Matrix: Maps]\n    [ Bild: Das Objekt ]\n    aufgeteilt in:\n    [ Albedo Map ] | [ Metallic Map ] | [ Roughness Map ] | [ Normal Map ]",
+    "section": "3. Das Material-Labor: Parameter in Aktion",
+    "text": "3. Das Material-Labor: Parameter in Aktion\nProbier es im folgenden interaktiven “Labor” selbst aus! Beachte: Das Licht (zwei simple weiße Studiolampen) bewegt sich nicht. Du veränderst nur das Material des Fasses.\n\n  \n    Interaktives Material-Labor: Das Fass\n    \n    \n        \n    \n    \n    \n        Metallic:\n         0.00 (0 = Plastik/Rost, 1 = Pures Metall)\n        \n        Roughness:\n         0.50 (0 = Glatter Spiegel, 1 = Extrem Matt)",
     "crumbs": [
       "3. Materialmodell"
     ]
   },
   {
-    "objectID": "pages/3_materialmodell.html#vertiefung-live-rendering-das-map-quiz",
-    "href": "pages/3_materialmodell.html#vertiefung-live-rendering-das-map-quiz",
+    "objectID": "pages/3_materialmodell.html#texture-mapping-pixelgenaue-steuerung",
+    "href": "pages/3_materialmodell.html#texture-mapping-pixelgenaue-steuerung",
     "title": "Kapitel 3: Das Materialmodell & Mapping",
-    "section": "4. Vertiefung: Live-Rendering & Das Map-Quiz",
-    "text": "4. Vertiefung: Live-Rendering & Das Map-Quiz\n\n  \n    [WebGL Canvas: Parameter vs Maps im direkten Vergleich]\n    Links: Eine pure Kugel mit UI-Slidern (Metallic / Roughness ändern).\n    Rechts: Das rostige Fass (mit festen Maps), das auf dieselbe Umgebung reagiert.\n  \n\n\n\n  \n    [Interaktives Live-Render-Quiz / Das \"X\"]\n    Das Prinzip: Drag & Drop von \"nackten\" 2D-PBR-Maps auf die leeren Material-Slots (\"Metallizität\", \"Farbe\", \"Rauheit\") eines komplexen 3D-Modells.\n    Live Feedback: Zieht der User die Roughness-Map versehentlich in den Metallic-Slot, rendert die WebGL-Engine diesen physikalischen Blödsinn live im Browser (Material ist an den zerkratzten Stellen plötzlich reinstes Metall).",
+    "section": "4. Texture-Mapping (Pixelgenaue Steuerung)",
+    "text": "4. Texture-Mapping (Pixelgenaue Steuerung)\n\n  \n    [Text-Block]\n    Globale Schieberegler (wie oben) reichen für saubere, einheitliche Materialien, aber nicht für ein realistisches, stellenweise zerkratztes Fass.\n    Texture Maps: Wir lösen die globalen Slider in 2D-Bilddateien auf. Jeder Pixel der Graustufen-Textur steuert den Parameter für exakt diesen Punkt auf dem Modell. Ein roter Fleck mit \"1.0 Metallic\" und \"0.0 Roughness\" spiegelt perfekt, während der restliche Rost matt bleibt.\n  \n  \n    [Visuelle Matrix: Maps]\n    [ Bild: Das fertige Objekt ]\n    aufgeteilt in:\n    [ Albedo Map ] | [ Metallic Map ] | [ Roughness Map ] | [ Normal Map ]",
+    "crumbs": [
+      "3. Materialmodell"
+    ]
+  },
+  {
+    "objectID": "pages/3_materialmodell.html#überleitung-zu-kapitel-4-raus-aus-dem-labor",
+    "href": "pages/3_materialmodell.html#überleitung-zu-kapitel-4-raus-aus-dem-labor",
+    "title": "Kapitel 3: Das Materialmodell & Mapping",
+    "section": "5. Überleitung zu Kapitel 4: Raus aus dem Labor",
+    "text": "5. Überleitung zu Kapitel 4: Raus aus dem Labor\n\n  \n    Das Material ist nun fertig definiert (\"Was bin ich?\").\n    Unter unserem statischen Labor-Ringlicht oben sieht selbst perfekt eingestelltes Chrom noch immer künstlich und langweilig aus – weil schlichtweg nichts da ist, das sich darin spiegeln könnte!\n    Im nächsten Kapitel nehmen wir unser fertig texturiertes Fass und stellen es in die reale Welt (\"Wo bin ich?\"). Wir überlassen das starre Studiolicht der Vergangenheit und entdecken das Image Based Lighting (IBL).",
     "crumbs": [
       "3. Materialmodell"
     ]
