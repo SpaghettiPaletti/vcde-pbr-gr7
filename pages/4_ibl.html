@@ -155,13 +155,11 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#image-based-lighting-ibl" id="toc-image-based-lighting-ibl" class="nav-link active" data-scroll-target="#image-based-lighting-ibl">Image Based Lighting (IBL)</a>
-  <ul class="collapse">
-  <li><a href="#warum-punktlichter-und-der-klassische-ambient-term-nicht-mehr-ausreichen" id="toc-warum-punktlichter-und-der-klassische-ambient-term-nicht-mehr-ausreichen" class="nav-link" data-scroll-target="#warum-punktlichter-und-der-klassische-ambient-term-nicht-mehr-ausreichen">Warum Punktlichter und der klassische Ambient-Term nicht mehr ausreichen</a></li>
-  <li><a href="#die-lösung-was-genau-ist-image-based-lighting" id="toc-die-lösung-was-genau-ist-image-based-lighting" class="nav-link" data-scroll-target="#die-lösung-was-genau-ist-image-based-lighting">Die Lösung: Was genau ist Image Based Lighting?</a></li>
-  <li><a href="#der-visuelle-unterschied-wie-ibl-das-rendering-verändert" id="toc-der-visuelle-unterschied-wie-ibl-das-rendering-verändert" class="nav-link" data-scroll-target="#der-visuelle-unterschied-wie-ibl-das-rendering-verändert">Der visuelle Unterschied: Wie IBL das Rendering verändert</a></li>
-  <li><a href="#interaktive-demo" id="toc-interaktive-demo" class="nav-link" data-scroll-target="#interaktive-demo">Interaktive Demo</a></li>
-  </ul></li>
+  <li><a href="#der-fehlende-baustein-im-pbr-system" id="toc-der-fehlende-baustein-im-pbr-system" class="nav-link active" data-scroll-target="#der-fehlende-baustein-im-pbr-system">Der fehlende Baustein im PBR-System</a></li>
+  <li><a href="#warum-ibl-für-die-vollständigkeit-nötig-ist" id="toc-warum-ibl-für-die-vollständigkeit-nötig-ist" class="nav-link" data-scroll-target="#warum-ibl-für-die-vollständigkeit-nötig-ist">Warum IBL für die Vollständigkeit nötig ist</a></li>
+  <li><a href="#die-lichtquelle-was-ist-ibl" id="toc-die-lichtquelle-was-ist-ibl" class="nav-link" data-scroll-target="#die-lichtquelle-was-ist-ibl">Die Lichtquelle: Was ist IBL?</a></li>
+  <li><a href="#interaktive-analyse-der-torus-knoten-und-verschiedenen-welten" id="toc-interaktive-analyse-der-torus-knoten-und-verschiedenen-welten" class="nav-link" data-scroll-target="#interaktive-analyse-der-torus-knoten-und-verschiedenen-welten">Interaktive Analyse: Der Torus-Knoten und verschiedenen Welten</a></li>
+  <li><a href="#zusammenfassung-der-mathematischen-lösung" id="toc-zusammenfassung-der-mathematischen-lösung" class="nav-link" data-scroll-target="#zusammenfassung-der-mathematischen-lösung">Zusammenfassung der mathematischen Lösung</a></li>
   </ul>
 </nav>
     </div>
@@ -193,41 +191,86 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<section id="image-based-lighting-ibl" class="level2">
-<h2 class="anchored" data-anchor-id="image-based-lighting-ibl">Image Based Lighting (IBL)</h2>
-<section id="warum-punktlichter-und-der-klassische-ambient-term-nicht-mehr-ausreichen" class="level3">
-<h3 class="anchored" data-anchor-id="warum-punktlichter-und-der-klassische-ambient-term-nicht-mehr-ausreichen">Warum Punktlichter und der klassische Ambient-Term nicht mehr ausreichen</h3>
+<section id="der-fehlende-baustein-im-pbr-system" class="level2">
+<h2 class="anchored" data-anchor-id="der-fehlende-baustein-im-pbr-system">Der fehlende Baustein im PBR-System</h2>
+<p>Bisher haben wir uns mit den <strong>PBR-Prinzipien</strong> (wie der Energieerhaltung und dem Fresnel-Effekt) sowie dem <strong>Materialmodell</strong> (Metallic/Roughness) beschäftigt. Diese definieren präzise, <em>wie</em> eine Oberfläche auf Licht reagiert.</p>
+<p>Doch ein physikalisch korrektes Material ist nur die halbe Miete. In einer rein schwarzen Umgebung ohne Lichtquellen würde selbst das perfekteste Gold-Material schwarz erscheinen. Hier kommt <strong>Image Based Lighting (IBL)</strong> ins Spiel: Es liefert die notwendigen Lichtinformationen, um die mathematischen Modelle, die wir auf den vorherigen Seiten gelernt haben, zum Leben zu erwecken.</p>
+</section>
+<section id="warum-ibl-für-die-vollständigkeit-nötig-ist" class="level2">
+<h2 class="anchored" data-anchor-id="warum-ibl-für-die-vollständigkeit-nötig-ist">Warum IBL für die Vollständigkeit nötig ist</h2>
+<p>Ohne IBL bleibt PBR unvollständig. In der klassischen Grafik (Phong) haben wir die Punktlicher manuell platziert. In der Realität kommt Licht jedoch von überall.</p>
 <ul>
-<li>Phong nähert indirekte Beleuchtug nur über den sogenannten Ambient-Term an.</li>
-<li>Dabei kommt das Licht aus allen Richtungen gleichmäßig her, weshalb Schattenbereiche dadurch flach und leblos wirken</li>
-<li>Außerdem erzeugen klassische Punktlichter (Spekular-Term) nur einen künstlichen, extrem scharfen Glanzpunkt auf dem Objekt.</li>
+<li><strong>Vervollständigung der Energieerhaltung:</strong> Wie wir gelernt haben, darf ein Objekt nicht mehr Licht reflektieren, als es erhält. IBL liefert ein definiertes “Budget” an Umgebungslicht, das das Materialmodell dann physikalisch korrekt aufteilt.</li>
+<li><strong>Interaktion mit dem Materialmodell:</strong> Ein hoher <em>Metallic</em>-Wert macht ein Objekt zum spiegel. Ohne IBL hätte dieser Spiegel jedoch nichts, was er zeigen könnte. Erst die Umgebnungsinformaionen machen den Unterschied zwischen Metall und einem nicht spiegelnden Objekt greifbar.</li>
+<li><strong>Kontext für den Fresnel-Effekt:</strong> Der Fresnel-Effekt sorgt dafür, dass Reflexionen am Radn stärker werden. Damit dieser Effekt sichtbar wird, muss die Umgebung Licht aus allen Winkeln (0° bis 90°) liefern - genau das leistet eine HDRI-Umgebungskarte.</li>
 </ul>
 </section>
-<section id="die-lösung-was-genau-ist-image-based-lighting" class="level3">
-<h3 class="anchored" data-anchor-id="die-lösung-was-genau-ist-image-based-lighting">Die Lösung: Was genau ist Image Based Lighting?</h3>
+<section id="die-lichtquelle-was-ist-ibl" class="level2">
+<h2 class="anchored" data-anchor-id="die-lichtquelle-was-ist-ibl">Die Lichtquelle: Was ist IBL?</h2>
+<p>Anstatt einzelne Lichtpunkte im Raum zu verteilen, nutzen wir beim IBL die gesamte Umgebung als Lichtquelle:</p>
 <ul>
-<li>Statt künstlicher Lichtpunkte nutzen wir 360° Fotos der echten Welt (sogenannte HDRIs)</li>
-<li>Das Bild legt sich wie eine unsichtbare Kugel um die 3D-Szene.</li>
-<li>Jeder Pixel des HDRIs fungiert dabei als eigene Lichtquelle mit individueller Farbe und Helligkeit.</li>
+<li><strong>HDRI statt Punktlicht:</strong> Wir nutzen 360°-Panorama-Bilder der echten Welt (High Dynamic Range Images).</li>
+<li><strong>Pixel als Emitter:</strong> Jeder einzelne Pixel des Bildes wird als winzige Lichtquelle behandelt. Ein HDRI mit einer Sonne liefert dort extream viel Energie, während die blauen Pixel des Himmels sanftes, farbiges Licht beisteuern.</li>
 </ul>
+<hr>
 </section>
-<section id="der-visuelle-unterschied-wie-ibl-das-rendering-verändert" class="level3">
-<h3 class="anchored" data-anchor-id="der-visuelle-unterschied-wie-ibl-das-rendering-verändert">Der visuelle Unterschied: Wie IBL das Rendering verändert</h3>
-<ul>
-<li>Echte Spiegellungen: Metallische Objekte spiegeln nun eine reale Umgebung wieder, anstatt nur einen künstlichen weißen Punkt.</li>
-<li>Natürliches Streulicht (Diffuse IBL): Ein Objekt in einem Wald bekommt realistische grüne Lichtreflexionen vom Boden, in einem Fotostudio hartes, weißes Licht.</li>
-<li>Materialien sehen erst durch IBL wirklich nach dem aus, was sie sein sollen (z.B. Chrom, Gold, Plastik).</li>
-</ul>
+<section id="interaktive-analyse-der-torus-knoten-und-verschiedenen-welten" class="level2">
+<h2 class="anchored" data-anchor-id="interaktive-analyse-der-torus-knoten-und-verschiedenen-welten">Interaktive Analyse: Der Torus-Knoten und verschiedenen Welten</h2>
+<p>Um die Konsistenz zu wahren, nutzen wir wieder den <strong>Torus-Knoten</strong> von Seite 1. Beaobachtet, wie das Material (kosntant auf Chrom/Metall eingestellt) allein druch den Wechsel der Umgebung seine Identität verändert. Das Materialmodell bleibt gleich, aber die Lichtinformation ändert sich.</p>
+<div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+<div style="margin-bottom: 15px;">
+<p><label><strong>Umgebung wählen:</strong> </label> <select id="envSwitch" style="padding: 8px; border-radius: 4px; border: 1px solid #ccc;"> <option value="https://playground.babylonjs.com/textures/environment.env">Stadt (Neutral)</option> <option value="https://playground.babylonjs.com/textures/country.env">Landlandschaft (Offen)</option> <option value="https://playground.babylonjs.com/textures/forest.env">Wald (Grünlich)</option> <option value="https://playground.babylonjs.com/textures/night.env">Nacht (Dunkel/Kontrastreich)</option> <option value="https://playground.babylonjs.com/textures/room.env">Innenraum (Warm)</option> </select></p>
+</div>
+<canvas id="iblCanvas" style="width: 100%; height: 500px; border-radius: 4px; outline: none; touch-action: none;">
+</canvas>
+</div>
+<script src="https://cdn.babylonjs.com/babylon.js"></script>
+<script>
+const canvas = document.getElementById("iblCanvas");
+const engine = new BABYLON.Engine(canvas, true);
+const createScene = function() {
+const scene = new BABYLON.Scene(engine);
+scene.clearColor = new BABYLON.Color4(0.05, 0.05, 0.05, 1);
+const camera = new BABYLON.ArcRotateCamera("camera", -Math.PI / 2, Math.PI /2.5, 5, BABYLON.Vector3.Zero(), scene);
+camera.lowerRadiusLimit = camera.radius;
+camera.upperRadiusLimit = camera.radius;
+camera.attachControl(canvas, true);
+const knot = BABYLON.MeshBuilder.CreateTorusKnot("knot", {radius: 0.8, tube: 0.3, radialSegments:128, tubularSegments: 64}, scene);
+const pbr = new BABYLON.PBRMaterial("pbr", scene);
+pbr.metallic = 1.0;
+pbr.roughness = 0.05;
+pbr.albedoColor = new BABYLON.Color3(0.9, 0.9, 0.9);
+knot.material = pbr;
+let currentSkybox = null;
+const loadEnv = (url) => {
+const hdrTexture = BABYLON.CubeTexture.CreateFromPrefilteredData(url, scene);
+scene.environmentTexture = hdrTexture;
+if (currentSkybox) { currentSkybox.dispose(); }
+currentSkybox = scene.createDefaultSkybox(hdrTexture, true, 100, 0.2);
+}
+loadEnv(document.getElementById("envSwitch").value);
+document.getElementById("envSwitch").addEventListener("change", (e) => {
+loadEnv(e.target.value);
+})
+return scene;
+};
+const scene = createScene();
+engine.runRenderLoop(() => {
+scene.render();
+});
+window.addEventListener("resize", () => engine.resize());
+</script>
 </section>
-<section id="interaktive-demo" class="level3">
-<h3 class="anchored" data-anchor-id="interaktive-demo">Interaktive Demo</h3>
-<ul>
-<li>Per Knopfdruck kann ein Objekt in unterschiedlichen Umgebungen dargestellt werden (Studio, Wald, Stadt)</li>
-<li>Hier sieht man, wie sich das Aussehen des Objekts anhand der wechselnden indirekten Beleuchtung anpasst.</li>
-</ul>
+<section id="zusammenfassung-der-mathematischen-lösung" class="level2">
+<h2 class="anchored" data-anchor-id="zusammenfassung-der-mathematischen-lösung">Zusammenfassung der mathematischen Lösung</h2>
+<p>IBL löst das Problem der komlpexen Lichtberechnung durch Vorberechnung (<strong>Pre-Filtering</strong>):</p>
+<ol type="1">
+<li><strong>Diffuse Irradiance:</strong> Ein weichgezeichnetes Abbild der Umgebung liefert das diffuse Licht.</li>
+<li><strong>Specular Reflection:</strong> Verschiedene Unschärfegrade der Umgebung werden für unterschiedliche <em>Rougchness</em>-Stufen genutzt.</li>
+</ol>
+<p>Erst durch dieses Zusammenspiel von Umgebungslicht und den physikalischen Materialgesetzen wird PBR zu eine vollständigen, fotorealistischen System.</p>
 
 
-</section>
 </section>
 
 </main> <!-- /main -->

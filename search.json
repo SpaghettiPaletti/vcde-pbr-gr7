@@ -194,17 +194,57 @@
     "href": "pages/4_ibl.html",
     "title": "Image Based Lighting",
     "section": "",
-    "text": "Phong nähert indirekte Beleuchtug nur über den sogenannten Ambient-Term an.\nDabei kommt das Licht aus allen Richtungen gleichmäßig her, weshalb Schattenbereiche dadurch flach und leblos wirken\nAußerdem erzeugen klassische Punktlichter (Spekular-Term) nur einen künstlichen, extrem scharfen Glanzpunkt auf dem Objekt.\n\n\n\n\n\nStatt künstlicher Lichtpunkte nutzen wir 360° Fotos der echten Welt (sogenannte HDRIs)\nDas Bild legt sich wie eine unsichtbare Kugel um die 3D-Szene.\nJeder Pixel des HDRIs fungiert dabei als eigene Lichtquelle mit individueller Farbe und Helligkeit.\n\n\n\n\n\nEchte Spiegellungen: Metallische Objekte spiegeln nun eine reale Umgebung wieder, anstatt nur einen künstlichen weißen Punkt.\nNatürliches Streulicht (Diffuse IBL): Ein Objekt in einem Wald bekommt realistische grüne Lichtreflexionen vom Boden, in einem Fotostudio hartes, weißes Licht.\nMaterialien sehen erst durch IBL wirklich nach dem aus, was sie sein sollen (z.B. Chrom, Gold, Plastik).\n\n\n\n\n\nPer Knopfdruck kann ein Objekt in unterschiedlichen Umgebungen dargestellt werden (Studio, Wald, Stadt)\nHier sieht man, wie sich das Aussehen des Objekts anhand der wechselnden indirekten Beleuchtung anpasst.",
+    "text": "Bisher haben wir uns mit den PBR-Prinzipien (wie der Energieerhaltung und dem Fresnel-Effekt) sowie dem Materialmodell (Metallic/Roughness) beschäftigt. Diese definieren präzise, wie eine Oberfläche auf Licht reagiert.\nDoch ein physikalisch korrektes Material ist nur die halbe Miete. In einer rein schwarzen Umgebung ohne Lichtquellen würde selbst das perfekteste Gold-Material schwarz erscheinen. Hier kommt Image Based Lighting (IBL) ins Spiel: Es liefert die notwendigen Lichtinformationen, um die mathematischen Modelle, die wir auf den vorherigen Seiten gelernt haben, zum Leben zu erwecken.",
     "crumbs": [
       "4. Image Based Lighting (IBL)"
     ]
   },
   {
-    "objectID": "pages/4_ibl.html#image-based-lighting-ibl",
-    "href": "pages/4_ibl.html#image-based-lighting-ibl",
+    "objectID": "pages/4_ibl.html#der-fehlende-baustein-im-pbr-system",
+    "href": "pages/4_ibl.html#der-fehlende-baustein-im-pbr-system",
     "title": "Image Based Lighting",
     "section": "",
-    "text": "Phong nähert indirekte Beleuchtug nur über den sogenannten Ambient-Term an.\nDabei kommt das Licht aus allen Richtungen gleichmäßig her, weshalb Schattenbereiche dadurch flach und leblos wirken\nAußerdem erzeugen klassische Punktlichter (Spekular-Term) nur einen künstlichen, extrem scharfen Glanzpunkt auf dem Objekt.\n\n\n\n\n\nStatt künstlicher Lichtpunkte nutzen wir 360° Fotos der echten Welt (sogenannte HDRIs)\nDas Bild legt sich wie eine unsichtbare Kugel um die 3D-Szene.\nJeder Pixel des HDRIs fungiert dabei als eigene Lichtquelle mit individueller Farbe und Helligkeit.\n\n\n\n\n\nEchte Spiegellungen: Metallische Objekte spiegeln nun eine reale Umgebung wieder, anstatt nur einen künstlichen weißen Punkt.\nNatürliches Streulicht (Diffuse IBL): Ein Objekt in einem Wald bekommt realistische grüne Lichtreflexionen vom Boden, in einem Fotostudio hartes, weißes Licht.\nMaterialien sehen erst durch IBL wirklich nach dem aus, was sie sein sollen (z.B. Chrom, Gold, Plastik).\n\n\n\n\n\nPer Knopfdruck kann ein Objekt in unterschiedlichen Umgebungen dargestellt werden (Studio, Wald, Stadt)\nHier sieht man, wie sich das Aussehen des Objekts anhand der wechselnden indirekten Beleuchtung anpasst.",
+    "text": "Bisher haben wir uns mit den PBR-Prinzipien (wie der Energieerhaltung und dem Fresnel-Effekt) sowie dem Materialmodell (Metallic/Roughness) beschäftigt. Diese definieren präzise, wie eine Oberfläche auf Licht reagiert.\nDoch ein physikalisch korrektes Material ist nur die halbe Miete. In einer rein schwarzen Umgebung ohne Lichtquellen würde selbst das perfekteste Gold-Material schwarz erscheinen. Hier kommt Image Based Lighting (IBL) ins Spiel: Es liefert die notwendigen Lichtinformationen, um die mathematischen Modelle, die wir auf den vorherigen Seiten gelernt haben, zum Leben zu erwecken.",
+    "crumbs": [
+      "4. Image Based Lighting (IBL)"
+    ]
+  },
+  {
+    "objectID": "pages/4_ibl.html#warum-ibl-für-die-vollständigkeit-nötig-ist",
+    "href": "pages/4_ibl.html#warum-ibl-für-die-vollständigkeit-nötig-ist",
+    "title": "Image Based Lighting",
+    "section": "Warum IBL für die Vollständigkeit nötig ist",
+    "text": "Warum IBL für die Vollständigkeit nötig ist\nOhne IBL bleibt PBR unvollständig. In der klassischen Grafik (Phong) haben wir die Punktlicher manuell platziert. In der Realität kommt Licht jedoch von überall.\n\nVervollständigung der Energieerhaltung: Wie wir gelernt haben, darf ein Objekt nicht mehr Licht reflektieren, als es erhält. IBL liefert ein definiertes “Budget” an Umgebungslicht, das das Materialmodell dann physikalisch korrekt aufteilt.\nInteraktion mit dem Materialmodell: Ein hoher Metallic-Wert macht ein Objekt zum spiegel. Ohne IBL hätte dieser Spiegel jedoch nichts, was er zeigen könnte. Erst die Umgebnungsinformaionen machen den Unterschied zwischen Metall und einem nicht spiegelnden Objekt greifbar.\nKontext für den Fresnel-Effekt: Der Fresnel-Effekt sorgt dafür, dass Reflexionen am Radn stärker werden. Damit dieser Effekt sichtbar wird, muss die Umgebung Licht aus allen Winkeln (0° bis 90°) liefern - genau das leistet eine HDRI-Umgebungskarte.",
+    "crumbs": [
+      "4. Image Based Lighting (IBL)"
+    ]
+  },
+  {
+    "objectID": "pages/4_ibl.html#die-lichtquelle-was-ist-ibl",
+    "href": "pages/4_ibl.html#die-lichtquelle-was-ist-ibl",
+    "title": "Image Based Lighting",
+    "section": "Die Lichtquelle: Was ist IBL?",
+    "text": "Die Lichtquelle: Was ist IBL?\nAnstatt einzelne Lichtpunkte im Raum zu verteilen, nutzen wir beim IBL die gesamte Umgebung als Lichtquelle:\n\nHDRI statt Punktlicht: Wir nutzen 360°-Panorama-Bilder der echten Welt (High Dynamic Range Images).\nPixel als Emitter: Jeder einzelne Pixel des Bildes wird als winzige Lichtquelle behandelt. Ein HDRI mit einer Sonne liefert dort extream viel Energie, während die blauen Pixel des Himmels sanftes, farbiges Licht beisteuern.",
+    "crumbs": [
+      "4. Image Based Lighting (IBL)"
+    ]
+  },
+  {
+    "objectID": "pages/4_ibl.html#interaktive-analyse-der-torus-knoten-und-verschiedenen-welten",
+    "href": "pages/4_ibl.html#interaktive-analyse-der-torus-knoten-und-verschiedenen-welten",
+    "title": "Image Based Lighting",
+    "section": "Interaktive Analyse: Der Torus-Knoten und verschiedenen Welten",
+    "text": "Interaktive Analyse: Der Torus-Knoten und verschiedenen Welten\nUm die Konsistenz zu wahren, nutzen wir wieder den Torus-Knoten von Seite 1. Beaobachtet, wie das Material (kosntant auf Chrom/Metall eingestellt) allein druch den Wechsel der Umgebung seine Identität verändert. Das Materialmodell bleibt gleich, aber die Lichtinformation ändert sich.\n\n\nUmgebung wählen:   Stadt (Neutral) Landlandschaft (Offen) Wald (Grünlich) Nacht (Dunkel/Kontrastreich) Innenraum (Warm)",
+    "crumbs": [
+      "4. Image Based Lighting (IBL)"
+    ]
+  },
+  {
+    "objectID": "pages/4_ibl.html#zusammenfassung-der-mathematischen-lösung",
+    "href": "pages/4_ibl.html#zusammenfassung-der-mathematischen-lösung",
+    "title": "Image Based Lighting",
+    "section": "Zusammenfassung der mathematischen Lösung",
+    "text": "Zusammenfassung der mathematischen Lösung\nIBL löst das Problem der komlpexen Lichtberechnung durch Vorberechnung (Pre-Filtering):\n\nDiffuse Irradiance: Ein weichgezeichnetes Abbild der Umgebung liefert das diffuse Licht.\nSpecular Reflection: Verschiedene Unschärfegrade der Umgebung werden für unterschiedliche Rougchness-Stufen genutzt.\n\nErst durch dieses Zusammenspiel von Umgebungslicht und den physikalischen Materialgesetzen wird PBR zu eine vollständigen, fotorealistischen System.",
     "crumbs": [
       "4. Image Based Lighting (IBL)"
     ]
