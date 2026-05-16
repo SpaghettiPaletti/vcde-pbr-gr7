@@ -1,5 +1,85 @@
 [
   {
+    "objectID": "pages/6_X.html",
+    "href": "pages/6_X.html",
+    "title": "Alterungsslider",
+    "section": "",
+    "text": "Darstellung beispielsweise eines Kupferobjekts.\nÜber einen Slider kann ein Alterungseffekt simuliert werden.\nZeigt, dass PBR-Parameter nicht starr sind, sondern sich kombinieren lassen.",
+    "crumbs": [
+      "X. Vertiefung"
+    ]
+  },
+  {
+    "objectID": "pages/6_X.html#einen-alterungsslider",
+    "href": "pages/6_X.html#einen-alterungsslider",
+    "title": "Alterungsslider",
+    "section": "",
+    "text": "Darstellung beispielsweise eines Kupferobjekts.\nÜber einen Slider kann ein Alterungseffekt simuliert werden.\nZeigt, dass PBR-Parameter nicht starr sind, sondern sich kombinieren lassen.",
+    "crumbs": [
+      "X. Vertiefung"
+    ]
+  },
+  {
+    "objectID": "pages/1_phong_grenzen.html",
+    "href": "pages/1_phong_grenzen.html",
+    "title": "Die Grenzen von Phong",
+    "section": "",
+    "text": "Bevor wir in die Theorie abtauchen, lassen wir die Bilder für sich sprechen. Unten sieht man dasselbe Objekt, gerendert mit zwei völlig unterschiedlichen Ansätzen.\n\n  \n    \n    \n    Harter Glanzpunkt, keine Energieerhaltung.\n  \n\n  \n    \n    \n    Realistische Lichtverteilung und Energieerhaltung.\n  \n\n\n\nDie Lichtverhältnisse\nBeide Szenen nutzen eine identische Beleuchtungssituation: Ein Hemispheric Light dient als Grundlicht, während eine globale Umgebungskarte für komplexe Lichtinformationen und Reflexionen aus dem Raum sorgt.\nWarum sehen die Objekte so unterschiedlich aus?\nChrom ist ein Material, das seine Erscheinung fast vollständig aus der Spiegelung der Umgebung bezieht. Hier werden die theoretischen Grenzen von Phong besonders deutlich:\n\nKlassisches Phong: Damit Phing überhaupt eine Möglichkeit hat, Chrom darzustellen, wird es hier mit einer Reflection Map kombiniert. Da das Modell kein Verständnis für echtes Metall hat, wirkt die Reflexion wie ein “Aufkleber”. Es fehlt die physikalische Tiefe und das Objekt wirkt unnatürlich hell, weil das einfallende Licht der Umgebung ohne Begrenzung (keine Energieerhaltung) auf die Pixelfarbe addiert wird.\nPhysically Based Rendering: Bei PBR erkennt man, dass die Reflexionen an den Rändern des Knotens (flacher Blickwinkel) stärker und klarer als in der Mitte sind (Fresnel-Effekt). Zudem sorgt die Energieerhaltung dafür, dass das Material “schwer” und massiv wirkt. Das gespiegelte Licht kann nicht gleichzeitig die Oberfläche erhellen. Dadurch entsteht ein tiefer, realistischer Metall-Look.\n\n\n\nDas Phong-Beleuchtungsmodell, benannt nach seinem Erfinder Bui Tuong Phong (1973) war über Jahrzehnte der unangefochtene Standard in der Computergrafik. Auch heute noch findet es aufgrund seiner extrem geringen Rechenkosten in vielen Mobile-Games oder einfachen Web-Anwendungen Einsatz.\nEs handelt sich um ein lokales Beleuchtungsmodell. Das bedeutet: Die Farbe jedes Pixels wird nur anhand der direkten Beziehung zwischen Lichtquelle, Oberfläche und Kamera berechnet - Reflexionen anderer Objekte im Raum werden ignoriert.\nDie finale Farbe berechnet sich dabei als simple Addition aus vier Komponenten:\n\nEmissiv: Eigenleuchten des Materials.\nAmbient: Eine konstante für das globale, indirekte Grundlicht.\nDiffus: Die raue, matte Lichtstreuung (Lambert).\nSpekular: Der glänzende, spiegelnde Lichtfleck.\n\nLichtquellen sind in diesem Modell meist einfache, kleine Punktlichtquellen.\n\\[\\mathbf{Farbe} = \\underbrace{e_{mat}}_{\\text{Emissiv}} + \\underbrace{a_{light} * a_{mat}}_{\\text{Ambient}} + \\underbrace{\\max(l \\cdot n, 0) \\cdot d_{light} * d_{mat}}_{\\text{Diffus}} + \\underbrace{(\\max(h \\cdot n, 0))^S \\cdot s_{light} * s_{mat}}_{\\text{Spekular}}\\]\n\n\n\nProbiere es selbst aus: Schalte die einzelnen Komponenten der Phong-Gleichung ein und aus oder verändere ihre Werte, um zu sehen, wie sie das finale Rendering beeinflussen.\n\n    \n    \n    \n    \n        \n        \n        \n             Ambient (Grundlicht)\n            \n        \n        \n        \n             Diffus (Streuung)\n            \n        \n\n        \n             Spekular (Glanzpunkt)\n            \n        \n\n        \n            Exponent (Shininess / Glanzschärfe)\n            \n        \n    \n\n\n\n\n\n\n\n\n\n\nWarum sieht das Phong-Objekt eher aus wie Plastik?\n\nDas liegt am Spekular-Term, welcher immer die Farbe der Lichtquelle hat. Bei echten Metallen werden die Spiegelungen hingegen eingefärbt (Gold spiegelt golden). Phong erzeugt Glanzpunkte lediglich über einen mathematisch abstrakten Spiegelungsexponenten (Shininess). Es gibt kein echtes physikalisches Verständnis davon, woraus das Material besteht (z.B. Metall vs. Nicht-Metall).\n\n\n\n\nWarum wirken die Schatten beim Phong-Objekt so flach?\n\nIn der Realität wird Licht von Wänden und Böden in den Schattenbereich zurückgeworfen (Global Illumination –&gt; siehe IBL). Phong simuliert dieses komplexe indirekte Streulicht stark vereinfacht über einen simplen Ambient-Term, was Schatten oft unnatürlich flach wirken lässt.\n\n\n\n\nWas fehlt dem Modell grundsätzlich, um realistisch zu wirken?\n\nDie Physik. Klassische Modelle wie Phong schätzen das Licht nur ab, ignorieren aber grundlegende physikalische Gesetze der Optik.\n\n\n\n\n\nDer größte Fehler des Phong-Modells liegt in seiner Mathematik: Die Lichtwerte werden am Ende einfach stur addiert (Farbe = Emissiv + Ambient + Diffus + Spekular).\nDas führt zu einem massiven Problem: Dadurch kann ein Objekt am Ende mehr Licht reflektieren, als es von der Lichtquelle überhaupt empfangen hat! In der realen Welt ist das physikalisch absolut unmöglich und führt in der Computergrafik dazu, dass Materialien unter hellen Lichtern übersättigt wirken.\nDie Antwort von PBR: Wir brauchen das Gesetz der Energieerhaltung. Das eintreffende Licht wird aufgeteilt in reflektierendes Licht (Spekular) und gestreutes Licht (Diffus). Was spiegelnd reflektiert wird, kann nicht mehr im Material gestreut werden. Energieerhaltung ist also die Grundlage, auf der die weiteren PBR-Bausteine aufbauen. Diese lernen wir auf den weiteren Seiten kennen.",
+    "crumbs": [
+      "1. Phong und seine Schwächen"
+    ]
+  },
+  {
+    "objectID": "pages/1_phong_grenzen.html#phong-vs-pbr---ein-direkter-visueller-vergleich",
+    "href": "pages/1_phong_grenzen.html#phong-vs-pbr---ein-direkter-visueller-vergleich",
+    "title": "Die Grenzen von Phong",
+    "section": "",
+    "text": "Bevor wir in die Theorie abtauchen, lassen wir die Bilder für sich sprechen. Unten sieht man dasselbe Objekt, gerendert mit zwei völlig unterschiedlichen Ansätzen.\n\n  \n    \n    \n    Harter Glanzpunkt, keine Energieerhaltung.\n  \n\n  \n    \n    \n    Realistische Lichtverteilung und Energieerhaltung.\n  \n\n\n\nDie Lichtverhältnisse\nBeide Szenen nutzen eine identische Beleuchtungssituation: Ein Hemispheric Light dient als Grundlicht, während eine globale Umgebungskarte für komplexe Lichtinformationen und Reflexionen aus dem Raum sorgt.\nWarum sehen die Objekte so unterschiedlich aus?\nChrom ist ein Material, das seine Erscheinung fast vollständig aus der Spiegelung der Umgebung bezieht. Hier werden die theoretischen Grenzen von Phong besonders deutlich:\n\nKlassisches Phong: Damit Phing überhaupt eine Möglichkeit hat, Chrom darzustellen, wird es hier mit einer Reflection Map kombiniert. Da das Modell kein Verständnis für echtes Metall hat, wirkt die Reflexion wie ein “Aufkleber”. Es fehlt die physikalische Tiefe und das Objekt wirkt unnatürlich hell, weil das einfallende Licht der Umgebung ohne Begrenzung (keine Energieerhaltung) auf die Pixelfarbe addiert wird.\nPhysically Based Rendering: Bei PBR erkennt man, dass die Reflexionen an den Rändern des Knotens (flacher Blickwinkel) stärker und klarer als in der Mitte sind (Fresnel-Effekt). Zudem sorgt die Energieerhaltung dafür, dass das Material “schwer” und massiv wirkt. Das gespiegelte Licht kann nicht gleichzeitig die Oberfläche erhellen. Dadurch entsteht ein tiefer, realistischer Metall-Look.\n\n\n\nDas Phong-Beleuchtungsmodell, benannt nach seinem Erfinder Bui Tuong Phong (1973) war über Jahrzehnte der unangefochtene Standard in der Computergrafik. Auch heute noch findet es aufgrund seiner extrem geringen Rechenkosten in vielen Mobile-Games oder einfachen Web-Anwendungen Einsatz.\nEs handelt sich um ein lokales Beleuchtungsmodell. Das bedeutet: Die Farbe jedes Pixels wird nur anhand der direkten Beziehung zwischen Lichtquelle, Oberfläche und Kamera berechnet - Reflexionen anderer Objekte im Raum werden ignoriert.\nDie finale Farbe berechnet sich dabei als simple Addition aus vier Komponenten:\n\nEmissiv: Eigenleuchten des Materials.\nAmbient: Eine konstante für das globale, indirekte Grundlicht.\nDiffus: Die raue, matte Lichtstreuung (Lambert).\nSpekular: Der glänzende, spiegelnde Lichtfleck.\n\nLichtquellen sind in diesem Modell meist einfache, kleine Punktlichtquellen.\n\\[\\mathbf{Farbe} = \\underbrace{e_{mat}}_{\\text{Emissiv}} + \\underbrace{a_{light} * a_{mat}}_{\\text{Ambient}} + \\underbrace{\\max(l \\cdot n, 0) \\cdot d_{light} * d_{mat}}_{\\text{Diffus}} + \\underbrace{(\\max(h \\cdot n, 0))^S \\cdot s_{light} * s_{mat}}_{\\text{Spekular}}\\]\n\n\n\nProbiere es selbst aus: Schalte die einzelnen Komponenten der Phong-Gleichung ein und aus oder verändere ihre Werte, um zu sehen, wie sie das finale Rendering beeinflussen.\n\n    \n    \n    \n    \n        \n        \n        \n             Ambient (Grundlicht)\n            \n        \n        \n        \n             Diffus (Streuung)\n            \n        \n\n        \n             Spekular (Glanzpunkt)\n            \n        \n\n        \n            Exponent (Shininess / Glanzschärfe)\n            \n        \n    \n\n\n\n\n\n\n\n\n\n\nWarum sieht das Phong-Objekt eher aus wie Plastik?\n\nDas liegt am Spekular-Term, welcher immer die Farbe der Lichtquelle hat. Bei echten Metallen werden die Spiegelungen hingegen eingefärbt (Gold spiegelt golden). Phong erzeugt Glanzpunkte lediglich über einen mathematisch abstrakten Spiegelungsexponenten (Shininess). Es gibt kein echtes physikalisches Verständnis davon, woraus das Material besteht (z.B. Metall vs. Nicht-Metall).\n\n\n\n\nWarum wirken die Schatten beim Phong-Objekt so flach?\n\nIn der Realität wird Licht von Wänden und Böden in den Schattenbereich zurückgeworfen (Global Illumination –&gt; siehe IBL). Phong simuliert dieses komplexe indirekte Streulicht stark vereinfacht über einen simplen Ambient-Term, was Schatten oft unnatürlich flach wirken lässt.\n\n\n\n\nWas fehlt dem Modell grundsätzlich, um realistisch zu wirken?\n\nDie Physik. Klassische Modelle wie Phong schätzen das Licht nur ab, ignorieren aber grundlegende physikalische Gesetze der Optik.\n\n\n\n\n\nDer größte Fehler des Phong-Modells liegt in seiner Mathematik: Die Lichtwerte werden am Ende einfach stur addiert (Farbe = Emissiv + Ambient + Diffus + Spekular).\nDas führt zu einem massiven Problem: Dadurch kann ein Objekt am Ende mehr Licht reflektieren, als es von der Lichtquelle überhaupt empfangen hat! In der realen Welt ist das physikalisch absolut unmöglich und führt in der Computergrafik dazu, dass Materialien unter hellen Lichtern übersättigt wirken.\nDie Antwort von PBR: Wir brauchen das Gesetz der Energieerhaltung. Das eintreffende Licht wird aufgeteilt in reflektierendes Licht (Spekular) und gestreutes Licht (Diffus). Was spiegelnd reflektiert wird, kann nicht mehr im Material gestreut werden. Energieerhaltung ist also die Grundlage, auf der die weiteren PBR-Bausteine aufbauen. Diese lernen wir auf den weiteren Seiten kennen.",
+    "crumbs": [
+      "1. Phong und seine Schwächen"
+    ]
+  },
+  {
+    "objectID": "pages/3_materialmodell.html",
+    "href": "pages/3_materialmodell.html",
+    "title": "Kapitel 3: Das Materialmodell & Mapping",
+    "section": "",
+    "text": "Zielsetzung: Die Brücke von der Theorie zur praktischen Anwendung. Während im vorherigen Kapitel die mathematischen Grundlagen (Cook-Torrance) beleuchtet wurden, widmet sich dieses Kapitel dem etablierten Interface der Industrie: Dem Metallic-Roughness-Workflow (geprägt durch Disney). Hier wird untersucht, wie die abstrakten Formeln über handhabbare Parameter gesteuert werden – und warum für eine realistische Darstellung im nächsten Schritt unbedingt komplexes Licht (IBL) nötig sein wird.",
+    "crumbs": [
+      "3. Materialmodell"
+    ]
+  },
+  {
+    "objectID": "pages/3_materialmodell.html#von-der-cook-torrance-theorie-zum-disney-workflow",
+    "href": "pages/3_materialmodell.html#von-der-cook-torrance-theorie-zum-disney-workflow",
+    "title": "Kapitel 3: Das Materialmodell & Mapping",
+    "section": "1. Von der Cook-Torrance-Theorie zum Disney-Workflow",
+    "text": "1. Von der Cook-Torrance-Theorie zum Disney-Workflow\nIm vorherigen Kapitel wurden die physikalischen Prinzipien und die Cook-Torrance-BRDF hergeleitet. Zur Erinnerung, die Formel für den gerichteten (spekularen) Anteil lautet:\n\\[\nf_s = \\frac{D \\cdot F \\cdot G}{4 \\, (\\mathbf{n} \\cdot \\mathbf{l}) \\, (\\mathbf{n} \\cdot \\mathbf{v})}\n\\]\nDort wurden gegebenenfalls Aspekte wie die Mikrofacetten-Verteilung (\\(D\\)) oder der Fresnel-Effekt (\\(F\\)) bereits visualisiert. In der praktischen Computergrafik oder im Digital Engineering wird diese Formel jedoch selten direkt manipuliert. Stattdessen nutzen moderne Systeme ein standardisiertes Interface, das auf dem Disney Principled BSDF basiert (heute oft als OpenPBR bezeichnet).\nDieser Metallic-Roughness-Workflow abstrahiert die komplexe Mathematik in intuitive Steuerungsparameter für Anwender:\n\nRoughness (Rauheit): Steuert im Hintergrund direkt den \\(D\\)-Term (Normal Distribution Function) und den \\(G\\)-Term (Geometry). Der Anwender sieht nur: Hoher Wert = raue Oberfläche, niedriger Wert = glatte Oberfläche.\nMetallic (Metallizität): Bestimmt das grundlegende physikalische Verhalten und steuert den Fresnel-Term (\\(F\\)).\n\nDielektrika (Nicht-Metalle, Metallic = 0): Besitzen diffuse Farben und reflektieren Licht nur schwach an der Oberfläche.\nMetalle (Leiter, Metallic = 1): Besitzen keine diffuse Reflexion. Ihre Farbe wird ausschließlich aus der spiegelnden Reflexion gebildet.\n\nBase Color (Albedo): Definiert die Grundfarbe, deren physikalische Auswirkung durch den Metallic-Wert modifiziert wird.\n\nDieser Ansatz zwingt den Workflow automatisch zur Energieerhaltung. Es wird stark erschwert, unphysikalische Materialien zu erstellen.",
+    "crumbs": [
+      "3. Materialmodell"
+    ]
+  },
+  {
+    "objectID": "pages/3_materialmodell.html#das-material-labor-globale-parameter-vs.-texture-maps",
+    "href": "pages/3_materialmodell.html#das-material-labor-globale-parameter-vs.-texture-maps",
+    "title": "Kapitel 3: Das Materialmodell & Mapping",
+    "section": "2. Das Material-Labor: Globale Parameter vs. Texture Maps",
+    "text": "2. Das Material-Labor: Globale Parameter vs. Texture Maps\nUm die Steuerung zu demonstrieren, bedienen wir uns eines klassischen Beispiels der Computergrafik: Einem Holzfass. Ein solches Fass weckt in unserem Gehirn klare Erwartungen – das Holz sollte eher rau und farbig (Dielektrikum) sein, während die Eisenbänder darum herum als metallisch und spiegelnd wahrgenommen werden sollten.\nDie Szene verzichtet zunächst bewusst auf Umgebungskartierung (IBL) und wird nur durch einfache, isolierte Lichtquellen in einem vollständig dunklen Labor beleuchtet.\n(A) Globale Slider: Durch das Verschieben der Regler Metallic und Roughness unten verändern wir die Materialeigenschaften für das gesamte Objekt gleichzeitig und überlagern alle Pixel. Dadurch wirkt das Fass entweder komplett wie ein rauer Plastikklotz oder wie ein massiver Chromzylinder.\n(B) Texture-Maps: Um dem Fass eine realistische materielle Mehrteiligkeit zu verleihen, müssen wir auf “globale” Werte verzichten. Bei Klick auf “Aktivieren (Maps laden)” werden die Slider deaktiviert und wir übergeben der Engine stattdessen 2D-Texturen. Diese flüstern jedem Pixel präzise PBR-Werte zu (z.B. “Hier bist du Eisen, also ist Metallic=1”, oder “Hier bist du raues Holz”).\n\n  \n    Steuerung:\n    Texturen / Maps:\n    Aktivieren (Maps laden)\n    Aus (Globale Slider aktiv)\n  \n  \n  \n    Globale Metallic:\n    \n    0.00\n    \n    Globale Roughness:\n    \n    0.40",
+    "crumbs": [
+      "3. Materialmodell"
+    ]
+  },
+  {
+    "objectID": "pages/3_materialmodell.html#die-grenzen-des-labors-der-übergang-zu-ibl",
+    "href": "pages/3_materialmodell.html#die-grenzen-des-labors-der-übergang-zu-ibl",
+    "title": "Kapitel 3: Das Materialmodell & Mapping",
+    "section": "3. Die Grenzen des Labors: Der Übergang zu IBL",
+    "text": "3. Die Grenzen des Labors: Der Übergang zu IBL\nEine wesentliche Beobachtung des Labor-Aufbaus: Sobald Teile des Objektes stark metallisch werden (z.B. die Eisenringe in unserer Texture-Map), fangen sie ausschließlich Glanzlichter von dedizierten Lampen ein. Dazwischen wirkt das Metall nahezu tiefschwarz.\nDas ist physikalisch korrekt! Metalle verhalten sich wie Spiegel. Ein Spiegel in einem dunklen Raum kann nur die spärlichen Lichtpunkte der Taschenlampen zeigen – der Rest bleibt schwarz.\nUm die Leistungsfähigkeit des Cinematic Workflows auszuschöpfen, erfordert PBR zwingend eine realistische Umgebung, die Lichtdaten aus allen Richtungen liefert. Nur so kann der Cook-Torrance-Ansatz seine volle physikalische Präzision ausspielen. Diese Lücke schließt das Konzept des Image Based Lighting (IBL), was im folgenden Kapitel detailliert ausgeführt und demonstriert wird.",
+    "crumbs": [
+      "3. Materialmodell"
+    ]
+  },
+  {
     "objectID": "index.html",
     "href": "index.html",
     "title": "Physically Based Rendering (PBR)",
@@ -37,156 +117,6 @@
     "text": "Das Ziel: Fotorealismus in Echtzeit\nBevor wir in die Theorie eintauchen, hier ein Ausblick auf das, was PBR leisten kann. Die folgende interaktive 3D-Szene zeigt das finale Konzept im Einsatz: Sie kombiniert ein Physikalisches Material (Kapitel 3) mit komplexitätsfreier Umgebungsbeleuchtung durch Image Based Lighting (IBL) (Kapitel 4).\nDie Kamera kann mit der Maus gedreht und gezoomt werden.\n\n\n    \n\n\nDer Weg dorthin: Starten wir zunächst damit, warum wir alte Modelle überhaupt hinter uns lassen mussten im Kapitel 1. Die Grenzen von Phong.\nHinweis: Die interaktive 3D-Ansicht auf dieser Seite wird mit der Open-Source WebGL-Engine Babylon.js gerendert.",
     "crumbs": [
       "Einleitung"
-    ]
-  },
-  {
-    "objectID": "pages/3_materialmodell.html",
-    "href": "pages/3_materialmodell.html",
-    "title": "Kapitel 3: Das Materialmodell & Mapping",
-    "section": "",
-    "text": "Autor: Alexander Kohl  Zielsetzung: “Das Material-Labor”. Hier klären wir die Frage: Was bin ich? Wir erforschen die physikalischen Materialeigenschaften unter strikt neutralen Laborbedingungen (starres Studiolicht). Die Reaktion auf reale Umwelteinflüsse (Wo bin ich?) folgt im nächsten Kapitel (IBL).",
-    "crumbs": [
-      "3. Materialmodell"
-    ]
-  },
-  {
-    "objectID": "pages/3_materialmodell.html#von-der-formel-zum-shader-das-interface",
-    "href": "pages/3_materialmodell.html#von-der-formel-zum-shader-das-interface",
-    "title": "Kapitel 3: Das Materialmodell & Mapping",
-    "section": "1. Von der Formel zum Shader (Das Interface)",
-    "text": "1. Von der Formel zum Shader (Das Interface)\n\n  \n    [Text-Block]\n    Die Brücke zu Kapitel 2: In den physikalischen PBR-Prinzipien wurde hergeleitet, wie Lichtberechnung mathematisch durch die Komponenten D, F und G funktioniert. In der Praxis berechnen Anwender jedoch keine Fresnel-Integrale händisch.\n    Wir brauchen ein Materialmodell: Ein Interface (einen \"Shader\"), das diese komplexe Mathematik kapselt und über einfache, verständliche Parameter steuerbar macht.\n  \n  \n    [Visuelle Grafik]\n    [ Skizze: Physik (Zahlen/Formeln) ➔ Shader (Blackbox) ➔ Anwender (Sliders) ]",
-    "crumbs": [
-      "3. Materialmodell"
-    ]
-  },
-  {
-    "objectID": "pages/3_materialmodell.html#der-standard-blender-principled-bsdf-openpbr",
-    "href": "pages/3_materialmodell.html#der-standard-blender-principled-bsdf-openpbr",
-    "title": "Kapitel 3: Das Materialmodell & Mapping",
-    "section": "2. Der Standard: Blender Principled BSDF & OpenPBR",
-    "text": "2. Der Standard: Blender Principled BSDF & OpenPBR\n\n  \n    [Text-Block]\n    Worum geht es hier? (Q&A 1 Feedback): Vor den PBR-Standards gab es veraltete Workflows (z.B. \"Specular/Glossiness\"). Dort war die Materialerstellung extrem fehleranfällig und oft physikalisch inkorrekt.\n    Mit dem Principled BSDF (Disney/Blender) und OpenPBR hat sich ein neuer Goldstandard etabliert: Der Metallic-Roughness-Workflow.\n    Der massive architektonische Vorteil: Er ist inhärent energieerhaltend. Ein Anwender kann im Grunde kein physikalisch unmögliches Material mehr mischen.\n  \n  \n    [Die 3 Heiligen Parameter]\n    Base Color (Albedo): Grundfarbe (Dielektrika) / Reflexionsfarbe (Metalle).\n    Metallic: Binärer Maskenwert (Metall oder nicht?).\n    Roughness: Streuung der Mikrofacetten (matt vs. glatt).",
-    "crumbs": [
-      "3. Materialmodell"
-    ]
-  },
-  {
-    "objectID": "pages/3_materialmodell.html#das-material-labor-parameter-in-aktion",
-    "href": "pages/3_materialmodell.html#das-material-labor-parameter-in-aktion",
-    "title": "Kapitel 3: Das Materialmodell & Mapping",
-    "section": "3. Das Material-Labor: Parameter in Aktion",
-    "text": "3. Das Material-Labor: Parameter in Aktion\nProbier es im folgenden interaktiven “Labor” selbst aus! Beachte: Das Licht (zwei simple weiße Studiolampen) bewegt sich nicht. Du veränderst nur das Material des Fasses.\n\n  \n    Interaktives Material-Labor: Das Fass\n    \n    \n        \n    \n    \n    \n        Metallic:\n         0.00 (0 = Plastik/Rost, 1 = Pures Metall)\n        \n        Roughness:\n         0.50 (0 = Glatter Spiegel, 1 = Extrem Matt)",
-    "crumbs": [
-      "3. Materialmodell"
-    ]
-  },
-  {
-    "objectID": "pages/3_materialmodell.html#texture-mapping-pixelgenaue-steuerung",
-    "href": "pages/3_materialmodell.html#texture-mapping-pixelgenaue-steuerung",
-    "title": "Kapitel 3: Das Materialmodell & Mapping",
-    "section": "4. Texture-Mapping (Pixelgenaue Steuerung)",
-    "text": "4. Texture-Mapping (Pixelgenaue Steuerung)\n\n  \n    [Text-Block]\n    Globale Schieberegler (wie oben) reichen für saubere, einheitliche Materialien, aber nicht für ein realistisches, stellenweise zerkratztes Fass.\n    Texture Maps: Wir lösen die globalen Slider in 2D-Bilddateien auf. Jeder Pixel der Graustufen-Textur steuert den Parameter für exakt diesen Punkt auf dem Modell. Ein roter Fleck mit \"1.0 Metallic\" und \"0.0 Roughness\" spiegelt perfekt, während der restliche Rost matt bleibt.\n  \n  \n    [Visuelle Matrix: Maps]\n    [ Bild: Das fertige Objekt ]\n    aufgeteilt in:\n    [ Albedo Map ] | [ Metallic Map ] | [ Roughness Map ] | [ Normal Map ]",
-    "crumbs": [
-      "3. Materialmodell"
-    ]
-  },
-  {
-    "objectID": "pages/3_materialmodell.html#überleitung-zu-kapitel-4-raus-aus-dem-labor",
-    "href": "pages/3_materialmodell.html#überleitung-zu-kapitel-4-raus-aus-dem-labor",
-    "title": "Kapitel 3: Das Materialmodell & Mapping",
-    "section": "5. Überleitung zu Kapitel 4: Raus aus dem Labor",
-    "text": "5. Überleitung zu Kapitel 4: Raus aus dem Labor\n\n  \n    Das Material ist nun fertig definiert (\"Was bin ich?\").\n    Unter unserem statischen Labor-Ringlicht oben sieht selbst perfekt eingestelltes Chrom noch immer künstlich und langweilig aus – weil schlichtweg nichts da ist, das sich darin spiegeln könnte!\n    Im nächsten Kapitel nehmen wir unser fertig texturiertes Fass und stellen es in die reale Welt (\"Wo bin ich?\"). Wir überlassen das starre Studiolicht der Vergangenheit und entdecken das Image Based Lighting (IBL).",
-    "crumbs": [
-      "3. Materialmodell"
-    ]
-  },
-  {
-    "objectID": "pages/6_X.html",
-    "href": "pages/6_X.html",
-    "title": "Alterungsslider",
-    "section": "",
-    "text": "Darstellung beispielsweise eines Kupferobjekts.\nÜber einen Slider kann ein Alterungseffekt simuliert werden.\nZeigt, dass PBR-Parameter nicht starr sind, sondern sich kombinieren lassen.",
-    "crumbs": [
-      "X. Vertiefung"
-    ]
-  },
-  {
-    "objectID": "pages/6_X.html#einen-alterungsslider",
-    "href": "pages/6_X.html#einen-alterungsslider",
-    "title": "Alterungsslider",
-    "section": "",
-    "text": "Darstellung beispielsweise eines Kupferobjekts.\nÜber einen Slider kann ein Alterungseffekt simuliert werden.\nZeigt, dass PBR-Parameter nicht starr sind, sondern sich kombinieren lassen.",
-    "crumbs": [
-      "X. Vertiefung"
-    ]
-  },
-  {
-    "objectID": "pages/2_pbr_prinzipien.html",
-    "href": "pages/2_pbr_prinzipien.html",
-    "title": "PBR-Prinzipien",
-    "section": "",
-    "text": "Im Gegensatz zum klassischen Phong-Modell basiert PBR auf messbaren physikalischen Prinzipien. Die drei zentralen Säulen sind:\nDiese Prinzipien führen zu realistischen und unter verschiedenen Beleuchtungsbedingungen konsistenten Materialdarstellungen.",
-    "crumbs": [
-      "2. PBR-Prinzipien"
-    ]
-  },
-  {
-    "objectID": "pages/2_pbr_prinzipien.html#rendering-gleichung",
-    "href": "pages/2_pbr_prinzipien.html#rendering-gleichung",
-    "title": "PBR-Prinzipien",
-    "section": "Rendering-Gleichung",
-    "text": "Rendering-Gleichung\nDie Grundlage jeder Beleuchtungsberechnung ist die Rendering-Gleichung:\n\\[\nL_o(x,\\omega_o) = L_e(x,\\omega_o) + \\int_{\\Omega} f_r(x,\\omega_i,\\omega_o) \\, L_i(x,\\omega_i) \\, (n \\cdot \\omega_i) \\, d\\omega_i\n\\]\nDabei beschreibt die Bidirectional Reflectance Distribution Function (BRDF) \\(f_r\\) das Reflexionsverhalten der Oberfläche für einfallendes Licht aus Richtung \\(\\omega_i\\) in Richtung \\(\\omega_o\\).\nIn PBR wird die BRDF üblicherweise in zwei Anteile aufgeteilt:\n\\[\nf_r(\\mathbf{v}, \\mathbf{l}) = f_d(\\mathbf{v}, \\mathbf{l}) + f_s(\\mathbf{v}, \\mathbf{l})\n\\]\n\n\\(f_d\\): diffuser Anteil (matte, richtungsunabhängige Reflexion)\n\\(f_s\\): spekularer Anteil (gerichtete Spiegelreflexion)\n\nDer diffuse Anteil wird meist mit einem normierten Lambert-Modell berechnet, der spekularer Anteil mit der Cook-Torrance-BRDF.",
-    "crumbs": [
-      "2. PBR-Prinzipien"
-    ]
-  },
-  {
-    "objectID": "pages/2_pbr_prinzipien.html#grundprinzip",
-    "href": "pages/2_pbr_prinzipien.html#grundprinzip",
-    "title": "PBR-Prinzipien",
-    "section": "Grundprinzip",
-    "text": "Grundprinzip\nEine Oberfläche darf nie mehr Licht reflektieren, als sie empfängt. Die Summe aus diffusem und spiegelndem Anteil muss physikalisch plausibel bleiben.\nVergleich mit Phong:\nIm klassischen Phong-Modell werden Ambient, Diffuse und Specular einfach addiert. Dadurch ist es möglich, dass die reflektierte Energie die einfallende übersteigt – das Material leuchtet dann unnatürlich. In PBR wird diese Verletzung der Energieerhaltung durch die Abhängigkeit der Anteile voneinander systematisch verhindert.",
-    "crumbs": [
-      "2. PBR-Prinzipien"
-    ]
-  },
-  {
-    "objectID": "pages/2_pbr_prinzipien.html#grundidee",
-    "href": "pages/2_pbr_prinzipien.html#grundidee",
-    "title": "PBR-Prinzipien",
-    "section": "Grundidee",
-    "text": "Grundidee\nReale Oberflächen sind auf mikroskopischer Ebene rau und bestehen aus vielen kleinen Facetten, die wie winzige Spiegel wirken. Nur Facetten, deren Normale exakt dem Halfway-Vektor \\(\\mathbf{h}\\) entspricht, reflektieren Licht direkt vom Licht zum Betrachter. ::: columns\n\n\nMakroskopisches Verhalten\nv: Blickrichtungsvektor\nl: Lichtrichtungsvektor\nn: Normalenvektor\nh: normierte Mittelrichtung zwischen v und l\n\n\n\nMikrofacettenstruktur\n\n\n\nLichtinteraktion\n\n:::",
-    "crumbs": [
-      "2. PBR-Prinzipien"
-    ]
-  },
-  {
-    "objectID": "pages/2_pbr_prinzipien.html#cook-torrance-brdf-spekularer-anteil",
-    "href": "pages/2_pbr_prinzipien.html#cook-torrance-brdf-spekularer-anteil",
-    "title": "PBR-Prinzipien",
-    "section": "Cook-Torrance BRDF (spekularer Anteil)",
-    "text": "Cook-Torrance BRDF (spekularer Anteil)\nDer spekularer Anteil \\(f_s\\) in PBR wird mit der Cook-Torrance-Formel berechnet:\n\\[\nf_s(\\mathbf{v}, \\mathbf{l}) = \\frac{F(\\mathbf{v}, \\mathbf{h}) \\, D(\\mathbf{h}) \\, G(\\mathbf{l}, \\mathbf{v})}{4 \\, (\\mathbf{n} \\cdot \\mathbf{l}) \\, (\\mathbf{n} \\cdot \\mathbf{v})}\n\\tag{1}\\]\nDieser Term setzt sich aus drei physikalisch begründeten Komponenten zusammen. Jede wird im Folgenden mit dem Phong-Modell verglichen.\n\n1. Fresnel-Term \\(F\\)\nDer Fresnel-Effekt beschreibt, dass der Reflexionsanteil mit flacherem Einfallswinkel zunimmt. Bei grazing angles reflektiert nahezu jedes Material fast das gesamte Licht spiegelnd.\nIn der Praxis wird meist die Schlick-Approximation verwendet:\n\\[\nF(\\theta) = F_0 + (1 - F_0)(1 - \\cos\\theta)^5\n\\]\nVergleich mit Phong:\nDas Phong-Modell kennt keinen Fresnel-Effekt. Das Glanzlicht hat bei jedem Betrachtungswinkel die gleiche Intensität – unabhängig davon, ob man senkrecht oder flach auf die Oberfläche schaut. Dies führt zu unnatürlich gleichmäßigen und oft zu hellen Glanzlichtern an den Rändern.\n\n\n2. Normal Distribution Function (NDF) \\(D\\)\nDie NDF beschreibt die statistische Verteilung der Mikrofacets. Der heutige Standard ist die GGX (Trowbridge-Reitz)-Verteilung:\n\\[\nD(\\mathbf{h}) = \\frac{\\alpha^2}{\\pi \\left( (\\mathbf{n} \\cdot \\mathbf{h})^2 (\\alpha^2 - 1) + 1 \\right)^2}\n\\]\n\\(\\alpha\\) entspricht der Roughness (0 = glatt, 1 = rau).\nVergleich mit Phong:\nPhong verwendet die einfache Potenzfunktion \\((\\mathbf{n} \\cdot \\mathbf{h})^S\\). Diese hat keine physikalische Grundlage und ist nicht energieerhaltend. Wird das Glanzlicht breiter, bleibt die Helligkeit gleich oder nimmt sogar zu – physikalisch falsch.\nBei GGX wird das Glanzlicht mit zunehmender Rauheit automatisch dunkler, weil die Funktion normiert ist und die Energieerhaltung einhält.\n\n\n3. Geometry-Term \\(G\\) (Shadowing & Masking)\nAuf rauen Oberflächen verdecken sich Mikrofacets gegenseitig (Shadowing und Masking). Der Geometry-Term modelliert diese Abschattung und Blockierung.\nIn modernen PBR-Systemen wird meist die Smith-Schlick-GGX-Approximation verwendet:\n\\[\nG_1(v) = \\frac{\\mathbf{n} \\cdot \\mathbf{v}}{(\\mathbf{n} \\cdot \\mathbf{v})(1 - k) + k}\n\\]\nDer volle Term lautet \\(G(\\mathbf{l}, \\mathbf{v}) = G_1(\\mathbf{l}) \\cdot G_1(\\mathbf{v})\\).\nVergleich mit Phong:\nDas Phong-Modell enthält keinen Geometry-Term. Dadurch entsteht bei flachen Betrachtungswinkeln ein unnatürlicher Helligkeitsanstieg an den Rändern („bright edges“). Der G-Term in PBR kompensiert diesen Effekt und hält die reflektierte Energie physikalisch plausibel.",
-    "crumbs": [
-      "2. PBR-Prinzipien"
-    ]
-  },
-  {
-    "objectID": "pages/1_phong_grenzen.html",
-    "href": "pages/1_phong_grenzen.html",
-    "title": "Die Grenzen von Phong",
-    "section": "",
-    "text": "Bevor wir in die Theorie abtauchen, lassen wir die Bilder für sich sprechen. Unten sieht man dasselbe Objekt, gerendert mit zwei völlig unterschiedlichen Ansätzen.\n\n  \n    \n    \n    Harter Glanzpunkt, keine Energieerhaltung.\n  \n\n  \n    \n    \n    Realistische Lichtverteilung und Energieerhaltung.\n  \n\n\n\nDie Lichtverhältnisse\nBeide Szenen nutzen eine identische Beleuchtungssituation: Ein Hemispheric Light dient als Grundlicht, während eine globale Umgebungskarte für komplexe Lichtinformationen und Reflexionen aus dem Raum sorgt.\nWarum sehen die Objekte so unterschiedlich aus?\nChrom ist ein Material, das seine Erscheinung fast vollständig aus der Spiegelung der Umgebung bezieht. Hier werden die theoretischen Grenzen von Phong besonders deutlich:\n\nKlassisches Phong: Damit Phing überhaupt eine Möglichkeit hat, Chrom darzustellen, wird es hier mit einer Reflection Map kombiniert. Da das Modell kein Verständnis für echtes Metall hat, wirkt die Reflexion wie ein “Aufkleber”. Es fehlt die physikalische Tiefe und das Objekt wirkt unnatürlich hell, weil das einfallende Licht der Umgebung ohne Begrenzung (keine Energieerhaltung) auf die Pixelfarbe addiert wird.\nPhysically Based Rendering: Bei PBR erkennt man, dass die Reflexionen an den Rändern des Knotens (flacher Blickwinkel) stärker und klarer als in der Mitte sind (Fresnel-Effekt). Zudem sorgt die Energieerhaltung dafür, dass das Material “schwer” und massiv wirkt. Das gespiegelte Licht kann nicht gleichzeitig die Oberfläche erhellen. Dadurch entsteht ein tiefer, realistischer Metall-Look.\n\n\n\nDas Phong-Beleuchtungsmodell, benannt nach seinem Erfinder Bui Tuong Phong (1973) war über Jahrzehnte der unangefochtene Standard in der Computergrafik. Auch heute noch findet es aufgrund seiner extrem geringen Rechenkosten in vielen Mobile-Games oder einfachen Web-Anwendungen Einsatz.\nEs handelt sich um ein lokales Beleuchtungsmodell. Das bedeutet: Die Farbe jedes Pixels wird nur anhand der direkten Beziehung zwischen Lichtquelle, Oberfläche und Kamera berechnet - Reflexionen anderer Objekte im Raum werden ignoriert.\nDie finale Farbe berechnet sich dabei als simple Addition aus vier Komponenten:\n\nEmissiv: Eigenleuchten des Materials.\nAmbient: Eine konstante für das globale, indirekte Grundlicht.\nDiffus: Die raue, matte Lichtstreuung (Lambert).\nSpekular: Der glänzende, spiegelnde Lichtfleck.\n\nLichtquellen sind in diesem Modell meist einfache, kleine Punktlichtquellen.\n\\[\\mathbf{Farbe} = \\underbrace{e_{mat}}_{\\text{Emissiv}} + \\underbrace{a_{light} * a_{mat}}_{\\text{Ambient}} + \\underbrace{\\max(l \\cdot n, 0) \\cdot d_{light} * d_{mat}}_{\\text{Diffus}} + \\underbrace{(\\max(h \\cdot n, 0))^S \\cdot s_{light} * s_{mat}}_{\\text{Spekular}}\\]\n\n\n\nProbiere es selbst aus: Schalte die einzelnen Komponenten der Phong-Gleichung ein und aus oder verändere ihre Werte, um zu sehen, wie sie das finale Rendering beeinflussen.\n\n    \n    \n    \n    \n        \n        \n        \n             Ambient (Grundlicht)\n            \n        \n        \n        \n             Diffus (Streuung)\n            \n        \n\n        \n             Spekular (Glanzpunkt)\n            \n        \n\n        \n            Exponent (Shininess / Glanzschärfe)\n            \n        \n    \n\n\n\n\n\n\n\n\n\n\nWarum sieht das Phong-Objekt eher aus wie Plastik?\n\nDas liegt am Spekular-Term, welcher immer die Farbe der Lichtquelle hat. Bei echten Metallen werden die Spiegelungen hingegen eingefärbt (Gold spiegelt golden). Phong erzeugt Glanzpunkte lediglich über einen mathematisch abstrakten Spiegelungsexponenten (Shininess). Es gibt kein echtes physikalisches Verständnis davon, woraus das Material besteht (z.B. Metall vs. Nicht-Metall).\n\n\n\n\nWarum wirken die Schatten beim Phong-Objekt so flach?\n\nIn der Realität wird Licht von Wänden und Böden in den Schattenbereich zurückgeworfen (Global Illumination –&gt; siehe IBL). Phong simuliert dieses komplexe indirekte Streulicht stark vereinfacht über einen simplen Ambient-Term, was Schatten oft unnatürlich flach wirken lässt.\n\n\n\n\nWas fehlt dem Modell grundsätzlich, um realistisch zu wirken?\n\nDie Physik. Klassische Modelle wie Phong schätzen das Licht nur ab, ignorieren aber grundlegende physikalische Gesetze der Optik.\n\n\n\n\n\nDer größte Fehler des Phong-Modells liegt in seiner Mathematik: Die Lichtwerte werden am Ende einfach stur addiert (Farbe = Emissiv + Ambient + Diffus + Spekular).\nDas führt zu einem massiven Problem: Dadurch kann ein Objekt am Ende mehr Licht reflektieren, als es von der Lichtquelle überhaupt empfangen hat! In der realen Welt ist das physikalisch absolut unmöglich und führt in der Computergrafik dazu, dass Materialien unter hellen Lichtern übersättigt wirken.\nDie Antwort von PBR: Wir brauchen das Gesetz der Energieerhaltung. Das eintreffende Licht wird aufgeteilt in reflektierendes Licht (Spekular) und gestreutes Licht (Diffus). Was spiegelnd reflektiert wird, kann nicht mehr im Material gestreut werden. Energieerhaltung ist also die Grundlage, auf der die weiteren PBR-Bausteine aufbauen. Diese lernen wir auf den weiteren Seiten kennen.",
-    "crumbs": [
-      "1. Phong und seine Schwächen"
-    ]
-  },
-  {
-    "objectID": "pages/1_phong_grenzen.html#phong-vs-pbr---ein-direkter-visueller-vergleich",
-    "href": "pages/1_phong_grenzen.html#phong-vs-pbr---ein-direkter-visueller-vergleich",
-    "title": "Die Grenzen von Phong",
-    "section": "",
-    "text": "Bevor wir in die Theorie abtauchen, lassen wir die Bilder für sich sprechen. Unten sieht man dasselbe Objekt, gerendert mit zwei völlig unterschiedlichen Ansätzen.\n\n  \n    \n    \n    Harter Glanzpunkt, keine Energieerhaltung.\n  \n\n  \n    \n    \n    Realistische Lichtverteilung und Energieerhaltung.\n  \n\n\n\nDie Lichtverhältnisse\nBeide Szenen nutzen eine identische Beleuchtungssituation: Ein Hemispheric Light dient als Grundlicht, während eine globale Umgebungskarte für komplexe Lichtinformationen und Reflexionen aus dem Raum sorgt.\nWarum sehen die Objekte so unterschiedlich aus?\nChrom ist ein Material, das seine Erscheinung fast vollständig aus der Spiegelung der Umgebung bezieht. Hier werden die theoretischen Grenzen von Phong besonders deutlich:\n\nKlassisches Phong: Damit Phing überhaupt eine Möglichkeit hat, Chrom darzustellen, wird es hier mit einer Reflection Map kombiniert. Da das Modell kein Verständnis für echtes Metall hat, wirkt die Reflexion wie ein “Aufkleber”. Es fehlt die physikalische Tiefe und das Objekt wirkt unnatürlich hell, weil das einfallende Licht der Umgebung ohne Begrenzung (keine Energieerhaltung) auf die Pixelfarbe addiert wird.\nPhysically Based Rendering: Bei PBR erkennt man, dass die Reflexionen an den Rändern des Knotens (flacher Blickwinkel) stärker und klarer als in der Mitte sind (Fresnel-Effekt). Zudem sorgt die Energieerhaltung dafür, dass das Material “schwer” und massiv wirkt. Das gespiegelte Licht kann nicht gleichzeitig die Oberfläche erhellen. Dadurch entsteht ein tiefer, realistischer Metall-Look.\n\n\n\nDas Phong-Beleuchtungsmodell, benannt nach seinem Erfinder Bui Tuong Phong (1973) war über Jahrzehnte der unangefochtene Standard in der Computergrafik. Auch heute noch findet es aufgrund seiner extrem geringen Rechenkosten in vielen Mobile-Games oder einfachen Web-Anwendungen Einsatz.\nEs handelt sich um ein lokales Beleuchtungsmodell. Das bedeutet: Die Farbe jedes Pixels wird nur anhand der direkten Beziehung zwischen Lichtquelle, Oberfläche und Kamera berechnet - Reflexionen anderer Objekte im Raum werden ignoriert.\nDie finale Farbe berechnet sich dabei als simple Addition aus vier Komponenten:\n\nEmissiv: Eigenleuchten des Materials.\nAmbient: Eine konstante für das globale, indirekte Grundlicht.\nDiffus: Die raue, matte Lichtstreuung (Lambert).\nSpekular: Der glänzende, spiegelnde Lichtfleck.\n\nLichtquellen sind in diesem Modell meist einfache, kleine Punktlichtquellen.\n\\[\\mathbf{Farbe} = \\underbrace{e_{mat}}_{\\text{Emissiv}} + \\underbrace{a_{light} * a_{mat}}_{\\text{Ambient}} + \\underbrace{\\max(l \\cdot n, 0) \\cdot d_{light} * d_{mat}}_{\\text{Diffus}} + \\underbrace{(\\max(h \\cdot n, 0))^S \\cdot s_{light} * s_{mat}}_{\\text{Spekular}}\\]\n\n\n\nProbiere es selbst aus: Schalte die einzelnen Komponenten der Phong-Gleichung ein und aus oder verändere ihre Werte, um zu sehen, wie sie das finale Rendering beeinflussen.\n\n    \n    \n    \n    \n        \n        \n        \n             Ambient (Grundlicht)\n            \n        \n        \n        \n             Diffus (Streuung)\n            \n        \n\n        \n             Spekular (Glanzpunkt)\n            \n        \n\n        \n            Exponent (Shininess / Glanzschärfe)\n            \n        \n    \n\n\n\n\n\n\n\n\n\n\nWarum sieht das Phong-Objekt eher aus wie Plastik?\n\nDas liegt am Spekular-Term, welcher immer die Farbe der Lichtquelle hat. Bei echten Metallen werden die Spiegelungen hingegen eingefärbt (Gold spiegelt golden). Phong erzeugt Glanzpunkte lediglich über einen mathematisch abstrakten Spiegelungsexponenten (Shininess). Es gibt kein echtes physikalisches Verständnis davon, woraus das Material besteht (z.B. Metall vs. Nicht-Metall).\n\n\n\n\nWarum wirken die Schatten beim Phong-Objekt so flach?\n\nIn der Realität wird Licht von Wänden und Böden in den Schattenbereich zurückgeworfen (Global Illumination –&gt; siehe IBL). Phong simuliert dieses komplexe indirekte Streulicht stark vereinfacht über einen simplen Ambient-Term, was Schatten oft unnatürlich flach wirken lässt.\n\n\n\n\nWas fehlt dem Modell grundsätzlich, um realistisch zu wirken?\n\nDie Physik. Klassische Modelle wie Phong schätzen das Licht nur ab, ignorieren aber grundlegende physikalische Gesetze der Optik.\n\n\n\n\n\nDer größte Fehler des Phong-Modells liegt in seiner Mathematik: Die Lichtwerte werden am Ende einfach stur addiert (Farbe = Emissiv + Ambient + Diffus + Spekular).\nDas führt zu einem massiven Problem: Dadurch kann ein Objekt am Ende mehr Licht reflektieren, als es von der Lichtquelle überhaupt empfangen hat! In der realen Welt ist das physikalisch absolut unmöglich und führt in der Computergrafik dazu, dass Materialien unter hellen Lichtern übersättigt wirken.\nDie Antwort von PBR: Wir brauchen das Gesetz der Energieerhaltung. Das eintreffende Licht wird aufgeteilt in reflektierendes Licht (Spekular) und gestreutes Licht (Diffus). Was spiegelnd reflektiert wird, kann nicht mehr im Material gestreut werden. Energieerhaltung ist also die Grundlage, auf der die weiteren PBR-Bausteine aufbauen. Diese lernen wir auf den weiteren Seiten kennen.",
-    "crumbs": [
-      "1. Phong und seine Schwächen"
     ]
   },
   {
@@ -247,6 +177,56 @@
     "text": "Zusammenfassung der mathematischen Lösung\nIBL löst das Problem der komlpexen Lichtberechnung durch Vorberechnung (Pre-Filtering):\n\nDiffuse Irradiance: Ein weichgezeichnetes Abbild der Umgebung liefert das diffuse Licht.\nSpecular Reflection: Verschiedene Unschärfegrade der Umgebung werden für unterschiedliche Rougchness-Stufen genutzt.\n\nErst durch dieses Zusammenspiel von Umgebungslicht und den physikalischen Materialgesetzen wird PBR zu eine vollständigen, fotorealistischen System.",
     "crumbs": [
       "4. Image Based Lighting (IBL)"
+    ]
+  },
+  {
+    "objectID": "pages/2_pbr_prinzipien.html",
+    "href": "pages/2_pbr_prinzipien.html",
+    "title": "PBR-Prinzipien",
+    "section": "",
+    "text": "Im Gegensatz zum klassischen Phong-Modell basiert PBR auf messbaren physikalischen Prinzipien. Die drei zentralen Säulen sind:\nDiese Prinzipien führen zu realistischen und unter verschiedenen Beleuchtungsbedingungen konsistenten Materialdarstellungen.",
+    "crumbs": [
+      "2. PBR-Prinzipien"
+    ]
+  },
+  {
+    "objectID": "pages/2_pbr_prinzipien.html#rendering-gleichung",
+    "href": "pages/2_pbr_prinzipien.html#rendering-gleichung",
+    "title": "PBR-Prinzipien",
+    "section": "Rendering-Gleichung",
+    "text": "Rendering-Gleichung\nDie Grundlage jeder Beleuchtungsberechnung ist die Rendering-Gleichung:\n\\[\nL_o(x,\\omega_o) = L_e(x,\\omega_o) + \\int_{\\Omega} f_r(x,\\omega_i,\\omega_o) \\, L_i(x,\\omega_i) \\, (n \\cdot \\omega_i) \\, d\\omega_i\n\\]\nDabei beschreibt die Bidirectional Reflectance Distribution Function (BRDF) \\(f_r\\) das Reflexionsverhalten der Oberfläche für einfallendes Licht aus Richtung \\(\\omega_i\\) in Richtung \\(\\omega_o\\).\nIn PBR wird die BRDF üblicherweise in zwei Anteile aufgeteilt:\n\\[\nf_r(\\mathbf{v}, \\mathbf{l}) = f_d(\\mathbf{v}, \\mathbf{l}) + f_s(\\mathbf{v}, \\mathbf{l})\n\\]\n\n\\(f_d\\): diffuser Anteil (matte, richtungsunabhängige Reflexion)\n\\(f_s\\): spekularer Anteil (gerichtete Spiegelreflexion)\n\nDer diffuse Anteil wird meist mit einem normierten Lambert-Modell berechnet, der spekularer Anteil mit der Cook-Torrance-BRDF.",
+    "crumbs": [
+      "2. PBR-Prinzipien"
+    ]
+  },
+  {
+    "objectID": "pages/2_pbr_prinzipien.html#grundprinzip",
+    "href": "pages/2_pbr_prinzipien.html#grundprinzip",
+    "title": "PBR-Prinzipien",
+    "section": "Grundprinzip",
+    "text": "Grundprinzip\nEine Oberfläche darf nie mehr Licht reflektieren, als sie empfängt. Die Summe aus diffusem und spiegelndem Anteil muss physikalisch plausibel bleiben.\nVergleich mit Phong:\nIm klassischen Phong-Modell werden Ambient, Diffuse und Specular einfach addiert. Dadurch ist es möglich, dass die reflektierte Energie die einfallende übersteigt – das Material leuchtet dann unnatürlich. In PBR wird diese Verletzung der Energieerhaltung durch die Abhängigkeit der Anteile voneinander systematisch verhindert.",
+    "crumbs": [
+      "2. PBR-Prinzipien"
+    ]
+  },
+  {
+    "objectID": "pages/2_pbr_prinzipien.html#grundidee",
+    "href": "pages/2_pbr_prinzipien.html#grundidee",
+    "title": "PBR-Prinzipien",
+    "section": "Grundidee",
+    "text": "Grundidee\nReale Oberflächen sind auf mikroskopischer Ebene rau und bestehen aus vielen kleinen Facetten, die wie winzige Spiegel wirken. Nur Facetten, deren Normale exakt dem Halfway-Vektor \\(\\mathbf{h}\\) entspricht, reflektieren Licht direkt vom Licht zum Betrachter. ::: columns\n\n\nMakroskopisches Verhalten\nv: Blickrichtungsvektor\nl: Lichtrichtungsvektor\nn: Normalenvektor\nh: normierte Mittelrichtung zwischen v und l\n\n\n\nMikrofacettenstruktur\n\n\n\nLichtinteraktion\n\n:::",
+    "crumbs": [
+      "2. PBR-Prinzipien"
+    ]
+  },
+  {
+    "objectID": "pages/2_pbr_prinzipien.html#cook-torrance-brdf-spekularer-anteil",
+    "href": "pages/2_pbr_prinzipien.html#cook-torrance-brdf-spekularer-anteil",
+    "title": "PBR-Prinzipien",
+    "section": "Cook-Torrance BRDF (spekularer Anteil)",
+    "text": "Cook-Torrance BRDF (spekularer Anteil)\nDer spekularer Anteil \\(f_s\\) in PBR wird mit der Cook-Torrance-Formel berechnet:\n\\[\nf_s(\\mathbf{v}, \\mathbf{l}) = \\frac{F(\\mathbf{v}, \\mathbf{h}) \\, D(\\mathbf{h}) \\, G(\\mathbf{l}, \\mathbf{v})}{4 \\, (\\mathbf{n} \\cdot \\mathbf{l}) \\, (\\mathbf{n} \\cdot \\mathbf{v})}\n\\tag{1}\\]\nDieser Term setzt sich aus drei physikalisch begründeten Komponenten zusammen. Jede wird im Folgenden mit dem Phong-Modell verglichen.\n\n1. Fresnel-Term \\(F\\)\nDer Fresnel-Effekt beschreibt, dass der Reflexionsanteil mit flacherem Einfallswinkel zunimmt. Bei grazing angles reflektiert nahezu jedes Material fast das gesamte Licht spiegelnd.\nIn der Praxis wird meist die Schlick-Approximation verwendet:\n\\[\nF(\\theta) = F_0 + (1 - F_0)(1 - \\cos\\theta)^5\n\\]\nVergleich mit Phong:\nDas Phong-Modell kennt keinen Fresnel-Effekt. Das Glanzlicht hat bei jedem Betrachtungswinkel die gleiche Intensität – unabhängig davon, ob man senkrecht oder flach auf die Oberfläche schaut. Dies führt zu unnatürlich gleichmäßigen und oft zu hellen Glanzlichtern an den Rändern.\n\n\n2. Normal Distribution Function (NDF) \\(D\\)\nDie NDF beschreibt die statistische Verteilung der Mikrofacets. Der heutige Standard ist die GGX (Trowbridge-Reitz)-Verteilung:\n\\[\nD(\\mathbf{h}) = \\frac{\\alpha^2}{\\pi \\left( (\\mathbf{n} \\cdot \\mathbf{h})^2 (\\alpha^2 - 1) + 1 \\right)^2}\n\\]\n\\(\\alpha\\) entspricht der Roughness (0 = glatt, 1 = rau).\nVergleich mit Phong:\nPhong verwendet die einfache Potenzfunktion \\((\\mathbf{n} \\cdot \\mathbf{h})^S\\). Diese hat keine physikalische Grundlage und ist nicht energieerhaltend. Wird das Glanzlicht breiter, bleibt die Helligkeit gleich oder nimmt sogar zu – physikalisch falsch.\nBei GGX wird das Glanzlicht mit zunehmender Rauheit automatisch dunkler, weil die Funktion normiert ist und die Energieerhaltung einhält.\n\n\n3. Geometry-Term \\(G\\) (Shadowing & Masking)\nAuf rauen Oberflächen verdecken sich Mikrofacets gegenseitig (Shadowing und Masking). Der Geometry-Term modelliert diese Abschattung und Blockierung.\nIn modernen PBR-Systemen wird meist die Smith-Schlick-GGX-Approximation verwendet:\n\\[\nG_1(v) = \\frac{\\mathbf{n} \\cdot \\mathbf{v}}{(\\mathbf{n} \\cdot \\mathbf{v})(1 - k) + k}\n\\]\nDer volle Term lautet \\(G(\\mathbf{l}, \\mathbf{v}) = G_1(\\mathbf{l}) \\cdot G_1(\\mathbf{v})\\).\nVergleich mit Phong:\nDas Phong-Modell enthält keinen Geometry-Term. Dadurch entsteht bei flachen Betrachtungswinkeln ein unnatürlicher Helligkeitsanstieg an den Rändern („bright edges“). Der G-Term in PBR kompensiert diesen Effekt und hält die reflektierte Energie physikalisch plausibel.",
+    "crumbs": [
+      "2. PBR-Prinzipien"
     ]
   }
 ]
