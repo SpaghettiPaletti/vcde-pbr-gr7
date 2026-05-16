@@ -184,7 +184,10 @@ window.Quarto = {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#von-der-cook-torrance-theorie-zum-disney-workflow" id="toc-von-der-cook-torrance-theorie-zum-disney-workflow" class="nav-link active" data-scroll-target="#von-der-cook-torrance-theorie-zum-disney-workflow">1. Von der Cook-Torrance-Theorie zum Disney-Workflow</a></li>
+  <li><a href="#von-der-cook-torrance-theorie-zum-disney-workflow" id="toc-von-der-cook-torrance-theorie-zum-disney-workflow" class="nav-link active" data-scroll-target="#von-der-cook-torrance-theorie-zum-disney-workflow">1. Von der Cook-Torrance-Theorie zum Disney-Workflow</a>
+  <ul class="collapse">
+  <li><a href="#exkurs-base-color-und-albedo-maps" id="toc-exkurs-base-color-und-albedo-maps" class="nav-link" data-scroll-target="#exkurs-base-color-und-albedo-maps">Exkurs: Base Color und Albedo-Maps</a></li>
+  </ul></li>
   <li><a href="#das-material-labor-globale-parameter-vs.-texture-maps" id="toc-das-material-labor-globale-parameter-vs.-texture-maps" class="nav-link" data-scroll-target="#das-material-labor-globale-parameter-vs.-texture-maps">2. Das Material-Labor: Globale Parameter vs.&nbsp;Texture Maps</a></li>
   <li><a href="#die-grenzen-des-labors-der-übergang-zu-ibl" id="toc-die-grenzen-des-labors-der-übergang-zu-ibl" class="nav-link" data-scroll-target="#die-grenzen-des-labors-der-übergang-zu-ibl">3. Die Grenzen des Labors: Der Übergang zu IBL</a></li>
   </ul>
@@ -228,7 +231,7 @@ window.Quarto = {
 f_s = \frac{D \cdot F \cdot G}{4 \, (\mathbf{n} \cdot \mathbf{l}) \, (\mathbf{n} \cdot \mathbf{v})}
 \]</span></p>
 <p>Dort wurden gegebenenfalls Aspekte wie die Mikrofacetten-Verteilung (<span class="math inline">\(D\)</span>) oder der Fresnel-Effekt (<span class="math inline">\(F\)</span>) bereits visualisiert. In der praktischen Computergrafik oder im Digital Engineering wird diese Formel jedoch selten direkt manipuliert. Stattdessen nutzen moderne Systeme ein standardisiertes Interface, das auf dem <strong>Disney Principled BSDF</strong> basiert (heute oft als OpenPBR bezeichnet).</p>
-<p>Dieser <strong>Metallic-Roughness-Workflow</strong> abstrahiert die komplexe Mathematik in intuitive Steuerungsparameter für Anwender:</p>
+<p>Dieser <strong>Metallic-Roughness-Workflow</strong> abstrahiert die komplexe Mathematik in intuitive Steuerungsparameter für Anwender. Der Name ist dabei eine Kurzbezeichnung: Neben <code>Metallic</code> und <code>Roughness</code> wird auch <code>Base Color</code> bzw. <code>Albedo</code> als zentraler Eingabeparameter benötigt. Erst aus diesen drei Angaben entsteht eine vollständige Beschreibung der farblichen und reflektierenden Materialeigenschaften.</p>
 <ul>
 <li><strong>Roughness (Rauheit):</strong> Steuert im Hintergrund direkt den <strong><span class="math inline">\(D\)</span>-Term</strong> (Normal Distribution Function) und den <strong><span class="math inline">\(G\)</span>-Term</strong> (Geometry). Der Anwender sieht nur: Hoher Wert = raue Oberfläche, niedriger Wert = glatte Oberfläche.</li>
 <li><strong>Metallic (Metallizität):</strong> Bestimmt das grundlegende physikalische Verhalten und steuert den <strong>Fresnel-Term (<span class="math inline">\(F\)</span>)</strong>.
@@ -239,14 +242,26 @@ f_s = \frac{D \cdot F \cdot G}{4 \, (\mathbf{n} \cdot \mathbf{l}) \, (\mathbf{n}
 <li><strong>Base Color (Albedo):</strong> Definiert die Grundfarbe, deren physikalische Auswirkung durch den Metallic-Wert modifiziert wird.</li>
 </ul>
 <p>Dieser Ansatz zwingt den Workflow automatisch zur <strong>Energieerhaltung</strong>. Es wird stark erschwert, unphysikalische Materialien zu erstellen.</p>
+<section id="exkurs-base-color-und-albedo-maps" class="level3">
+<h3 class="anchored" data-anchor-id="exkurs-base-color-und-albedo-maps">Exkurs: Base Color und Albedo-Maps</h3>
+<p>Der Begriff <strong>Albedo</strong> bezeichnet im PBR-Kontext die Grundfarbe einer Oberfläche unter neutraler Beleuchtung. Gemeint ist also nicht das fertig sichtbare Bild inklusive Schatten, Glanzpunkten oder Umgebungsreflexionen. Diese Effekte werden erst durch Beleuchtung, BRDF und Umgebung erzeugt.</p>
+<p>Der Rückbezug zur Cook-Torrance-Formel ist hierbei weniger direkt als bei <code>Roughness</code>. Die Albedo erscheint nicht als eigener Faktor im spekularen Term <span class="math inline">\(D \cdot F \cdot G\)</span>. Stattdessen wird sie für den diffusen Anteil des Materials verwendet und bei Metallen zur Färbung der spekularen Reflexion herangezogen. Im Metallic-Roughness-Workflow wird also über <code>Metallic</code> entschieden, wie die Base Color interpretiert wird.</p>
+<p>Für die Erstellung von PBR-Texturen ergibt sich daraus eine wichtige Regel: In eine Albedo-Map sollten keine bereits “eingebackenen” Schatten oder Highlights gemalt werden. Solche Informationen würden später ein zweites Mal durch das Beleuchtungsmodell entstehen und das Material unphysikalisch wirken lassen. Eine Holztextur darf also Maserung und Farbunterschiede enthalten, aber keine festen Lichtflecken. Eine Metalltextur darf unterschiedliche Färbungen oder Oxidation zeigen, aber keine vorgerenderten Spiegelungen.</p>
+<p>Die Bedeutung der Base Color hängt zusätzlich vom <strong>Metallic-Wert</strong> ab:</p>
+<ul>
+<li>Bei <strong>Dielektrika</strong> (z.B. Holz, Kunststoff, Stein) beschreibt die Albedo-Map die diffuse Körperfarbe. Das Material besitzt weiterhin einen schwachen, meist fast weißen Spekularanteil.</li>
+<li>Bei <strong>Metallen</strong> beschreibt die Base Color nicht eine diffuse Farbe, sondern die Färbung der spekularen Reflexion. Deshalb erscheinen Metalle wie Gold oder Kupfer farbig glänzend, besitzen aber praktisch keinen diffusen Anteil.</li>
+</ul>
+<p>Eine Albedo-Map ist damit nicht einfach ein dekoratives Bild auf dem Objekt. Sie ist ein physikalisch interpretierter Eingabeparameter des Materialmodells. Erst im Zusammenspiel mit Metallic- und Roughness-Maps wird festgelegt, ob ein Pixel als raues Holz, blankes Metall oder matter Lack ausgewertet wird.</p>
 <hr>
+</section>
 </section>
 <section id="das-material-labor-globale-parameter-vs.-texture-maps" class="level2">
 <h2 class="anchored" data-anchor-id="das-material-labor-globale-parameter-vs.-texture-maps">2. Das Material-Labor: Globale Parameter vs.&nbsp;Texture Maps</h2>
 <p>Um die Steuerung zu demonstrieren, bedienen wir uns eines klassischen Beispiels der Computergrafik: Einem <strong>Holzfass</strong>. Ein solches Fass weckt in unserem Gehirn klare Erwartungen – das Holz sollte eher rau und farbig (Dielektrikum) sein, während die Eisenbänder darum herum als metallisch und spiegelnd wahrgenommen werden sollten.</p>
 <p>Die Szene verzichtet zunächst bewusst auf Umgebungskartierung (IBL) und wird nur durch einfache, isolierte Lichtquellen in einem vollständig dunklen Labor beleuchtet.</p>
 <p><strong>(A) Globale Slider:</strong> Durch das Verschieben der Regler <code>Metallic</code> und <code>Roughness</code> unten verändern wir die Materialeigenschaften für das <strong>gesamte</strong> Objekt gleichzeitig und überlagern alle Pixel. Dadurch wirkt das Fass entweder komplett wie ein rauer Plastikklotz oder wie ein massiver Chromzylinder.</p>
-<p><strong>(B) Texture-Maps:</strong> Um dem Fass eine realistische materielle Mehrteiligkeit zu verleihen, müssen wir auf “globale” Werte verzichten. Bei Klick auf <strong>“Aktivieren (Maps laden)”</strong> werden die Slider deaktiviert und wir übergeben der Engine stattdessen 2D-Texturen. Diese flüstern jedem Pixel präzise PBR-Werte zu (z.B. “Hier bist du Eisen, also ist Metallic=1”, oder “Hier bist du raues Holz”).</p>
+<p><strong>(B) Texture-Maps:</strong> Um dem Fass eine realistische materielle Mehrteiligkeit zu verleihen, müssen wir auf “globale” Werte verzichten. Bei Klick auf <strong>“Aktivieren (Maps laden)”</strong> werden die Slider deaktiviert und wir übergeben der Engine stattdessen 2D-Texturen. Die Albedo-Map legt dabei die lokalen Grundfarben von Holz und Eisen fest. Die Metallic-Roughness-Map steuert zusätzlich, welche Pixel metallisch sind und wie scharf oder diffus sie Licht reflektieren. Diese Maps flüstern jedem Pixel präzise PBR-Werte zu (z.B. “Hier bist du Eisen, also ist Metallic=1”, oder “Hier bist du raues Holz”).</p>
 <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
   <div style="margin-bottom: 15px;">
     <strong>Steuerung:</strong><br>
