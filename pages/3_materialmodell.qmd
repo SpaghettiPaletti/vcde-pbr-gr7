@@ -19,7 +19,7 @@ $$
 
 Dort wurden gegebenenfalls Aspekte wie die Mikrofacetten-Verteilung ($D$) oder der Fresnel-Effekt ($F$) bereits visualisiert. In der praktischen Computergrafik oder im Digital Engineering wird diese Formel jedoch selten direkt manipuliert. Stattdessen nutzen moderne Systeme ein standardisiertes Interface, das auf dem **Disney Principled BSDF** basiert (heute oft als OpenPBR bezeichnet). 
 
-Dieser **Metallic-Roughness-Workflow** abstrahiert die komplexe Mathematik in intuitive Steuerungsparameter für Anwender:
+Dieser **Metallic-Roughness-Workflow** abstrahiert die komplexe Mathematik in intuitive Steuerungsparameter für Anwender. Der Name ist dabei eine Kurzbezeichnung: Neben `Metallic` und `Roughness` wird auch `Base Color` bzw. `Albedo` als zentraler Eingabeparameter benötigt. Erst aus diesen drei Angaben entsteht eine vollständige Beschreibung der farblichen und reflektierenden Materialeigenschaften.
 
 *   **Roughness (Rauheit):** Steuert im Hintergrund direkt den **$D$-Term** (Normal Distribution Function) und den **$G$-Term** (Geometry). Der Anwender sieht nur: Hoher Wert = raue Oberfläche, niedriger Wert = glatte Oberfläche.
 *   **Metallic (Metallizität):** Bestimmt das grundlegende physikalische Verhalten und steuert den **Fresnel-Term ($F$)**.
@@ -28,6 +28,21 @@ Dieser **Metallic-Roughness-Workflow** abstrahiert die komplexe Mathematik in in
 *   **Base Color (Albedo):** Definiert die Grundfarbe, deren physikalische Auswirkung durch den Metallic-Wert modifiziert wird.
 
 Dieser Ansatz zwingt den Workflow automatisch zur **Energieerhaltung**. Es wird stark erschwert, unphysikalische Materialien zu erstellen.
+
+### Exkurs: Base Color und Albedo-Maps
+
+Der Begriff **Albedo** bezeichnet im PBR-Kontext die Grundfarbe einer Oberfläche unter neutraler Beleuchtung. Gemeint ist also nicht das fertig sichtbare Bild inklusive Schatten, Glanzpunkten oder Umgebungsreflexionen. Diese Effekte werden erst durch Beleuchtung, BRDF und Umgebung erzeugt.
+
+Der Rückbezug zur Cook-Torrance-Formel ist hierbei weniger direkt als bei `Roughness`. Die Albedo erscheint nicht als eigener Faktor im spekularen Term $D \cdot F \cdot G$. Stattdessen wird sie für den diffusen Anteil des Materials verwendet und bei Metallen zur Färbung der spekularen Reflexion herangezogen. Im Metallic-Roughness-Workflow wird also über `Metallic` entschieden, wie die Base Color interpretiert wird.
+
+Für die Erstellung von PBR-Texturen ergibt sich daraus eine wichtige Regel: In eine Albedo-Map sollten keine bereits "eingebackenen" Schatten oder Highlights gemalt werden. Solche Informationen würden später ein zweites Mal durch das Beleuchtungsmodell entstehen und das Material unphysikalisch wirken lassen. Eine Holztextur darf also Maserung und Farbunterschiede enthalten, aber keine festen Lichtflecken. Eine Metalltextur darf unterschiedliche Färbungen oder Oxidation zeigen, aber keine vorgerenderten Spiegelungen.
+
+Die Bedeutung der Base Color hängt zusätzlich vom **Metallic-Wert** ab:
+
+*   Bei **Dielektrika** (z.B. Holz, Kunststoff, Stein) beschreibt die Albedo-Map die diffuse Körperfarbe. Das Material besitzt weiterhin einen schwachen, meist fast weißen Spekularanteil.
+*   Bei **Metallen** beschreibt die Base Color nicht eine diffuse Farbe, sondern die Färbung der spekularen Reflexion. Deshalb erscheinen Metalle wie Gold oder Kupfer farbig glänzend, besitzen aber praktisch keinen diffusen Anteil.
+
+Eine Albedo-Map ist damit nicht einfach ein dekoratives Bild auf dem Objekt. Sie ist ein physikalisch interpretierter Eingabeparameter des Materialmodells. Erst im Zusammenspiel mit Metallic- und Roughness-Maps wird festgelegt, ob ein Pixel als raues Holz, blankes Metall oder matter Lack ausgewertet wird.
 
 ---
 
@@ -39,7 +54,7 @@ Die Szene verzichtet zunächst bewusst auf Umgebungskartierung (IBL) und wird nu
 
 **(A) Globale Slider:** Durch das Verschieben der Regler `Metallic` und `Roughness` unten verändern wir die Materialeigenschaften für das **gesamte** Objekt gleichzeitig und überlagern alle Pixel. Dadurch wirkt das Fass entweder komplett wie ein rauer Plastikklotz oder wie ein massiver Chromzylinder.
 
-**(B) Texture-Maps:** Um dem Fass eine realistische materielle Mehrteiligkeit zu verleihen, müssen wir auf "globale" Werte verzichten. Bei Klick auf **"Aktivieren (Maps laden)"** werden die Slider deaktiviert und wir übergeben der Engine stattdessen 2D-Texturen. Diese flüstern jedem Pixel präzise PBR-Werte zu (z.B. "Hier bist du Eisen, also ist Metallic=1", oder "Hier bist du raues Holz"). 
+**(B) Texture-Maps:** Um dem Fass eine realistische materielle Mehrteiligkeit zu verleihen, müssen wir auf "globale" Werte verzichten. Bei Klick auf **"Aktivieren (Maps laden)"** werden die Slider deaktiviert und wir übergeben der Engine stattdessen 2D-Texturen. Die Albedo-Map legt dabei die lokalen Grundfarben von Holz und Eisen fest. Die Metallic-Roughness-Map steuert zusätzlich, welche Pixel metallisch sind und wie scharf oder diffus sie Licht reflektieren. Diese Maps flüstern jedem Pixel präzise PBR-Werte zu (z.B. "Hier bist du Eisen, also ist Metallic=1", oder "Hier bist du raues Holz").
 
 ```{=html}
 <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
