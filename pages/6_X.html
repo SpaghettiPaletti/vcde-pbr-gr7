@@ -8,7 +8,7 @@
 
 <meta name="author" content="Stefan Jordan">
 
-<title>Alterungsslider – Physically Based Rendering (PBR) | Gruppe 7</title>
+<title>Vertiefung: Materialalterung – Physically Based Rendering (PBR) | Gruppe 7</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -155,7 +155,10 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#einen-alterungsslider" id="toc-einen-alterungsslider" class="nav-link active" data-scroll-target="#einen-alterungsslider">Einen Alterungsslider</a></li>
+  <li><a href="#warum-materialalterung-eine-pbr-frage-ist" id="toc-warum-materialalterung-eine-pbr-frage-ist" class="nav-link active" data-scroll-target="#warum-materialalterung-eine-pbr-frage-ist">Warum Materialalterung eine PBR-Frage ist</a></li>
+  <li><a href="#interaktive-demo-ein-kupferschild-altert" id="toc-interaktive-demo-ein-kupferschild-altert" class="nav-link" data-scroll-target="#interaktive-demo-ein-kupferschild-altert">Interaktive Demo: Ein Kupferschild altert</a></li>
+  <li><a href="#was-an-der-demo-vereinfacht-ist" id="toc-was-an-der-demo-vereinfacht-ist" class="nav-link" data-scroll-target="#was-an-der-demo-vereinfacht-ist">Was an der Demo vereinfacht ist</a></li>
+  <li><a href="#ausblick-vom-prozeduralen-entwurf-zum-eigenen-asset" id="toc-ausblick-vom-prozeduralen-entwurf-zum-eigenen-asset" class="nav-link" data-scroll-target="#ausblick-vom-prozeduralen-entwurf-zum-eigenen-asset">Ausblick: Vom prozeduralen Entwurf zum eigenen Asset</a></li>
   </ul>
 </nav>
     </div>
@@ -164,7 +167,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Alterungsslider</h1>
+<h1 class="title">Vertiefung: Materialalterung</h1>
 </div>
 
 
@@ -187,13 +190,615 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<section id="einen-alterungsslider" class="level2">
-<h2 class="anchored" data-anchor-id="einen-alterungsslider">Einen Alterungsslider</h2>
+<section id="warum-materialalterung-eine-pbr-frage-ist" class="level2">
+<h2 class="anchored" data-anchor-id="warum-materialalterung-eine-pbr-frage-ist">Warum Materialalterung eine PBR-Frage ist</h2>
+<p>Auf den vorherigen Seiten wurden PBR-Materialien vor allem als Kombination aus Parametern beschrieben: <code>Base Color</code>, <code>Metallic</code>, <code>Roughness</code> und die Beleuchtung durch IBL. In einer echten Szene sind diese Werte jedoch selten konstant. Ein Objekt altert, wird benutzt, oxidiert, verschmutzt oder wird an Kanten wieder blank poliert.</p>
+<p>Damit ist Alterung kein reiner “Farbfilter”. Wenn Kupfer eine Patina bildet oder Eisen rostet, verändert sich nicht nur die sichtbare Farbe der Oberfläche. Auch das Reflexionsverhalten ändert sich:</p>
 <ul>
-<li>Darstellung beispielsweise eines Kupferobjekts.</li>
-<li>Über einen Slider kann ein Alterungseffekt simuliert werden.</li>
-<li>Zeigt, dass PBR-Parameter nicht starr sind, sondern sich kombinieren lassen.</li>
+<li>Die Oberfläche wird meist rauer.</li>
+<li>Die Spiegelung wird breiter und dunkler.</li>
+<li>Oxidierte oder verschmutzte Bereiche verhalten sich nicht mehr wie blankes Metall.</li>
+<li>Einzelne Regionen können sehr unterschiedliche Materialzustände besitzen.</li>
 </ul>
+<p>Die zentrale Idee dieser Vertiefung lautet deshalb:</p>
+<blockquote class="blockquote">
+<p><strong>Realistische Alterung entsteht, wenn mehrere PBR-Maps gemeinsam verändert werden.</strong></p>
+</blockquote>
+</section>
+<section id="interaktive-demo-ein-kupferschild-altert" class="level2">
+<h2 class="anchored" data-anchor-id="interaktive-demo-ein-kupferschild-altert">Interaktive Demo: Ein Kupferschild altert</h2>
+<p>Die folgende Demo verwendet bewusst noch kein externes 3D-Modell. Das Objekt wird aus einfachen Babylon.js-Grundformen aufgebaut: eine leicht gewölbte Schildfläche mit erhabenem Rand und Nieten. Der interessante Teil liegt aber weiterhin in den prozedural erzeugten Texturen. Der Alterungsslider verändert gleichzeitig eine Albedo-Map, eine Roughness-Map und eine Metallic-Map.</p>
+<p>Die drei Modi zeigen, warum eine reine Farbänderung nicht ausreicht:</p>
+<ul>
+<li><strong>Nur Albedo:</strong> Die Patina wird nur eingefärbt. Das Material bleibt trotzdem überall spiegelndes Metall.</li>
+<li><strong>Albedo + Roughness:</strong> Gealterte Bereiche werden matter, bleiben aber noch metallisch.</li>
+<li><strong>Alle PBR-Maps:</strong> Patina-Bereiche verlieren zusätzlich ihre metallische Reflexion. Erst dadurch wirkt die Oberfläche plausibel gealtert.</li>
+</ul>
+<style>
+  #agingDemoGrid {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(260px, 1fr);
+    gap: 16px;
+    align-items: start;
+  }
+
+  @media (max-width: 800px) {
+    #agingDemoGrid {
+      grid-template-columns: 1fr;
+    }
+
+    #agingCanvas {
+      height: 380px !important;
+    }
+  }
+</style>
+<div style="background:#f8f9fa; padding:16px; border-radius:8px; margin:20px 0;">
+  <div id="agingDemoGrid">
+    <div style="min-width:0;">
+      <canvas id="agingCanvas" style="width:100%; height:520px; border-radius:6px; outline:none; touch-action:none; background:#111;"></canvas>
+    </div>
+
+    <div style="display:flex; flex-direction:column; gap:14px;">
+      <div>
+        <label for="agingEnvSwitch" style="display:block; font-weight:600; margin-bottom:6px;">Umgebung</label>
+        <select id="agingEnvSwitch" style="width:100%; padding:7px; border-radius:4px; border:1px solid #ccc;">
+          <option value="https://playground.babylonjs.com/textures/environment.env">Stadt (Neutral)</option>
+          <option value="https://playground.babylonjs.com/textures/country.env">Landlandschaft (Offen)</option>
+          <option value="https://playground.babylonjs.com/textures/forest.env">Wald (Grünlich)</option>
+          <option value="https://playground.babylonjs.com/textures/room.env">Innenraum (Warm)</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="agingSlider" style="display:flex; justify-content:space-between; gap:12px; font-weight:600;">
+          <span>Alterung</span>
+          <span id="agingValue">0%</span>
+        </label>
+        <input id="agingSlider" type="range" min="0" max="100" step="1" value="0" style="width:100%;">
+      </div>
+
+      <div>
+        <div style="font-weight:600; margin-bottom:6px;">Aktive Materialinformationen</div>
+        <div style="display:flex; flex-wrap:wrap; gap:8px;">
+          <button class="agingModeBtn" data-mode="color" style="padding:6px 10px; border:1px solid #888; border-radius:4px; background:#fff; cursor:pointer;">Nur Albedo</button>
+          <button class="agingModeBtn" data-mode="rough" style="padding:6px 10px; border:1px solid #888; border-radius:4px; background:#fff; cursor:pointer;">Albedo + Roughness</button>
+          <button class="agingModeBtn" data-mode="full" style="padding:6px 10px; border:1px solid #888; border-radius:4px; background:#212529; color:#fff; cursor:pointer;">Alle PBR-Maps</button>
+        </div>
+      </div>
+
+      <div style="font-size:0.92em; color:#555;">
+        <strong id="agingModeTitle">Alle PBR-Maps:</strong>
+        <span id="agingModeText">Patina verändert Farbe, Rauheit und Metallizität gleichzeitig.</span>
+      </div>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px;">
+        <div>
+          <div style="font-size:0.82em; font-weight:600; margin-bottom:4px;">Albedo</div>
+          <canvas id="albedoPreview" width="256" height="256" style="width:100%; aspect-ratio:1; border:1px solid #ccc; border-radius:4px; image-rendering:auto;"></canvas>
+        </div>
+        <div>
+          <div style="font-size:0.82em; font-weight:600; margin-bottom:4px;">Metallic</div>
+          <canvas id="metallicPreview" width="256" height="256" style="width:100%; aspect-ratio:1; border:1px solid #ccc; border-radius:4px; image-rendering:auto;"></canvas>
+        </div>
+        <div>
+          <div style="font-size:0.82em; font-weight:600; margin-bottom:4px;">Roughness</div>
+          <canvas id="roughnessPreview" width="256" height="256" style="width:100%; aspect-ratio:1; border:1px solid #ccc; border-radius:4px; image-rendering:auto;"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.babylonjs.com/babylon.js"></script>
+<script>
+(function () {
+  function initAgingDemo() {
+    const canvas = document.getElementById("agingCanvas");
+    if (!canvas || typeof BABYLON === "undefined") return;
+
+    const slider = document.getElementById("agingSlider");
+    const agingValue = document.getElementById("agingValue");
+    const envSwitch = document.getElementById("agingEnvSwitch");
+    const modeTitle = document.getElementById("agingModeTitle");
+    const modeText = document.getElementById("agingModeText");
+    const modeButtons = Array.from(document.querySelectorAll(".agingModeBtn"));
+
+    const engine = new BABYLON.Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true });
+    const scene = new BABYLON.Scene(engine);
+    scene.clearColor = new BABYLON.Color4(0.11, 0.115, 0.12, 1);
+
+    const camera = new BABYLON.ArcRotateCamera(
+      "agingCamera",
+      -Math.PI / 2,
+      Math.PI / 2.22,
+      3.5,
+      new BABYLON.Vector3(0, 0, 0),
+      scene
+    );
+    camera.attachControl(canvas, true);
+    camera.lowerRadiusLimit = 2.6;
+    camera.upperRadiusLimit = 5.2;
+    camera.wheelPrecision = 60;
+
+    scene.environmentIntensity = 0.95;
+    let currentSkybox = null;
+
+    function loadEnvironment(url) {
+      const envTexture = BABYLON.CubeTexture.CreateFromPrefilteredData(url, scene);
+      scene.environmentTexture = envTexture;
+      if (currentSkybox) {
+        currentSkybox.dispose();
+      }
+      currentSkybox = scene.createDefaultSkybox(envTexture, true, 80, 0.25);
+    }
+
+    loadEnvironment(envSwitch.value);
+    envSwitch.addEventListener("change", (event) => {
+      loadEnvironment(event.target.value);
+    });
+
+    const keyLight = new BABYLON.DirectionalLight("agingKeyLight", new BABYLON.Vector3(-0.6, -1.0, 0.4), scene);
+    keyLight.intensity = 0.55;
+    const fillLight = new BABYLON.HemisphericLight("agingFillLight", new BABYLON.Vector3(0, 1, 0), scene);
+    fillLight.intensity = 0.18;
+
+    const material = new BABYLON.PBRMaterial("agedCopperMaterial", scene);
+    material.albedoColor = new BABYLON.Color3(1, 1, 1);
+    material.metallic = 1.0;
+    material.roughness = 1.0;
+    material.environmentIntensity = 1.05;
+    material.useMetallnessFromMetallicTextureBlue = true;
+    material.useRoughnessFromMetallicTextureGreen = true;
+    material.useRoughnessFromMetallicTextureAlpha = false;
+
+    const root = new BABYLON.TransformNode("copperAssembly", scene);
+    root.rotation.x = -0.04;
+
+    function useAgedMaterial(mesh) {
+      mesh.parent = root;
+      mesh.material = material;
+      return mesh;
+    }
+
+    function shieldHalfWidth(t) {
+      if (t < 0.2) {
+        return mix(0.92, 1.04, smoothstep(0.0, 0.2, t));
+      }
+      if (t < 0.68) {
+        return mix(1.04, 0.74, smoothstep(0.2, 0.68, t));
+      }
+      return mix(0.74, 0.05, smoothstep(0.68, 1.0, t));
+    }
+
+    function shieldPoint(nx, t, zLift) {
+      const halfWidth = shieldHalfWidth(t);
+      const topDip = (1 - smoothstep(0.02, 0.16, t)) * -0.1 * (1 - nx * nx);
+      const y = 1.08 - 2.34 * t + topDip;
+      const x = nx * halfWidth;
+      const centerBulge = Math.pow(1 - Math.min(1, Math.abs(nx)), 0.85) *
+        Math.pow(Math.sin(Math.PI * clamp01(t)), 0.72);
+      const z = -0.045 - centerBulge * 0.2 + zLift;
+      return new BABYLON.Vector3(x, y, z);
+    }
+
+    const shieldRows = 44;
+    const shieldCols = 38;
+    const shieldPaths = [];
+    for (let r = 0; r < shieldRows; r++) {
+      const t = r / (shieldRows - 1);
+      const row = [];
+      for (let c = 0; c < shieldCols; c++) {
+        const nx = c / (shieldCols - 1) * 2 - 1;
+        row.push(shieldPoint(nx, t, 0));
+      }
+      shieldPaths.push(row);
+    }
+
+    useAgedMaterial(BABYLON.MeshBuilder.CreateRibbon("shieldBody", {
+      pathArray: shieldPaths,
+      closeArray: false,
+      closePath: false,
+      sideOrientation: BABYLON.Mesh.DOUBLESIDE
+    }, scene));
+
+    function outlinePath(scale, zLift) {
+      const path = [];
+      const sideSteps = 34;
+      const topSteps = 28;
+
+      for (let i = 0; i <= topSteps; i++) {
+        const nx = -scale + (2 * scale * i) / topSteps;
+        path.push(shieldPoint(nx, 0, zLift));
+      }
+      for (let i = 1; i <= sideSteps; i++) {
+        const t = i / sideSteps;
+        path.push(shieldPoint(scale, t, zLift));
+      }
+      for (let i = sideSteps - 1; i >= 0; i--) {
+        const t = i / sideSteps;
+        path.push(shieldPoint(-scale, t, zLift));
+      }
+      path.push(path[0].clone());
+      return path;
+    }
+
+    useAgedMaterial(BABYLON.MeshBuilder.CreateTube("outerShieldRim", {
+      path: outlinePath(0.98, -0.035),
+      radius: 0.038,
+      tessellation: 18,
+      cap: BABYLON.Mesh.CAP_ALL
+    }, scene));
+
+    useAgedMaterial(BABYLON.MeshBuilder.CreateTube("innerShieldRim", {
+      path: outlinePath(0.76, -0.055),
+      radius: 0.024,
+      tessellation: 16,
+      cap: BABYLON.Mesh.CAP_ALL
+    }, scene));
+
+    const topBandPath = [];
+    for (let i = 0; i <= 34; i++) {
+      const x = -0.72 + (1.44 * i) / 34;
+      const y = 0.66 - 0.05 * Math.cos((i / 34) * Math.PI * 2);
+      const t = clamp01((1.08 - y) / 2.34);
+      const nx = x / shieldHalfWidth(t);
+      topBandPath.push(shieldPoint(nx, t, -0.012));
+    }
+    useAgedMaterial(BABYLON.MeshBuilder.CreateTube("raisedTopBand", {
+      path: topBandPath,
+      radius: 0.014,
+      tessellation: 16,
+      cap: BABYLON.Mesh.CAP_ALL
+    }, scene));
+
+    const ridgePath = [];
+    for (let i = 0; i <= 32; i++) {
+      const t = 0.18 + (0.72 * i) / 32;
+      ridgePath.push(shieldPoint(0, t, -0.01));
+    }
+    useAgedMaterial(BABYLON.MeshBuilder.CreateTube("centerRidge", {
+      path: ridgePath,
+      radius: 0.01,
+      tessellation: 16,
+      cap: BABYLON.Mesh.CAP_ALL
+    }, scene));
+
+    const rivets = [
+      [-0.64, 0.77], [-0.22, 0.81], [0.22, 0.81], [0.64, 0.77],
+      [-0.86, 0.23], [0.86, 0.23],
+      [-0.56, -0.7], [0.56, -0.7]
+    ];
+
+    rivets.forEach((position, index) => {
+      const t = clamp01((1.08 - position[1]) / 2.34);
+      const nx = position[0] / shieldHalfWidth(t);
+      const point = shieldPoint(nx, t, -0.025);
+      const rivet = useAgedMaterial(BABYLON.MeshBuilder.CreateSphere("rivet" + index, {
+        diameter: 0.13,
+        segments: 24
+      }, scene));
+      rivet.position.copyFrom(point);
+      rivet.scaling.z = 0.42;
+    });
+
+    const texSize = 256;
+    const albedoTex = new BABYLON.DynamicTexture("agingAlbedoTex", texSize, scene, false);
+    const mrFullTex = new BABYLON.DynamicTexture("agingMRFullTex", texSize, scene, false);
+    const mrRoughTex = new BABYLON.DynamicTexture("agingMRRoughTex", texSize, scene, false);
+    [albedoTex, mrFullTex, mrRoughTex].forEach((tex) => {
+      tex.wrapU = BABYLON.Texture.CLAMP_ADDRESSMODE;
+      tex.wrapV = BABYLON.Texture.CLAMP_ADDRESSMODE;
+    });
+    material.albedoTexture = albedoTex;
+    material.metallicTexture = mrFullTex;
+
+    const previewAlbedo = document.getElementById("albedoPreview").getContext("2d");
+    const previewMetallic = document.getElementById("metallicPreview").getContext("2d");
+    const previewRoughness = document.getElementById("roughnessPreview").getContext("2d");
+
+    let currentMode = "full";
+
+    function clamp01(value) {
+      return Math.max(0, Math.min(1, value));
+    }
+
+    function smoothstep(edge0, edge1, value) {
+      const x = clamp01((value - edge0) / (edge1 - edge0));
+      return x * x * (3 - 2 * x);
+    }
+
+    function mix(a, b, t) {
+      return a * (1 - t) + b * t;
+    }
+
+    function fade(t) {
+      return t * t * (3 - 2 * t);
+    }
+
+    function hash2(ix, iy) {
+      const value = Math.sin(ix * 127.1 + iy * 311.7) * 43758.5453123;
+      return value - Math.floor(value);
+    }
+
+    function valueNoise(u, v, scale) {
+      const x = u * scale;
+      const y = v * scale;
+      const x0 = Math.floor(x);
+      const y0 = Math.floor(y);
+      const tx = fade(x - x0);
+      const ty = fade(y - y0);
+      const a = hash2(x0, y0);
+      const b = hash2(x0 + 1, y0);
+      const c = hash2(x0, y0 + 1);
+      const d = hash2(x0 + 1, y0 + 1);
+      return mix(mix(a, b, tx), mix(c, d, tx), ty);
+    }
+
+    function fbm(u, v) {
+      return (
+        valueNoise(u, v, 2.2) * 0.44 +
+        valueNoise(u + 19.1, v - 7.4, 5.0) * 0.28 +
+        valueNoise(u - 3.7, v + 11.8, 11.0) * 0.18 +
+        valueNoise(u + 5.2, v + 2.6, 24.0) * 0.10
+      );
+    }
+
+    function drawImageDataToTexture(texture, imageData) {
+      const ctx = texture.getContext();
+      ctx.putImageData(imageData, 0, 0);
+      texture.update(false);
+    }
+
+    function drawPreview(ctx, sourceImageData, channel) {
+      const preview = ctx.createImageData(texSize, texSize);
+      for (let i = 0; i < sourceImageData.data.length; i += 4) {
+        let value;
+        if (channel === "metallic") {
+          value = sourceImageData.data[i + 2];
+        } else if (channel === "roughness") {
+          value = sourceImageData.data[i + 1];
+        } else {
+          preview.data[i] = sourceImageData.data[i];
+          preview.data[i + 1] = sourceImageData.data[i + 1];
+          preview.data[i + 2] = sourceImageData.data[i + 2];
+          preview.data[i + 3] = 255;
+          continue;
+        }
+        preview.data[i] = value;
+        preview.data[i + 1] = value;
+        preview.data[i + 2] = value;
+        preview.data[i + 3] = 255;
+      }
+      ctx.putImageData(preview, 0, 0);
+    }
+
+    const rivetUv = rivets.map((position) => {
+      const t = clamp01((1.08 - position[1]) / 2.34);
+      const u = clamp01(position[0] / (2 * shieldHalfWidth(t)) + 0.5);
+      return [u, t];
+    });
+
+    const scratchSegments = [
+      [0.28, 0.29, 0.39, 0.31, 0.0016],
+      [0.58, 0.34, 0.68, 0.31, 0.0014],
+      [0.34, 0.45, 0.47, 0.50, 0.0015],
+      [0.63, 0.54, 0.74, 0.57, 0.0014],
+      [0.25, 0.64, 0.35, 0.61, 0.0014],
+      [0.43, 0.72, 0.53, 0.76, 0.0015],
+      [0.67, 0.74, 0.76, 0.69, 0.0014],
+      [0.36, 0.84, 0.44, 0.80, 0.0016],
+      [0.52, 0.42, 0.58, 0.39, 0.0012],
+      [0.46, 0.58, 0.53, 0.61, 0.0012],
+      [0.59, 0.83, 0.66, 0.79, 0.0013]
+    ];
+
+    function distanceToSegment(px, py, x1, y1, x2, y2) {
+      const vx = x2 - x1;
+      const vy = y2 - y1;
+      const wx = px - x1;
+      const wy = py - y1;
+      const lengthSquared = vx * vx + vy * vy;
+      const t = lengthSquared === 0 ? 0 : clamp01((wx * vx + wy * vy) / lengthSquared);
+      const dx = px - (x1 + vx * t);
+      const dy = py - (y1 + vy * t);
+      return Math.sqrt(dx * dx + dy * dy);
+    }
+
+    function scratchMaskAt(u, v) {
+      let mask = 0;
+      scratchSegments.forEach((scratch) => {
+        const distance = distanceToSegment(u, v, scratch[0], scratch[1], scratch[2], scratch[3], scratch[4]);
+        mask = Math.max(mask, 1 - smoothstep(scratch[4], scratch[4] * 2.8, distance));
+      });
+      return mask;
+    }
+
+    function rivetHaloAt(u, v) {
+      let halo = 0;
+      rivetUv.forEach((point) => {
+        const dx = (u - point[0]) * 1.15;
+        const dy = v - point[1];
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        halo = Math.max(halo, smoothstep(0.115, 0.02, distance));
+      });
+      return halo;
+    }
+
+    function updateMaps() {
+      const age = Number(slider.value) / 100;
+      agingValue.textContent = Math.round(age * 100) + "%";
+
+      const albedoData = new ImageData(texSize, texSize);
+      const mrFullData = new ImageData(texSize, texSize);
+      const mrRoughData = new ImageData(texSize, texSize);
+
+      for (let y = 0; y < texSize; y++) {
+        const v = y / (texSize - 1);
+        for (let x = 0; x < texSize; x++) {
+          const u = x / (texSize - 1);
+          const index = (y * texSize + x) * 4;
+
+          const nx = (u - 0.5) * 2;
+          const sideEdge = smoothstep(0.72, 1.0, Math.abs(nx));
+          const topEdge = 1 - smoothstep(0.03, 0.12, v);
+          const lowerPoint = smoothstep(0.78, 1.0, v);
+          const polishedEdge = clamp01(Math.max(sideEdge, topEdge * 0.6, lowerPoint * 0.75));
+          const lowerArea = smoothstep(0.42, 1.0, v);
+          const rivetHalo = rivetHaloAt(u, v);
+          const scratch = scratchMaskAt(u, v);
+          const largeNoise = fbm(u, v);
+          const mediumNoise = fbm(u * 1.9 + 0.13, v * 1.55 - 0.21);
+          const fineNoise = valueNoise(u + 3.1, v - 1.7, 58.0);
+          const corrosionPotential = clamp01(
+            0.48 * largeNoise +
+            0.22 * mediumNoise +
+            0.11 * lowerArea +
+            0.16 * rivetHalo -
+            0.22 * polishedEdge
+          );
+          const patina = smoothstep(0.7 - age * 0.31, 0.9 - age * 0.21, corrosionPotential) *
+            smoothstep(0.18, 0.95, age) * (1 - polishedEdge * 0.55);
+          const tarnish = clamp01(age * (0.22 + 0.28 * largeNoise));
+          const rubbedEdge = polishedEdge * smoothstep(0.28, 0.95, age) * (1 - patina * 0.8);
+
+          const copper = [184, 84, 37];
+          const darkCopper = [92, 47, 30];
+          const patinaColor = [
+            mix(49, 86, mediumNoise),
+            mix(114, 158, mediumNoise),
+            mix(103, 136, mediumNoise)
+          ];
+          const polishedCopper = [225, 132, 68];
+
+          let r = mix(copper[0], darkCopper[0], tarnish);
+          let g = mix(copper[1], darkCopper[1], tarnish);
+          let b = mix(copper[2], darkCopper[2], tarnish);
+
+          r += (mediumNoise - 0.5) * 10;
+          g += (mediumNoise - 0.5) * 7;
+          b += (mediumNoise - 0.5) * 5;
+
+          r = mix(r, patinaColor[0], patina);
+          g = mix(g, patinaColor[1], patina);
+          b = mix(b, patinaColor[2], patina);
+
+          r = mix(r, polishedCopper[0], rubbedEdge * 0.55);
+          g = mix(g, polishedCopper[1], rubbedEdge * 0.55);
+          b = mix(b, polishedCopper[2], rubbedEdge * 0.55);
+
+          const scratchStrength = scratch * (0.2 + age * 0.25) * (1 - patina * 0.7);
+          r = mix(r, 58, scratchStrength);
+          g = mix(g, 31, scratchStrength);
+          b = mix(b, 20, scratchStrength);
+
+          r = Math.round(clamp01(r / 255) * 255);
+          g = Math.round(clamp01(g / 255) * 255);
+          b = Math.round(clamp01(b / 255) * 255);
+
+          const roughness = clamp01(0.22 + age * 0.18 + largeNoise * 0.08 + fineNoise * 0.025 + patina * 0.42 + scratchStrength * 0.12 - rubbedEdge * 0.16);
+          const metallic = clamp01(1.0 - patina * 0.82 - tarnish * 0.045 + rubbedEdge * 0.06);
+
+          albedoData.data[index] = r;
+          albedoData.data[index + 1] = g;
+          albedoData.data[index + 2] = b;
+          albedoData.data[index + 3] = 255;
+
+          mrFullData.data[index] = 0;
+          mrFullData.data[index + 1] = Math.round(roughness * 255);
+          mrFullData.data[index + 2] = Math.round(metallic * 255);
+          mrFullData.data[index + 3] = 255;
+
+          mrRoughData.data[index] = 0;
+          mrRoughData.data[index + 1] = Math.round(roughness * 255);
+          mrRoughData.data[index + 2] = 255;
+          mrRoughData.data[index + 3] = 255;
+        }
+      }
+
+      drawImageDataToTexture(albedoTex, albedoData);
+      drawImageDataToTexture(mrFullTex, mrFullData);
+      drawImageDataToTexture(mrRoughTex, mrRoughData);
+      drawPreview(previewAlbedo, albedoData, "albedo");
+      drawPreview(previewMetallic, mrFullData, "metallic");
+      drawPreview(previewRoughness, mrFullData, "roughness");
+    }
+
+    function applyMode(mode) {
+      currentMode = mode;
+      modeButtons.forEach((button) => {
+        const active = button.dataset.mode === mode;
+        button.style.background = active ? "#212529" : "#fff";
+        button.style.color = active ? "#fff" : "#212529";
+      });
+
+      if (mode === "color") {
+        material.metallicTexture = null;
+        material.metallic = 1.0;
+        material.roughness = 0.22;
+        modeTitle.textContent = "Nur Albedo:";
+        modeText.textContent = "Die Patina wird sichtbar, reflektiert aber noch wie blankes Metall.";
+      } else if (mode === "rough") {
+        material.metallicTexture = mrRoughTex;
+        material.metallic = 1.0;
+        material.roughness = 1.0;
+        modeTitle.textContent = "Albedo + Roughness:";
+        modeText.textContent = "Gealterte Bereiche werden matter, bleiben aber physikalisch noch Metall.";
+      } else {
+        material.metallicTexture = mrFullTex;
+        material.metallic = 1.0;
+        material.roughness = 1.0;
+        modeTitle.textContent = "Alle PBR-Maps:";
+        modeText.textContent = "Patina verändert Farbe, Rauheit und Metallizität gleichzeitig.";
+      }
+    }
+
+    slider.addEventListener("input", updateMaps);
+    modeButtons.forEach((button) => {
+      button.addEventListener("click", () => applyMode(button.dataset.mode));
+    });
+
+    updateMaps();
+    applyMode(currentMode);
+
+    engine.runRenderLoop(function () {
+      root.rotation.y = Math.sin(performance.now() * 0.00028) * 0.09;
+      scene.render();
+    });
+
+    window.addEventListener("resize", function () {
+      engine.resize();
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initAgingDemo);
+  } else {
+    initAgingDemo();
+  }
+})();
+</script>
+</section>
+<section id="was-an-der-demo-vereinfacht-ist" class="level2">
+<h2 class="anchored" data-anchor-id="was-an-der-demo-vereinfacht-ist">Was an der Demo vereinfacht ist</h2>
+<p>Die Demo ist kein chemisch exaktes Korrosionsmodell. Sie simuliert nicht, wie schnell Kupfer unter bestimmten Umweltbedingungen oxidiert. Für die PBR-Erklärung ist das aber auch nicht der entscheidende Punkt. Wichtig ist die Kopplung der Materialparameter:</p>
+<ul>
+<li>In der <strong>Albedo-Map</strong> entstehen dunkle und grünliche Bereiche.</li>
+<li>In der <strong>Roughness-Map</strong> werden diese Bereiche matter.</li>
+<li>In der <strong>Metallic-Map</strong> verlieren oxidierte Bereiche ihre metallische Reflexion.</li>
+</ul>
+<p>Damit wird aus einem globalen Materialwert ein ortsabhängiger Materialzustand. Das ist genau der Schritt, der in realen PBR-Workflows über Texture Maps, Substance Painter, Blender oder prozedurale Shader umgesetzt wird.</p>
+</section>
+<section id="ausblick-vom-prozeduralen-entwurf-zum-eigenen-asset" class="level2">
+<h2 class="anchored" data-anchor-id="ausblick-vom-prozeduralen-entwurf-zum-eigenen-asset">Ausblick: Vom prozeduralen Entwurf zum eigenen Asset</h2>
+<p>Dieser erste Entwurf lässt sich später erweitern, ohne das didaktische Konzept zu ändern. Statt des einfachen prozeduralen Kupferschilds könnte ein eigenes CAD- oder Blender-Modell verwendet werden, zum Beispiel ein Schild mit sauber modellierten Falzen, Nieten, Kratzern und unterschiedlich stark gealterten Vertiefungen.</p>
+<p>Dann würden die Alterungseffekte nicht nur aus einem 2D-Muster entstehen, sondern gezielt an sinnvollen Stellen auftreten:</p>
+<ul>
+<li>stärkere Oxidation in Vertiefungen,</li>
+<li>polierte Kanten an häufig berührten Stellen,</li>
+<li>Schmutzansammlung an Fugen,</li>
+<li>unterschiedliche Alterung für Metall, Kunststoff oder Lack.</li>
+</ul>
+<p>Der Kern bleibt aber gleich: Alterung ist in PBR keine einzelne Zahl, sondern eine gemeinsame Veränderung mehrerer Maps.</p>
 
 
 </section>

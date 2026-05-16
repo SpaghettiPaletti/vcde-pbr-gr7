@@ -2,19 +2,49 @@
   {
     "objectID": "pages/6_X.html",
     "href": "pages/6_X.html",
-    "title": "Alterungsslider",
+    "title": "Vertiefung: Materialalterung",
     "section": "",
-    "text": "Darstellung beispielsweise eines Kupferobjekts.\nÜber einen Slider kann ein Alterungseffekt simuliert werden.\nZeigt, dass PBR-Parameter nicht starr sind, sondern sich kombinieren lassen.",
+    "text": "Auf den vorherigen Seiten wurden PBR-Materialien vor allem als Kombination aus Parametern beschrieben: Base Color, Metallic, Roughness und die Beleuchtung durch IBL. In einer echten Szene sind diese Werte jedoch selten konstant. Ein Objekt altert, wird benutzt, oxidiert, verschmutzt oder wird an Kanten wieder blank poliert.\nDamit ist Alterung kein reiner “Farbfilter”. Wenn Kupfer eine Patina bildet oder Eisen rostet, verändert sich nicht nur die sichtbare Farbe der Oberfläche. Auch das Reflexionsverhalten ändert sich:\n\nDie Oberfläche wird meist rauer.\nDie Spiegelung wird breiter und dunkler.\nOxidierte oder verschmutzte Bereiche verhalten sich nicht mehr wie blankes Metall.\nEinzelne Regionen können sehr unterschiedliche Materialzustände besitzen.\n\nDie zentrale Idee dieser Vertiefung lautet deshalb:\n\nRealistische Alterung entsteht, wenn mehrere PBR-Maps gemeinsam verändert werden.",
     "crumbs": [
       "X. Vertiefung"
     ]
   },
   {
-    "objectID": "pages/6_X.html#einen-alterungsslider",
-    "href": "pages/6_X.html#einen-alterungsslider",
-    "title": "Alterungsslider",
+    "objectID": "pages/6_X.html#warum-materialalterung-eine-pbr-frage-ist",
+    "href": "pages/6_X.html#warum-materialalterung-eine-pbr-frage-ist",
+    "title": "Vertiefung: Materialalterung",
     "section": "",
-    "text": "Darstellung beispielsweise eines Kupferobjekts.\nÜber einen Slider kann ein Alterungseffekt simuliert werden.\nZeigt, dass PBR-Parameter nicht starr sind, sondern sich kombinieren lassen.",
+    "text": "Auf den vorherigen Seiten wurden PBR-Materialien vor allem als Kombination aus Parametern beschrieben: Base Color, Metallic, Roughness und die Beleuchtung durch IBL. In einer echten Szene sind diese Werte jedoch selten konstant. Ein Objekt altert, wird benutzt, oxidiert, verschmutzt oder wird an Kanten wieder blank poliert.\nDamit ist Alterung kein reiner “Farbfilter”. Wenn Kupfer eine Patina bildet oder Eisen rostet, verändert sich nicht nur die sichtbare Farbe der Oberfläche. Auch das Reflexionsverhalten ändert sich:\n\nDie Oberfläche wird meist rauer.\nDie Spiegelung wird breiter und dunkler.\nOxidierte oder verschmutzte Bereiche verhalten sich nicht mehr wie blankes Metall.\nEinzelne Regionen können sehr unterschiedliche Materialzustände besitzen.\n\nDie zentrale Idee dieser Vertiefung lautet deshalb:\n\nRealistische Alterung entsteht, wenn mehrere PBR-Maps gemeinsam verändert werden.",
+    "crumbs": [
+      "X. Vertiefung"
+    ]
+  },
+  {
+    "objectID": "pages/6_X.html#interaktive-demo-ein-kupferschild-altert",
+    "href": "pages/6_X.html#interaktive-demo-ein-kupferschild-altert",
+    "title": "Vertiefung: Materialalterung",
+    "section": "Interaktive Demo: Ein Kupferschild altert",
+    "text": "Interaktive Demo: Ein Kupferschild altert\nDie folgende Demo verwendet bewusst noch kein externes 3D-Modell. Das Objekt wird aus einfachen Babylon.js-Grundformen aufgebaut: eine leicht gewölbte Schildfläche mit erhabenem Rand und Nieten. Der interessante Teil liegt aber weiterhin in den prozedural erzeugten Texturen. Der Alterungsslider verändert gleichzeitig eine Albedo-Map, eine Roughness-Map und eine Metallic-Map.\nDie drei Modi zeigen, warum eine reine Farbänderung nicht ausreicht:\n\nNur Albedo: Die Patina wird nur eingefärbt. Das Material bleibt trotzdem überall spiegelndes Metall.\nAlbedo + Roughness: Gealterte Bereiche werden matter, bleiben aber noch metallisch.\nAlle PBR-Maps: Patina-Bereiche verlieren zusätzlich ihre metallische Reflexion. Erst dadurch wirkt die Oberfläche plausibel gealtert.\n\n\n\n  \n    \n      \n    \n\n    \n      \n        Umgebung\n        \n          Stadt (Neutral)\n          Landlandschaft (Offen)\n          Wald (Grünlich)\n          Innenraum (Warm)\n        \n      \n\n      \n        \n          Alterung\n          0%\n        \n        \n      \n\n      \n        Aktive Materialinformationen\n        \n          Nur Albedo\n          Albedo + Roughness\n          Alle PBR-Maps\n        \n      \n\n      \n        Alle PBR-Maps:\n        Patina verändert Farbe, Rauheit und Metallizität gleichzeitig.\n      \n\n      \n        \n          Albedo\n          \n        \n        \n          Metallic\n          \n        \n        \n          Roughness",
+    "crumbs": [
+      "X. Vertiefung"
+    ]
+  },
+  {
+    "objectID": "pages/6_X.html#was-an-der-demo-vereinfacht-ist",
+    "href": "pages/6_X.html#was-an-der-demo-vereinfacht-ist",
+    "title": "Vertiefung: Materialalterung",
+    "section": "Was an der Demo vereinfacht ist",
+    "text": "Was an der Demo vereinfacht ist\nDie Demo ist kein chemisch exaktes Korrosionsmodell. Sie simuliert nicht, wie schnell Kupfer unter bestimmten Umweltbedingungen oxidiert. Für die PBR-Erklärung ist das aber auch nicht der entscheidende Punkt. Wichtig ist die Kopplung der Materialparameter:\n\nIn der Albedo-Map entstehen dunkle und grünliche Bereiche.\nIn der Roughness-Map werden diese Bereiche matter.\nIn der Metallic-Map verlieren oxidierte Bereiche ihre metallische Reflexion.\n\nDamit wird aus einem globalen Materialwert ein ortsabhängiger Materialzustand. Das ist genau der Schritt, der in realen PBR-Workflows über Texture Maps, Substance Painter, Blender oder prozedurale Shader umgesetzt wird.",
+    "crumbs": [
+      "X. Vertiefung"
+    ]
+  },
+  {
+    "objectID": "pages/6_X.html#ausblick-vom-prozeduralen-entwurf-zum-eigenen-asset",
+    "href": "pages/6_X.html#ausblick-vom-prozeduralen-entwurf-zum-eigenen-asset",
+    "title": "Vertiefung: Materialalterung",
+    "section": "Ausblick: Vom prozeduralen Entwurf zum eigenen Asset",
+    "text": "Ausblick: Vom prozeduralen Entwurf zum eigenen Asset\nDieser erste Entwurf lässt sich später erweitern, ohne das didaktische Konzept zu ändern. Statt des einfachen prozeduralen Kupferschilds könnte ein eigenes CAD- oder Blender-Modell verwendet werden, zum Beispiel ein Schild mit sauber modellierten Falzen, Nieten, Kratzern und unterschiedlich stark gealterten Vertiefungen.\nDann würden die Alterungseffekte nicht nur aus einem 2D-Muster entstehen, sondern gezielt an sinnvollen Stellen auftreten:\n\nstärkere Oxidation in Vertiefungen,\npolierte Kanten an häufig berührten Stellen,\nSchmutzansammlung an Fugen,\nunterschiedliche Alterung für Metall, Kunststoff oder Lack.\n\nDer Kern bleibt aber gleich: Alterung ist in PBR keine einzelne Zahl, sondern eine gemeinsame Veränderung mehrerer Maps.",
     "crumbs": [
       "X. Vertiefung"
     ]
