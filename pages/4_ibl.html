@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.37">
+<meta name="generator" content="quarto-1.9.38">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -40,10 +40,10 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-3e7735b7b22659e5fa437aca0bb49075.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-94b323657c735dfe3b1bf6ebb2c33a55.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -72,6 +72,35 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
@@ -159,7 +188,12 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#warum-ibl-für-die-vollständigkeit-nötig-ist" id="toc-warum-ibl-für-die-vollständigkeit-nötig-ist" class="nav-link" data-scroll-target="#warum-ibl-für-die-vollständigkeit-nötig-ist">Warum IBL für die Vollständigkeit nötig ist</a></li>
   <li><a href="#die-lichtquelle-was-ist-ibl" id="toc-die-lichtquelle-was-ist-ibl" class="nav-link" data-scroll-target="#die-lichtquelle-was-ist-ibl">Die Lichtquelle: Was ist IBL?</a></li>
   <li><a href="#interaktive-analyse-der-torus-knoten-und-verschiedenen-welten" id="toc-interaktive-analyse-der-torus-knoten-und-verschiedenen-welten" class="nav-link" data-scroll-target="#interaktive-analyse-der-torus-knoten-und-verschiedenen-welten">Interaktive Analyse: Der Torus-Knoten und verschiedenen Welten</a></li>
-  <li><a href="#zusammenfassung-der-mathematischen-lösung" id="toc-zusammenfassung-der-mathematischen-lösung" class="nav-link" data-scroll-target="#zusammenfassung-der-mathematischen-lösung">Zusammenfassung der mathematischen Lösung</a></li>
+  <li><a href="#zusammenfassung-der-mathematischen-lösung" id="toc-zusammenfassung-der-mathematischen-lösung" class="nav-link" data-scroll-target="#zusammenfassung-der-mathematischen-lösung">Zusammenfassung der mathematischen Lösung</a>
+  <ul class="collapse">
+  <li><a href="#das-gefilterte-umgebungslicht-pre-filtered-map" id="toc-das-gefilterte-umgebungslicht-pre-filtered-map" class="nav-link" data-scroll-target="#das-gefilterte-umgebungslicht-pre-filtered-map">1. Das gefilterte Umgebungslicht (Pre-filtered Map)</a></li>
+  <li><a href="#die-brdf-integration-look-up-table" id="toc-die-brdf-integration-look-up-table" class="nav-link" data-scroll-target="#die-brdf-integration-look-up-table">2. Die BRDF-Integration (Look-Up Table)</a></li>
+  <li><a href="#zusammenführung" id="toc-zusammenführung" class="nav-link" data-scroll-target="#zusammenführung">Zusammenführung</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -269,8 +303,29 @@ window.addEventListener("resize", () => engine.resize());
 <li><strong>Specular Reflection:</strong> Verschiedene Unschärfegrade der Umgebung werden für unterschiedliche <em>Rougchness</em>-Stufen genutzt.</li>
 </ol>
 <p>Erst durch dieses Zusammenspiel von Umgebungslicht und den physikalischen Materialgesetzen wird PBR zu eine vollständigen, fotorealistischen System.</p>
+<p>Um IBL in EChtzeit zu ermöglichen, muss die Rendering-Gleichung für die Umgebung gelöst werden. Das INtegral für den spekularen Anteil lautet:</p>
+<p><span class="math display">\[L_o(p, \omega_o) = \int_{\Omega} L_i(p, \omega_i) \, f_r(p, \omega_i, \omega_o) \, (n \cdot \omega_i) \, d\omega_i\]</span></p>
+<p>Da dieses Integral für jeden Frame und jeden Pixle zu rechenintensiv ist, nutzen modeerne Engines wie Babylon.js den von Epic Games entwickelten <strong>Split-Sum</strong> Ansatz. Dabei wird das Integral in zwei Teile zerlegt:</p>
+<section id="das-gefilterte-umgebungslicht-pre-filtered-map" class="level3">
+<h3 class="anchored" data-anchor-id="das-gefilterte-umgebungslicht-pre-filtered-map">1. Das gefilterte Umgebungslicht (Pre-filtered Map)</h3>
+<p>Der erste Teil des Produkts berechnet die eintreffende Strahlung für verschiedene Rauheitsgrade:</p>
+<p><span class="math display">\[S_1 \approx \frac{1}{N} \sum_{i=1}^{N} L_i(\omega_i)\]</span></p>
+<p>Dabei wird das Umgebungslicht vorab mit einem Gauß-Filter weichgezeichnet. Je höher die <em>Roughness</em> des Materials, desto unschärfer ist die Version der Textur, die ausgelesen wird.</p>
+</section>
+<section id="die-brdf-integration-look-up-table" class="level3">
+<h3 class="anchored" data-anchor-id="die-brdf-integration-look-up-table">2. Die BRDF-Integration (Look-Up Table)</h3>
+<p>Der zweite Teil berechnet den Rest der Gleichung, der vom Betrachtungswinkel (<span class="math inline">\(\theta\)</span>) und der Rauheit abhängt:</p>
+<p><span class="math display">\[S_2 \approx \int_{\Omega} f_r(p, \omega_i, \omega_o) \, (n \cdot \omega_i) \, d\omega_i\]</span></p>
+<p>Diese Werte werden in einer speziellen Textur, der <strong>BRDF-LUT</strong>, gespeichert. Sie kombiniert den Fresnel-Effekt mit der Geometrie-Abschattung.</p>
+</section>
+<section id="zusammenführung" class="level3">
+<h3 class="anchored" data-anchor-id="zusammenführung">Zusammenführung</h3>
+<p>In der Grafikkarte werden diese beiden Werte schließlich einfach multipliziert:</p>
+<p><span class="math display">\[L_{IBL} = S_1 \cdot (F_0 \cdot \text{Scale} + \text{Bias})\]</span></p>
+<p>Dies ermöglich die Darstellung von komplexen physikalischen Reflexionen mit nur zwei Texturzugriffen pro Pixel.</p>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
