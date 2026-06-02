@@ -88,3 +88,31 @@ IBL löst das Problem der komlpexen Lichtberechnung durch Vorberechnung (**Pre-F
 2. **Specular Reflection:** Verschiedene Unschärfegrade der Umgebung werden für unterschiedliche *Rougchness*-Stufen genutzt.
 
 Erst durch dieses Zusammenspiel von Umgebungslicht und den physikalischen Materialgesetzen wird PBR zu eine vollständigen, fotorealistischen System.
+
+Um IBL in EChtzeit zu ermöglichen, muss die Rendering-Gleichung für die Umgebung gelöst werden. Das INtegral für den spekularen Anteil lautet:
+
+$$L_o(p, \omega_o) = \int_{\Omega} L_i(p, \omega_i) \, f_r(p, \omega_i, \omega_o) \, (n \cdot \omega_i) \, d\omega_i$$
+
+Da dieses Integral für jeden Frame und jeden Pixle zu rechenintensiv ist, nutzen modeerne Engines wie Babylon.js den von Epic Games entwickelten **Split-Sum** Ansatz. Dabei wird das Integral in zwei Teile zerlegt:
+
+### 1. Das gefilterte Umgebungslicht (Pre-filtered Map)
+Der erste Teil des Produkts berechnet die eintreffende Strahlung für verschiedene Rauheitsgrade:
+
+$$S_1 \approx \frac{1}{N} \sum_{i=1}^{N} L_i(\omega_i)$$
+
+Dabei wird das Umgebungslicht vorab mit einem Gauß-Filter weichgezeichnet. Je höher die *Roughness* des Materials, desto unschärfer ist die Version der Textur, die ausgelesen wird.
+
+### 2. Die BRDF-Integration (Look-Up Table)
+Der zweite Teil berechnet den Rest der Gleichung, der vom Betrachtungswinkel ($\theta$) und der Rauheit abhängt:
+
+$$S_2 \approx \int_{\Omega} f_r(p, \omega_i, \omega_o) \, (n \cdot \omega_i) \, d\omega_i$$
+
+
+Diese Werte werden in einer speziellen Textur, der **BRDF-LUT**, gespeichert. Sie kombiniert den Fresnel-Effekt mit der Geometrie-Abschattung.
+
+### Zusammenführung
+In der Grafikkarte werden diese beiden Werte schließlich einfach multipliziert:
+
+$$L_{IBL} = S_1 \cdot (F_0 \cdot \text{Scale} + \text{Bias})$$
+
+Dies ermöglich die Darstellung von komplexen physikalischen Reflexionen mit nur zwei Texturzugriffen pro Pixel.
