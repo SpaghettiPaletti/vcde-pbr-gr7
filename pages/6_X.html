@@ -208,12 +208,13 @@ ul.task-list li input[type="checkbox"] {
 <section id="interaktive-demo-ein-kupferschild-altert" class="level2">
 <h2 class="anchored" data-anchor-id="interaktive-demo-ein-kupferschild-altert">Interaktive Demo: Ein Kupferschild altert</h2>
 <p>Die folgende Demo verwendet bewusst noch kein externes 3D-Modell. Das Objekt wird aus einfachen Babylon.js-Grundformen aufgebaut: eine leicht gewölbte Schildfläche mit erhabenem Rand und Nieten. Der interessante Teil liegt aber weiterhin in den prozedural erzeugten Texturen. Der Alterungsslider verändert gleichzeitig eine Albedo-Map, eine Roughness-Map und eine Metallic-Map.</p>
-<p>Die drei Modi zeigen, warum eine reine Farbänderung nicht ausreicht:</p>
+<p>Die drei Schalter zeigen, warum eine reine Farbänderung nicht ausreicht:</p>
 <ul>
-<li><strong>Nur Albedo:</strong> Die Patina wird nur eingefärbt. Das Material bleibt trotzdem überall spiegelndes Metall.</li>
-<li><strong>Albedo + Roughness:</strong> Gealterte Bereiche werden matter, bleiben aber noch metallisch.</li>
-<li><strong>Alle PBR-Maps:</strong> Patina-Bereiche verlieren zusätzlich ihre metallische Reflexion. Erst dadurch wirkt die Oberfläche plausibel gealtert.</li>
+<li><strong>Base Color / Albedo:</strong> Die Patina wird als lokale Grundfarbe sichtbar.</li>
+<li><strong>Roughness:</strong> Gealterte Bereiche werden matter und reflektieren unschärfer.</li>
+<li><strong>Metallic:</strong> Oxidierte Bereiche verlieren ihre metallische Reflexion.</li>
 </ul>
+<p>Ausgeschaltete Maps werden durch globale Materialwerte ersetzt. Dadurch kann beobachtet werden, welche Information durch welche Map in das PBR-Material eingebracht wird.</p>
 <style>
   #agingDemoGrid {
     display: grid;
@@ -258,17 +259,17 @@ ul.task-list li input[type="checkbox"] {
       </div>
 
       <div>
-        <div style="font-weight:600; margin-bottom:6px;">Aktive Materialinformationen</div>
+        <div style="font-weight:600; margin-bottom:6px;">Aktive Maps</div>
         <div style="display:flex; flex-wrap:wrap; gap:8px;">
-          <button class="agingModeBtn" data-mode="color" style="padding:6px 10px; border:1px solid #888; border-radius:4px; background:#fff; cursor:pointer;">Nur Albedo</button>
-          <button class="agingModeBtn" data-mode="rough" style="padding:6px 10px; border:1px solid #888; border-radius:4px; background:#fff; cursor:pointer;">Albedo + Roughness</button>
-          <button class="agingModeBtn" data-mode="full" style="padding:6px 10px; border:1px solid #888; border-radius:4px; background:#212529; color:#fff; cursor:pointer;">Alle PBR-Maps</button>
+          <button class="agingMapBtn" data-map="albedo" style="padding:6px 10px; border:1px solid #888; border-radius:4px; background:#212529; color:#fff; cursor:pointer;">Base Color</button>
+          <button class="agingMapBtn" data-map="roughness" style="padding:6px 10px; border:1px solid #888; border-radius:4px; background:#212529; color:#fff; cursor:pointer;">Roughness</button>
+          <button class="agingMapBtn" data-map="metallic" style="padding:6px 10px; border:1px solid #888; border-radius:4px; background:#212529; color:#fff; cursor:pointer;">Metallic</button>
         </div>
       </div>
 
       <div style="font-size:0.92em; color:#555;">
-        <strong id="agingModeTitle">Alle PBR-Maps:</strong>
-        <span id="agingModeText">Patina verändert Farbe, Rauheit und Metallizität gleichzeitig.</span>
+        <strong id="agingModeTitle">Aktiv:</strong>
+        <span id="agingModeText">Base Color, Roughness und Metallic werden aus den Alterungs-Maps gelesen.</span>
       </div>
 
       <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px;">
@@ -301,7 +302,7 @@ ul.task-list li input[type="checkbox"] {
     const envSwitch = document.getElementById("agingEnvSwitch");
     const modeTitle = document.getElementById("agingModeTitle");
     const modeText = document.getElementById("agingModeText");
-    const modeButtons = Array.from(document.querySelectorAll(".agingModeBtn"));
+    const mapButtons = Array.from(document.querySelectorAll(".agingMapBtn"));
 
     const engine = new BABYLON.Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true });
     const scene = new BABYLON.Scene(engine);
@@ -484,19 +485,27 @@ ul.task-list li input[type="checkbox"] {
     const texSize = 256;
     const albedoTex = new BABYLON.DynamicTexture("agingAlbedoTex", texSize, scene, false);
     const mrFullTex = new BABYLON.DynamicTexture("agingMRFullTex", texSize, scene, false);
-    const mrRoughTex = new BABYLON.DynamicTexture("agingMRRoughTex", texSize, scene, false);
-    [albedoTex, mrFullTex, mrRoughTex].forEach((tex) => {
+    const mrActiveTex = new BABYLON.DynamicTexture("agingMRActiveTex", texSize, scene, false);
+    [albedoTex, mrFullTex, mrActiveTex].forEach((tex) => {
       tex.wrapU = BABYLON.Texture.CLAMP_ADDRESSMODE;
       tex.wrapV = BABYLON.Texture.CLAMP_ADDRESSMODE;
     });
     material.albedoTexture = albedoTex;
-    material.metallicTexture = mrFullTex;
+    material.metallicTexture = mrActiveTex;
 
     const previewAlbedo = document.getElementById("albedoPreview").getContext("2d");
     const previewMetallic = document.getElementById("metallicPreview").getContext("2d");
     const previewRoughness = document.getElementById("roughnessPreview").getContext("2d");
 
-    let currentMode = "full";
+    const globalMetallic = 1.0;
+    const globalRoughness = 0.24;
+    const globalBaseColor = new BABYLON.Color3(0.72, 0.32, 0.14);
+    let latestMrData = null;
+    const activeMaps = {
+      albedo: true,
+      roughness: true,
+      metallic: true
+    };
 
     function clamp01(value) {
       return Math.max(0, Math.min(1, value));
@@ -630,7 +639,6 @@ ul.task-list li input[type="checkbox"] {
 
       const albedoData = new ImageData(texSize, texSize);
       const mrFullData = new ImageData(texSize, texSize);
-      const mrRoughData = new ImageData(texSize, texSize);
 
       for (let y = 0; y < texSize; y++) {
         const v = y / (texSize - 1);
@@ -708,57 +716,77 @@ ul.task-list li input[type="checkbox"] {
           mrFullData.data[index + 2] = Math.round(metallic * 255);
           mrFullData.data[index + 3] = 255;
 
-          mrRoughData.data[index] = 0;
-          mrRoughData.data[index + 1] = Math.round(roughness * 255);
-          mrRoughData.data[index + 2] = 255;
-          mrRoughData.data[index + 3] = 255;
         }
       }
 
       drawImageDataToTexture(albedoTex, albedoData);
       drawImageDataToTexture(mrFullTex, mrFullData);
-      drawImageDataToTexture(mrRoughTex, mrRoughData);
       drawPreview(previewAlbedo, albedoData, "albedo");
       drawPreview(previewMetallic, mrFullData, "metallic");
       drawPreview(previewRoughness, mrFullData, "roughness");
+      latestMrData = mrFullData;
+      applyMapSelection();
     }
 
-    function applyMode(mode) {
-      currentMode = mode;
-      modeButtons.forEach((button) => {
-        const active = button.dataset.mode === mode;
+    function updateActiveMRTexture() {
+      if (!latestMrData) return;
+
+      const activeData = new ImageData(texSize, texSize);
+      const flatRoughness = Math.round(globalRoughness * 255);
+      const flatMetallic = Math.round(globalMetallic * 255);
+
+      for (let i = 0; i < latestMrData.data.length; i += 4) {
+        activeData.data[i] = 0;
+        activeData.data[i + 1] = activeMaps.roughness ? latestMrData.data[i + 1] : flatRoughness;
+        activeData.data[i + 2] = activeMaps.metallic ? latestMrData.data[i + 2] : flatMetallic;
+        activeData.data[i + 3] = 255;
+      }
+
+      drawImageDataToTexture(mrActiveTex, activeData);
+    }
+
+    function applyMapSelection() {
+      mapButtons.forEach((button) => {
+        const active = activeMaps[button.dataset.map];
         button.style.background = active ? "#212529" : "#fff";
         button.style.color = active ? "#fff" : "#212529";
       });
 
-      if (mode === "color") {
-        material.metallicTexture = null;
-        material.metallic = 1.0;
-        material.roughness = 0.22;
-        modeTitle.textContent = "Nur Albedo:";
-        modeText.textContent = "Die Patina wird sichtbar, reflektiert aber noch wie blankes Metall.";
-      } else if (mode === "rough") {
-        material.metallicTexture = mrRoughTex;
+      material.albedoTexture = activeMaps.albedo ? albedoTex : null;
+      material.albedoColor = activeMaps.albedo ? new BABYLON.Color3(1, 1, 1) : globalBaseColor;
+
+      if (activeMaps.roughness || activeMaps.metallic) {
+        updateActiveMRTexture();
+        material.metallicTexture = mrActiveTex;
         material.metallic = 1.0;
         material.roughness = 1.0;
-        modeTitle.textContent = "Albedo + Roughness:";
-        modeText.textContent = "Gealterte Bereiche werden matter, bleiben aber physikalisch noch Metall.";
       } else {
-        material.metallicTexture = mrFullTex;
-        material.metallic = 1.0;
-        material.roughness = 1.0;
-        modeTitle.textContent = "Alle PBR-Maps:";
-        modeText.textContent = "Patina verändert Farbe, Rauheit und Metallizität gleichzeitig.";
+        material.metallicTexture = null;
+        material.metallic = globalMetallic;
+        material.roughness = globalRoughness;
       }
+
+      const activeLabels = [];
+      if (activeMaps.albedo) activeLabels.push("Base Color");
+      if (activeMaps.roughness) activeLabels.push("Roughness");
+      if (activeMaps.metallic) activeLabels.push("Metallic");
+
+      modeTitle.textContent = "Aktiv:";
+      modeText.textContent = activeLabels.length
+        ? activeLabels.join(", ") + " werden aus den Alterungs-Maps gelesen."
+        : "Alle Maps sind aus. Das Schild verwendet konstante globale Materialwerte.";
     }
 
     slider.addEventListener("input", updateMaps);
-    modeButtons.forEach((button) => {
-      button.addEventListener("click", () => applyMode(button.dataset.mode));
+    mapButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        activeMaps[button.dataset.map] = !activeMaps[button.dataset.map];
+        applyMapSelection();
+      });
     });
 
     updateMaps();
-    applyMode(currentMode);
+    applyMapSelection();
 
     engine.runRenderLoop(function () {
       root.rotation.y = Math.sin(performance.now() * 0.00028) * 0.09;
