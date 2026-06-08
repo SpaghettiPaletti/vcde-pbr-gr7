@@ -64,7 +64,7 @@
     "href": "pages/2_pbr_prinzipien.html",
     "title": "PBR-Prinzipien",
     "section": "",
-    "text": "Im Gegensatz zum klassischen Phong-Modell basiert PBR auf messbaren physikalischen Prinzipien. Die drei zentralen Säulen sind:\nDiese Prinzipien führen zu realistischen und unter verschiedenen Beleuchtungsbedingungen konsistenten Materialdarstellungen.",
+    "text": "Im Gegensatz zum klassischen Phong-Modell basiert Physically Based Rendering (PBR) auf physikalisch motivierten Materialmodellen. Ziel ist es, das Reflexionsverhalten realer Oberflächen möglichst plausibel zu approximieren.\nDie zentralen Prinzipien sind:\nDiese Prinzipien führen zu realistischeren und unter unterschiedlichen Beleuchtungsbedingungen konsistenten Materialdarstellungen.",
     "crumbs": [
       "2. PBR-Prinzipien"
     ]
@@ -74,17 +74,17 @@
     "href": "pages/2_pbr_prinzipien.html#rendering-gleichung",
     "title": "PBR-Prinzipien",
     "section": "Rendering-Gleichung",
-    "text": "Rendering-Gleichung\nDie Grundlage jeder Beleuchtungsberechnung ist die Rendering-Gleichung:\n\\[\nL_o(x,\\omega_o) = L_e(x,\\omega_o) + \\int_{\\Omega} f_r(x,\\omega_i,\\omega_o) \\, L_i(x,\\omega_i) \\, (n \\cdot \\omega_i) \\, d\\omega_i\n\\]\nDabei beschreibt die Bidirectional Reflectance Distribution Function (BRDF) \\(f_r\\) das Reflexionsverhalten der Oberfläche für einfallendes Licht aus Richtung \\(\\omega_i\\) in Richtung \\(\\omega_o\\).\nIn PBR wird die BRDF üblicherweise in zwei Anteile aufgeteilt:\n\\[\nf_r(\\mathbf{v}, \\mathbf{l}) = f_d(\\mathbf{v}, \\mathbf{l}) + f_s(\\mathbf{v}, \\mathbf{l})\n\\]\n\n\\(f_d\\): diffuser Anteil (matte, richtungsunabhängige Reflexion)\n\\(f_s\\): spekularer Anteil (gerichtete Spiegelreflexion)\n\nDer diffuse Anteil wird meist mit einem normierten Lambert-Modell berechnet, der spekularer Anteil mit der Cook-Torrance-BRDF.",
+    "text": "Rendering-Gleichung\nDie Grundlage moderner Beleuchtungsmodelle ist die Rendering-Gleichung:\n\\[\nL_o(x,\\omega_o)\n=\nL_e(x,\\omega_o)\n+\n\\int_{\\Omega}\nf_r(x,\\omega_i,\\omega_o)\n\\, L_i(x,\\omega_i)\n\\, (n \\cdot \\omega_i)\n\\, d\\omega_i\n\\]\nSie beschreibt den gesamten Lichttransport einer Szene.\nDabei bezeichnet:\n\n\\(L_o\\): ausgehende Strahldichte (sichtbares Licht)\n\\(L_e\\): selbst emittiertes Licht\n\\(L_i\\): einfallendes Licht\n\\(f_r\\): Reflexionsverhalten des Materials\n\nFür die Darstellung eines Materials ist insbesondere der Term \\(f_r\\) relevant.",
     "crumbs": [
       "2. PBR-Prinzipien"
     ]
   },
   {
-    "objectID": "pages/2_pbr_prinzipien.html#grundprinzip",
-    "href": "pages/2_pbr_prinzipien.html#grundprinzip",
+    "objectID": "pages/2_pbr_prinzipien.html#die-brdf",
+    "href": "pages/2_pbr_prinzipien.html#die-brdf",
     "title": "PBR-Prinzipien",
-    "section": "Grundprinzip",
-    "text": "Grundprinzip\nEine Oberfläche darf nie mehr Licht reflektieren, als sie empfängt. Die Summe aus diffusem und spiegelndem Anteil muss physikalisch plausibel bleiben.\nVergleich mit Phong:\nIm klassischen Phong-Modell werden Ambient, Diffuse und Specular einfach addiert. Dadurch ist es möglich, dass die reflektierte Energie die einfallende übersteigt – das Material leuchtet dann unnatürlich. In PBR wird diese Verletzung der Energieerhaltung durch die Abhängigkeit der Anteile voneinander systematisch verhindert.",
+    "section": "Die BRDF",
+    "text": "Die BRDF\nDie Bidirectional Reflectance Distribution Function (BRDF) beschreibt, welcher Anteil des einfallenden Lichts aus Richtung \\(\\omega_i\\) in Richtung des Betrachters \\(\\omega_o\\) reflektiert wird.\nSie stellt damit das Materialmodell innerhalb der Rendering-Gleichung dar.\nWährend das klassische Phong-Modell eine empirische BRDF verwendet, nutzt PBR physikalisch motivierte BRDFs, die reale Materialeigenschaften besser approximieren.\nIn PBR wird die BRDF meist in einen diffusen und einen spekularen Anteil zerlegt:\n\\[\nf_r(\\omega_o,\\omega_i)\n=\nf_d(\\omega_o,\\omega_i)\n+\nf_s(\\omega_o,\\omega_i)\n\\]\n\n\\(f_d\\): diffuser Anteil\n\\(f_s\\): spekularer Anteil\n\nDer diffuse Anteil wird häufig mit dem Lambert-Modell beschrieben, der spekulare Anteil mit der Cook-Torrance-BRDF.\n\n\n\n\n\n\nNotePhong vs. PBR\n\n\n\nIm Phong-Modell wird die Fragmentfarbe als Summe aus Ambient-, Diffuse- und Specular-Anteil berechnet:\n\\[\n\\text{Farbe}\n=\n\\text{Ambient}\n+\n\\text{Diffuse}\n+\n\\text{Specular}\n\\]\nPBR beschreibt Materialien dagegen über eine physikalisch motivierte BRDF, die direkt Bestandteil der Rendering-Gleichung ist.",
     "crumbs": [
       "2. PBR-Prinzipien"
     ]
@@ -94,17 +94,57 @@
     "href": "pages/2_pbr_prinzipien.html#grundidee",
     "title": "PBR-Prinzipien",
     "section": "Grundidee",
-    "text": "Grundidee\nReale Oberflächen sind auf mikroskopischer Ebene rau und bestehen aus vielen kleinen Facetten, die wie winzige Spiegel wirken. Nur Facetten, deren Normale exakt dem Halfway-Vektor \\(\\mathbf{h}\\) entspricht, reflektieren Licht direkt vom Licht zum Betrachter. ::: columns\n\n\nMakroskopisches Verhalten\nv: Blickrichtungsvektor\nl: Lichtrichtungsvektor\nn: Normalenvektor\nh: normierte Mittelrichtung zwischen v und l\n\n\n\nMikrofacettenstruktur\n\n\n\nLichtinteraktion\n\n:::",
+    "text": "Grundidee\nReale Oberflächen erscheinen makroskopisch glatt, besitzen jedoch auf mikroskopischer Ebene eine raue Struktur. Diese kann als Ansammlung vieler kleiner Spiegel – sogenannter Mikrofacetten – modelliert werden.\nNur Mikrofacetten, deren Normale mit dem Halfway-Vektor \\(\\mathbf{h}\\) übereinstimmt, reflektieren Licht direkt vom Lichtstrahl zum Betrachter.\n\n\n\n\n\n\n\\(\\mathbf{v}\\): Blickrichtung\n\\(\\mathbf{l}\\): Lichtrichtung\n\\(\\mathbf{n}\\): Oberflächennormale\n\\(\\mathbf{h}\\): Halfway-Vektor\n\n\n\n\n\n\n\n\nDie Mikrofacettentheorie bildet die Grundlage moderner spekularer Reflexionsmodelle in PBR.",
     "crumbs": [
       "2. PBR-Prinzipien"
     ]
   },
   {
-    "objectID": "pages/2_pbr_prinzipien.html#cook-torrance-brdf-spekularer-anteil",
-    "href": "pages/2_pbr_prinzipien.html#cook-torrance-brdf-spekularer-anteil",
+    "objectID": "pages/2_pbr_prinzipien.html#fresnel-term-f",
+    "href": "pages/2_pbr_prinzipien.html#fresnel-term-f",
     "title": "PBR-Prinzipien",
-    "section": "Cook-Torrance BRDF (spekularer Anteil)",
-    "text": "Cook-Torrance BRDF (spekularer Anteil)\nDer spekularer Anteil \\(f_s\\) in PBR wird mit der Cook-Torrance-Formel berechnet:\n\\[\nf_s(\\mathbf{v}, \\mathbf{l}) = \\frac{F(\\mathbf{v}, \\mathbf{h}) \\, D(\\mathbf{h}) \\, G(\\mathbf{l}, \\mathbf{v})}{4 \\, (\\mathbf{n} \\cdot \\mathbf{l}) \\, (\\mathbf{n} \\cdot \\mathbf{v})}\n\\tag{1}\\]\nDieser Term setzt sich aus drei physikalisch begründeten Komponenten zusammen. Jede wird im Folgenden mit dem Phong-Modell verglichen.\n\n1. Fresnel-Term \\(F\\)\nDer Fresnel-Effekt beschreibt, dass der Reflexionsanteil mit flacherem Einfallswinkel zunimmt. Bei grazing angles reflektiert nahezu jedes Material fast das gesamte Licht spiegelnd.\nIn der Praxis wird meist die Schlick-Approximation verwendet:\n\\[\nF(\\theta) = F_0 + (1 - F_0)(1 - \\cos\\theta)^5\n\\]\nVergleich mit Phong:\nDas Phong-Modell kennt keinen Fresnel-Effekt. Das Glanzlicht hat bei jedem Betrachtungswinkel die gleiche Intensität – unabhängig davon, ob man senkrecht oder flach auf die Oberfläche schaut. Dies führt zu unnatürlich gleichmäßigen und oft zu hellen Glanzlichtern an den Rändern.\n\n\n2. Normal Distribution Function (NDF) \\(D\\)\nDie NDF beschreibt die statistische Verteilung der Mikrofacets. Der heutige Standard ist die GGX (Trowbridge-Reitz)-Verteilung:\n\\[\nD(\\mathbf{h}) = \\frac{\\alpha^2}{\\pi \\left( (\\mathbf{n} \\cdot \\mathbf{h})^2 (\\alpha^2 - 1) + 1 \\right)^2}\n\\]\n\\(\\alpha\\) entspricht der Roughness (0 = glatt, 1 = rau).\nVergleich mit Phong:\nPhong verwendet die einfache Potenzfunktion \\((\\mathbf{n} \\cdot \\mathbf{h})^S\\). Diese hat keine physikalische Grundlage und ist nicht energieerhaltend. Wird das Glanzlicht breiter, bleibt die Helligkeit gleich oder nimmt sogar zu – physikalisch falsch.\nBei GGX wird das Glanzlicht mit zunehmender Rauheit automatisch dunkler, weil die Funktion normiert ist und die Energieerhaltung einhält.\n\n\n3. Geometry-Term \\(G\\) (Shadowing & Masking)\nAuf rauen Oberflächen verdecken sich Mikrofacets gegenseitig (Shadowing und Masking). Der Geometry-Term modelliert diese Abschattung und Blockierung.\nIn modernen PBR-Systemen wird meist die Smith-Schlick-GGX-Approximation verwendet:\n\\[\nG_1(v) = \\frac{\\mathbf{n} \\cdot \\mathbf{v}}{(\\mathbf{n} \\cdot \\mathbf{v})(1 - k) + k}\n\\]\nDer volle Term lautet \\(G(\\mathbf{l}, \\mathbf{v}) = G_1(\\mathbf{l}) \\cdot G_1(\\mathbf{v})\\).\nVergleich mit Phong:\nDas Phong-Modell enthält keinen Geometry-Term. Dadurch entsteht bei flachen Betrachtungswinkeln ein unnatürlicher Helligkeitsanstieg an den Rändern („bright edges“). Der G-Term in PBR kompensiert diesen Effekt und hält die reflektierte Energie physikalisch plausibel.",
+    "section": "Fresnel-Term \\(F\\)",
+    "text": "Fresnel-Term \\(F\\)\nDer Fresnel-Effekt beschreibt, dass der Reflexionsanteil mit flacherem Betrachtungswinkel zunimmt.\nBei sehr flachen Blickwinkeln wird nahezu das gesamte Licht spiegelnd reflektiert. Deshalb erscheinen Wasserflächen oder Glasoberflächen am Horizont deutlich spiegelnder als bei senkrechter Betrachtung.\nIn Echtzeit-Anwendungen wird häufig die Schlick-Approximation verwendet:\n\\[\nF(\\theta)\n=\nF_0\n+\n(1-F_0)\n(1-\\cos\\theta)^5\n\\]\nDabei bezeichnet \\(F_0\\) die Basisreflektivität des Materials bei senkrechtem Einfall (\\(\\theta = 0°\\)) – also den Anteil des Lichts, der reflektiert wird, wenn der Betrachter direkt auf die Oberfläche schaut. Dieser Wert ist materialspezifisch: Nichtmetalle (Dielektrika) haben typischerweise ein \\(F_0\\) zwischen 0,02 und 0,08, während Metalle deutlich höhere Werte erreichen. Der Term \\((1-\\cos\\theta)^5\\) sorgt dafür, dass die Reflektivität mit zunehmendem Winkel \\(\\theta\\) – also flacherem Blickwinkel – stark ansteigt und bei streifendem Einfall gegen 1 konvergiert.\n\n\n\n\n\n\nNotePhong\n\n\n\nDas Phong-Modell berücksichtigt keinen Fresnel-Effekt.\nDie Intensität des Glanzlichts bleibt unabhängig vom Betrachtungswinkel nahezu gleich.",
+    "crumbs": [
+      "2. PBR-Prinzipien"
+    ]
+  },
+  {
+    "objectID": "pages/2_pbr_prinzipien.html#normal-distribution-function-ndf-d",
+    "href": "pages/2_pbr_prinzipien.html#normal-distribution-function-ndf-d",
+    "title": "PBR-Prinzipien",
+    "section": "Normal Distribution Function (NDF) \\(D\\)",
+    "text": "Normal Distribution Function (NDF) \\(D\\)\nDie NDF beschreibt die statistische Verteilung der Mikrofacetten auf einer Oberfläche.\nEine häufig verwendete Verteilung ist die GGX-Verteilung:\n\\[\nD(\\mathbf{h})\n=\n\\frac{\\alpha^2}\n{\\pi\n\\left(\n(\\mathbf{n}\\cdot\\mathbf{h})^2\n(\\alpha^2-1)\n+1\n\\right)^2}\n\\]\nDer Parameter \\(\\alpha\\) entspricht dem Quadrat des Roughness-Werts und beschreibt die Oberflächenrauheit: bei kleinem \\(\\alpha\\) sind die meisten Mikrofacetten zur Makronormale ausgerichtet, was zu scharfen, konzentrierten Reflexionen führt; bei großem \\(\\alpha\\) streuen die Facettennormalen stärker, und das Highlight wird breiter und schwächer. Der Term \\(\\mathbf{n}\\cdot\\mathbf{h}\\) ist das Skalarprodukt zwischen der Makronormale und dem Halfway-Vektor – er misst, wie gut der Halfway-Vektor mit der mittleren Oberflächennormale übereinstimmt. Nur wenn \\(\\mathbf{n}\\cdot\\mathbf{h}\\) nahe bei 1 liegt, liefert die NDF einen hohen Wert.\n\nkleine Roughness → scharfe Reflexionen\ngroße Roughness → breite Reflexionen\n\n\n\n\n\n\n\nNotePhong\n\n\n\nPhong verwendet für Glanzlichter die Potenzfunktion\n\\[\n(\\mathbf{n}\\cdot\\mathbf{h})^s\n\\]\nDer Exponent \\(s\\) steuert lediglich die Breite des Highlights und besitzt keine physikalische Bedeutung.",
+    "crumbs": [
+      "2. PBR-Prinzipien"
+    ]
+  },
+  {
+    "objectID": "pages/2_pbr_prinzipien.html#geometry-term-g",
+    "href": "pages/2_pbr_prinzipien.html#geometry-term-g",
+    "title": "PBR-Prinzipien",
+    "section": "Geometry-Term \\(G\\)",
+    "text": "Geometry-Term \\(G\\)\nAuf rauen Oberflächen können sich Mikrofacetten gegenseitig verdecken.\nDabei treten zwei Effekte auf:\n\nShadowing: Facetten blockieren das einfallende Licht.\nMasking: Facetten verdecken reflektiertes Licht in Richtung des Betrachters.\n\nDiese Effekte werden durch den Geometry-Term modelliert.\nEine häufig verwendete Approximation ist Smith-Schlick-GGX:\n\\[\nG_1(v)\n=\n\\frac{\\mathbf{n}\\cdot\\mathbf{v}}\n{\n(\\mathbf{n}\\cdot\\mathbf{v})(1-k)+k\n}\n\\]\nDabei ist \\(\\mathbf{n}\\cdot\\mathbf{v}\\) das Skalarprodukt zwischen Normaler und Blickrichtung – ein Maß dafür, wie senkrecht der Betrachter auf die Fläche schaut. Bei flachen Winkeln wird dieser Wert klein, was die Abschattung verstärkt. Der Parameter \\(k\\) leitet sich aus der Roughness ab und steuert, wie stark die Geometrie-Dämpfung einsetzt. \\(G_1\\) berechnet den Abschattungsanteil für eine einzelne Richtung (Licht oder Betrachter).\nDer vollständige Geometry-Term ergibt sich aus:\n\\[\nG(\\mathbf{l},\\mathbf{v})\n=\nG_1(\\mathbf{l})\n\\cdot\nG_1(\\mathbf{v})\n\\]\nDas Produkt aus beiden Einzeltermen erfasst sowohl Shadowing (Lichtrichtung \\(\\mathbf{l}\\)) als auch Masking (Blickrichtung \\(\\mathbf{v}\\)) gleichzeitig. Da beide Effekte unabhängig voneinander auftreten können, werden sie multiplikativ kombiniert.\n\n\n\n\n\n\nNotePhong\n\n\n\nDas Phong-Modell berücksichtigt weder Shadowing noch Masking zwischen Mikrofacetten.\nDadurch können Reflexionen bei flachen Winkeln unnatürlich hell erscheinen.",
+    "crumbs": [
+      "2. PBR-Prinzipien"
+    ]
+  },
+  {
+    "objectID": "pages/2_pbr_prinzipien.html#grundprinzip",
+    "href": "pages/2_pbr_prinzipien.html#grundprinzip",
+    "title": "PBR-Prinzipien",
+    "section": "Grundprinzip",
+    "text": "Grundprinzip\nEine Oberfläche darf niemals mehr Licht reflektieren als sie empfängt.\n\\[\nE_{\\text{out}}\n\\le\nE_{\\text{in}}\n\\]\nDie gesamte reflektierte Energie muss also kleiner oder gleich der eingestrahlten Energie sein.\n\n\n\n\n\n\nNotePhong\n\n\n\nIm Phong-Modell können diffuse und spekulare Anteile unabhängig voneinander gewählt werden:\nDiffuse = 0.8\nSpecular = 0.8\nDie Oberfläche reflektiert damit bereits 160 % des einfallenden Lichts. Zusätzliche Anteile wie Ambient oder Emissive würden diesen Wert sogar noch weiter erhöhen. Dies verletzt die Energieerhaltung und kann zu unnatürlich hellen Materialien führen.",
+    "crumbs": [
+      "2. PBR-Prinzipien"
+    ]
+  },
+  {
+    "objectID": "pages/2_pbr_prinzipien.html#energieerhaltung-in-pbr",
+    "href": "pages/2_pbr_prinzipien.html#energieerhaltung-in-pbr",
+    "title": "PBR-Prinzipien",
+    "section": "Energieerhaltung in PBR",
+    "text": "Energieerhaltung in PBR\nIn PBR sind diffuser und spekularer Anteil nicht unabhängig voneinander.\nDer Fresnel-Term bestimmt zunächst, welcher Anteil des Lichts spiegelnd reflektiert wird.\nDer verbleibende Anteil steht anschließend für die diffuse Reflexion zur Verfügung:\n\\[\nk_d\n=\n(1-F)\n\\cdot\n(1-\\text{metalness})\n\\]\nErhöht sich der spekulare Anteil, reduziert sich automatisch der diffuse Anteil.\nDadurch bleibt die Gesamtenergie stets physikalisch plausibel.",
     "crumbs": [
       "2. PBR-Prinzipien"
     ]
