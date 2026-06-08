@@ -17,7 +17,7 @@ $$
 f_s = \frac{D \cdot F \cdot G}{4 \, (\mathbf{n} \cdot \mathbf{l}) \, (\mathbf{n} \cdot \mathbf{v})}
 $$
 
-Dort wurden gegebenenfalls Aspekte wie die Mikrofacetten-Verteilung ($D$) oder der Fresnel-Effekt ($F$) bereits visualisiert. In der praktischen Computergrafik oder im Digital Engineering wird diese Formel jedoch selten direkt manipuliert. Stattdessen nutzen moderne Systeme ein standardisiertes Interface, das auf dem **Disney Principled BSDF** basiert (heute oft als OpenPBR bezeichnet). 
+Dort wurden gegebenenfalls Aspekte wie die Mikrofacetten-Verteilung ($D$) oder der Fresnel-Effekt ($F$) bereits visualisiert. In der praktischen Anwendung wird diese Formel jedoch selten direkt manipuliert. Stattdessen nutzen moderne Systeme ein standardisiertes Interface, das auf dem **Disney Principled BSDF** basiert (heute oft als OpenPBR bezeichnet). 
 
 Dieser **Metallic-Roughness-Workflow** abstrahiert die komplexe Mathematik in intuitive Steuerungsparameter für Anwender. Der Name ist dabei eine Kurzbezeichnung: Neben `Metallic` und `Roughness` wird auch `Base Color` bzw. `Albedo` als zentraler Eingabeparameter benötigt. Erst aus diesen drei Angaben entsteht eine vollständige Beschreibung der farblichen und reflektierenden Materialeigenschaften.
 
