@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-html/tabby.min.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-0a6b7249c26820e032cb0bd839ff02b1.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.9.38">
+
+  <meta name="author" content="Celia Baumann · Stefan Jordan · Alexander Kohl">
+  <meta name="dcterms.date" content="2026-06-25">
+  <title>Physically Based Rendering (PBR) | Gruppe 7 – Physically Based Rendering</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="site_libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="site_libs/revealjs/dist/reveal.css">
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+      }
+    pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+    div.sourceCode
+      { color: #f8f8f2;  }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #f8f8f2; } /* Normal */
+    code span.al { color: #f07178; } /* Alert */
+    code span.an { color: #d4d0ab; } /* Annotation */
+    code span.at { color: #00e0e0; } /* Attribute */
+    code span.bn { color: #d4d0ab; } /* BaseN */
+    code span.bu { color: #abe338; } /* BuiltIn */
+    code span.cf { color: #ffa07a; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #abe338; } /* Char */
+    code span.cn { color: #ffd700; } /* Constant */
+    code span.co { color: #f8f8f2; font-style: italic; } /* Comment */
+    code span.cv { color: #ffd700; } /* CommentVar */
+    code span.do { color: #f8f8f2; } /* Documentation */
+    code span.dt { color: #ffa07a; } /* DataType */
+    code span.dv { color: #d4d0ab; } /* DecVal */
+    code span.er { color: #f07178; text-decoration: underline; } /* Error */
+    code span.ex { color: #00e0e0; font-weight: bold; } /* Extension */
+    code span.fl { color: #d4d0ab; } /* Float */
+    code span.fu { color: #ffa07a; } /* Function */
+    code span.im { color: #abe338; } /* Import */
+    code span.in { color: #d4d0ab; } /* Information */
+    code span.kw { color: #ffa07a; font-weight: bold; } /* Keyword */
+    code span.op { color: #ffa07a; } /* Operator */
+    code span.ot { color: #00e0e0; } /* Other */
+    code span.pp { color: #dcc6e0; } /* Preprocessor */
+    code span.re { color: #00e0e0; background-color: #f8f8f2; } /* RegionMarker */
+    code span.sc { color: #abe338; } /* SpecialChar */
+    code span.ss { color: #abe338; } /* SpecialString */
+    code span.st { color: #abe338; } /* String */
+    code span.va { color: #00e0e0; } /* Variable */
+    code span.vs { color: #abe338; } /* VerbatimString */
+    code span.wa { color: #dcc6e0; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="site_libs/revealjs/dist/theme/quarto-fdc93494f2580a7e050003a96af38920.css">
+  <link href="site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="site_libs/revealjs/plugin/reveal-chalkboard/font-awesome/css/all.css" rel="stylesheet">
+  <link href="site_libs/revealjs/plugin/reveal-chalkboard/style.css" rel="stylesheet">
+  <link href="site_libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <style type="text/css">
+    .reveal div.sourceCode {
+      margin: 0;
+      overflow: auto;
+    }
+    .reveal div.hanging-indent {
+      margin-left: 1em;
+      text-indent: -1em;
+    }
+    .reveal .slide:not(.center) {
+      height: 100%;
+    }
+    .reveal .slide.scrollable {
+      overflow-y: auto;
+    }
+    .reveal .footnotes {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide .absolute {
+      position: absolute;
+      display: block;
+    }
+    .reveal .footnotes ol {
+      counter-reset: ol;
+      list-style-type: none; 
+      margin-left: 0;
+    }
+    .reveal .footnotes ol li:before {
+      counter-increment: ol;
+      content: counter(ol) ". "; 
+    }
+    .reveal .footnotes ol li > p:first-child {
+      display: inline-block;
+    }
+    .reveal .slide ul,
+    .reveal .slide ol {
+      margin-bottom: 0.5em;
+    }
+    .reveal .slide ul li,
+    .reveal .slide ol li {
+      margin-top: 0.4em;
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide ul[role="tablist"] li {
+      margin-bottom: 0;
+    }
+    .reveal .slide ul li > *:first-child,
+    .reveal .slide ol li > *:first-child {
+      margin-block-start: 0;
+    }
+    .reveal .slide ul li > *:last-child,
+    .reveal .slide ol li > *:last-child {
+      margin-block-end: 0;
+    }
+    .reveal .slide .columns:nth-child(3) {
+      margin-block-start: 0.8em;
+    }
+    .reveal blockquote {
+      box-shadow: none;
+    }
+    .reveal .tippy-content>* {
+      margin-top: 0.2em;
+      margin-bottom: 0.7em;
+    }
+    .reveal .tippy-content>*:last-child {
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide > img.stretch.quarto-figure-center,
+    .reveal .slide > img.r-stretch.quarto-figure-center {
+      display: block;
+      margin-left: auto;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-left,
+    .reveal .slide > img.r-stretch.quarto-figure-left  {
+      display: block;
+      margin-left: 0;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-right,
+    .reveal .slide > img.r-stretch.quarto-figure-right  {
+      display: block;
+      margin-left: auto;
+      margin-right: 0; 
+    }
+  </style>
+</head>
+<body class="quarto-dark">
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide" class="quarto-title-block center">
+  <h1 class="title">Physically Based Rendering</h1>
+  <p class="subtitle">Gruppe 7 – VCDE</p>
+
+<div class="quarto-title-authors">
+<div class="quarto-title-author">
+<div class="quarto-title-author-name">
+Celia Baumann · Stefan Jordan · Alexander Kohl 
+</div>
+</div>
+</div>
+
+  <p class="date">2026-06-25</p>
+</section>
+<section>
+<section id="showcase-quarto-features" class="title-slide slide level1 center" data-background-color="#9b1c1c">
+<h1>🧪 SHOWCASE — Quarto-Features</h1>
+<div class="callout callout-warning callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Warning</strong></p>
+</div>
+<div class="callout-content">
+<p>Dieser Abschnitt ist <strong>nur als Referenz</strong> gedacht. Vor der echten Präsentation einfach alle Folien bis zur Markierung <em>“Ende Showcase”</em> löschen.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="bullet-listen" class="slide level2">
+<h2>Bullet-Listen</h2>
+<p>Standardmäßig auf einmal:</p>
+<ul>
+<li>Erster Punkt</li>
+<li>Zweiter Punkt</li>
+<li>Dritter Punkt</li>
+</ul>
+<div class="fragment">
+<p>Mit <code>. . .</code> (drei Punkte) kannst du <strong>manuell</strong> weitere Inhalte einblenden lassen.</p>
+</div>
+</section>
+<section id="bullets-nacheinander-incremental" class="slide level2">
+<h2>Bullets nacheinander (<code>incremental</code>)</h2>
+<ul>
+<li class="fragment">Erst dieser Punkt</li>
+<li class="fragment">Dann dieser</li>
+<li class="fragment">Und dann dieser</li>
+</ul>
+</section>
+<section id="bilder" class="slide level2">
+<h2>Bilder</h2>
+<p>Bild aus eurem <code>pages/images/</code> einbinden:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><a></a><span class="al">![](images/beispiel.png)</span>{width=50%}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Mit Größenangabe: <code>{width=60%}</code> oder <code>{height=400px}</code>.</p>
+</section>
+<section id="latex-formeln" class="slide level2">
+<h2>LaTeX-Formeln</h2>
+<p>Inline: <span class="math inline">\(E = mc^2\)</span> — funktioniert mitten im Text.</p>
+<p>Block:</p>
+<p><span class="math display">\[
+L_o(\mathbf{x}, \omega_o) = L_e + \int_\Omega f_r\,L_i\,(\omega_i \cdot \mathbf{n})\,d\omega_i
+\]</span></p>
+</section>
+<section id="zwei-spalten" class="slide level2">
+<h2>Zwei Spalten</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><strong>Links: Phong</strong></p>
+<ul>
+<li>Empirisch</li>
+<li>Plastik-Look</li>
+<li>Kein Fresnel</li>
+</ul>
+</div><div class="column" style="width:50%;">
+<p><strong>Rechts: PBR</strong></p>
+<ul>
+<li>Physikbasiert</li>
+<li>Realistisch</li>
+<li>Energieerhaltend</li>
+</ul>
+</div></div>
+</section>
+<section id="tabellen" class="slide level2">
+<h2>Tabellen</h2>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>Modell</th>
+<th style="text-align: center;">Energieerhaltung</th>
+<th style="text-align: center;">Realismus</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Phong</td>
+<td style="text-align: center;">❌</td>
+<td style="text-align: center;">niedrig</td>
+</tr>
+<tr class="even">
+<td>Cook-Torrance</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">hoch</td>
+</tr>
+<tr class="odd">
+<td>Disney</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">sehr hoch</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="fragments-schritt-für-schritt" class="slide level2">
+<h2>Fragments (Schritt-für-Schritt)</h2>
+<p><span>Dieser Teil ist sofort da.</span></p>
+<p><span class="fragment">Dieser Teil kommt erst beim ersten Klick.</span></p>
+<p><span class="fragment">Dieser Teil kommt beim zweiten Klick.</span></p>
+<p><span class="fragment" style="color:#dc2626;">Und dieser hier sogar in Rot.</span></p>
+</section>
+<section id="code-blöcke-mit-syntax-highlighting" class="slide level2">
+<h2>Code-Blöcke mit Syntax-Highlighting</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb2-2"><a></a></span>
+<span id="cb2-3"><a></a><span class="kw">def</span> fresnel_schlick(cos_theta, F0):</span>
+<span id="cb2-4"><a></a>    <span class="cf">return</span> F0 <span class="op">+</span> (<span class="dv">1</span> <span class="op">-</span> F0) <span class="op">*</span> (<span class="dv">1</span> <span class="op">-</span> cos_theta) <span class="op">**</span> <span class="dv">5</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource glsl number-lines code-with-copy"><code class="sourceCode glsl"><span id="cb3-1"><a></a><span class="co">// In einem Fragment-Shader</span></span>
+<span id="cb3-2"><a></a><span class="dt">vec3</span> F <span class="op">=</span> F0 <span class="op">+</span> <span class="op">(</span><span class="fl">1.0</span> <span class="op">-</span> F0<span class="op">)</span> <span class="op">*</span> <span class="bu">pow</span><span class="op">(</span><span class="fl">1.0</span> <span class="op">-</span> <span class="bu">dot</span><span class="op">(</span>N<span class="op">,</span> V<span class="op">),</span> <span class="fl">5.0</span><span class="op">);</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="ausführbares-python-plot" class="slide level2">
+<h2>Ausführbares Python (Plot)</h2>
+<div id="b104613e" class="cell" data-execution_count="1">
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="slides_files/figure-revealjs/cell-2-output-1.png" class="quarto-figure quarto-figure-center" width="758" height="374"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>→ Plots werden beim Rendern automatisch eingebettet.</p>
+</section>
+<section id="interaktive-3d-demo-babylon.js" class="slide level2">
+<h2>Interaktive 3D-Demo (Babylon.js)</h2>
+<canvas id="showcase-sphere" style="width: 100%; height: 400px; border-radius: 8px;"></canvas>
+<script src="https://cdn.babylonjs.com/babylon.js"></script>
+<script>
+  (function() {
+    const canvas = document.getElementById("showcase-sphere");
+    const engine = new BABYLON.Engine(canvas, true);
+    const scene = new BABYLON.Scene(engine);
+    scene.createDefaultEnvironment({ createSkybox: false, createGround: false });
+    scene.clearColor = new BABYLON.Color4(0.95, 0.95, 0.97, 1);
+    const camera = new BABYLON.ArcRotateCamera("c", -Math.PI/2, Math.PI/2.5, 4, BABYLON.Vector3.Zero(), scene);
+    camera.attachControl(canvas, true);
+    const sphere = BABYLON.MeshBuilder.CreateSphere("s", { diameter: 2, segments: 64 }, scene);
+    const mat = new BABYLON.PBRMaterial("m", scene);
+    mat.albedoColor = new BABYLON.Color3(0.9, 0.7, 0.3);
+    mat.metallic = 1.0;
+    mat.roughness = 0.25;
+    sphere.material = mat;
+    engine.runRenderLoop(() => scene.render());
+    window.addEventListener("resize", () => engine.resize());
+  })();
+</script>
+<aside class="notes">
+<p><strong>Speaker-Note:</strong> Drehe die Kugel mit der Maus — die Demo läuft live in der Folie. Eindeutige Canvas-ID pro Folie!</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="callouts-hinweis-boxen" class="slide level2">
+<h2>Callouts (Hinweis-Boxen)</h2>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Note</strong></p>
+</div>
+<div class="callout-content">
+<p>Note-Box für allgemeine Hinweise.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Tip</strong></p>
+</div>
+<div class="callout-content">
+<p>Tipp für die Praxis.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-warning callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Warning</strong></p>
+</div>
+<div class="callout-content">
+<p>Achtung-Box.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-important callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Important</strong></p>
+</div>
+<div class="callout-content">
+<p>Wichtige Aussage hervorheben.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="folien-hintergrundfarbe" class="slide level2">
+<h2>Folien-Hintergrundfarbe</h2>
+<p>Setze hinter den Titel <code>{background-color="#1f2937"}</code> — diese Section-Folie (<code># 🧪 SHOWCASE</code>) macht genau das.</p>
+<p>Auch möglich: <code>{background-image="bild.jpg"}</code> für Vollbild-Bilder.</p>
+</section>
+<section id="speaker-notes-für-s-view" class="slide level2">
+<h2>Speaker-Notes (für <code>S</code>-View)</h2>
+<p>Schreibe so:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb4-1"><a></a>::: {.notes}</span>
+<span id="cb4-2"><a></a>Stichpunkte, die nur ihr im Speaker-View seht.</span>
+<span id="cb4-3"><a></a>:::</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Mit <code>S</code> öffnet sich ein zweites Fenster mit Notizen + Timer + Vorschau der nächsten Folie.</p>
+</section>
+<section id="ende-showcase" class="slide level2">
+<h2>— Ende Showcase —</h2>
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Tip</strong></p>
+</div>
+<div class="callout-content">
+<p><strong>Ab hier beginnt das eigentliche Grundgerüst eurer Präsentation.</strong> Alles davor kann gelöscht werden.</p>
+</div>
+</div>
+</div>
+</section></section>
+<section>
+<section id="einleitung" class="title-slide slide level1 center" data-background-color="#1f2937">
+<h1>Einleitung</h1>
+
+</section>
+<section id="was-ist-pbr" class="slide level2">
+<h2>Was ist PBR?</h2>
+<blockquote>
+<p><em>TODO: Kernaussage aus <code>index.qmd</code> — physikalisch korrekte Simulation von Licht-Material-Interaktion.</em></p>
+</blockquote>
+<ul>
+<li>Empirisch → physikbasiert</li>
+<li>Mikrofacetten + Energieerhaltung</li>
+</ul>
+</section>
+<section id="warum-pbr" class="slide level2">
+<h2>Warum PBR?</h2>
+<blockquote>
+<p><em>TODO: 3-4 Vorteile als Bullets (Fotorealismus, Konsistenz, Workflow, Industriestandard).</em></p>
+</blockquote>
+</section>
+<section id="das-ziel-fotorealismus-in-echtzeit" class="slide level2">
+<h2>Das Ziel: Fotorealismus in Echtzeit</h2>
+<blockquote>
+<p><em>TODO: Babylon-Goldkugel-Demo aus <code>index.qmd</code> einbetten (Canvas-ID anpassen!).</em></p>
+</blockquote>
+</section></section>
+<section>
+<section id="phong-und-seine-schwächen" class="title-slide slide level1 center" data-background-color="#1f2937">
+<h1>1 · Phong und seine Schwächen</h1>
+
+</section>
+<section id="was-war-phong" class="slide level2">
+<h2>Was war Phong?</h2>
+<blockquote>
+<p><em>TODO: Kurz-Erinnerung, die drei Komponenten (Ambient, Diffuse, Specular).</em></p>
+</blockquote>
+</section>
+<section id="phong-vs.-pbr-direkter-vergleich" class="slide level2">
+<h2>Phong vs.&nbsp;PBR – direkter Vergleich</h2>
+<blockquote>
+<p><em>TODO: Demo aus <code>pages/1_phong_grenzen.qmd</code> (zwei Canvases nebeneinander) übernehmen.</em></p>
+</blockquote>
+</section>
+<section id="interaktive-analyse-der-komponenten" class="slide level2">
+<h2>Interaktive Analyse der Komponenten</h2>
+<blockquote>
+<p><em>TODO: Phong-Slider-Demo aus Kapitel 1.</em></p>
+</blockquote>
+</section>
+<section id="diskussion-mit-dem-publikum" class="slide level2">
+<h2>Diskussion mit dem Publikum</h2>
+<blockquote>
+<p><em>TODO: Die Vergleichsfragen aus Kapitel 1 — als Bullets oder Frage-Fragments.</em></p>
+</blockquote>
+</section>
+<section id="warum-reichen-empirische-modelle-nicht" class="slide level2">
+<h2>Warum reichen empirische Modelle nicht?</h2>
+<blockquote>
+<p><em>TODO: Brücke zu Kapitel 2 — Motivation für physikalische Grundlagen.</em></p>
+</blockquote>
+</section></section>
+<section>
+<section id="pbr-prinzipien" class="title-slide slide level1 center" data-background-color="#1f2937">
+<h1>2 · PBR-Prinzipien</h1>
+
+</section>
+<section id="die-rendering-gleichung" class="slide level2">
+<h2>Die Rendering-Gleichung</h2>
+<blockquote>
+<p><em>TODO: Formel + kurze Worte zu jedem Term.</em></p>
+</blockquote>
+</section>
+<section id="die-brdf-f_r" class="slide level2">
+<h2>Die BRDF <span class="math inline">\(f_r\)</span></h2>
+<blockquote>
+<p><em>TODO: Definition + Rolle in der Rendering-Gleichung.</em></p>
+</blockquote>
+</section>
+<section id="mikrofacetten-theorie" class="slide level2">
+<h2>Mikrofacetten-Theorie</h2>
+<blockquote>
+<p><em>TODO: Grundidee — Oberflächen aus mikroskopischen Spiegelchen.</em></p>
+</blockquote>
+</section>
+<section id="cook-torrance-brdf" class="slide level2">
+<h2>Cook-Torrance-BRDF</h2>
+<blockquote>
+<p><em>TODO: Die Formel mit den drei Termen F, D, G.</em></p>
+</blockquote>
+</section>
+<section id="fresnel-term-f" class="slide level2">
+<h2>Fresnel-Term <span class="math inline">\(F\)</span></h2>
+<blockquote>
+<p><em>TODO: Schlick-Approximation + Diagramm (Python-Plot ist im Showcase).</em></p>
+</blockquote>
+</section>
+<section id="normal-distribution-function-d" class="slide level2">
+<h2>Normal Distribution Function <span class="math inline">\(D\)</span></h2>
+<blockquote>
+<p><em>TODO: GGX/Trowbridge-Reitz — was steuert Roughness?</em></p>
+</blockquote>
+</section>
+<section id="geometry-term-g" class="slide level2">
+<h2>Geometry-Term <span class="math inline">\(G\)</span></h2>
+<blockquote>
+<p><em>TODO: Self-Shadowing der Mikrofacetten.</em></p>
+</blockquote>
+</section>
+<section id="der-diffuse-anteil" class="slide level2">
+<h2>Der diffuse Anteil</h2>
+<blockquote>
+<p><em>TODO: Lambert vs.&nbsp;Disney-Diffuse.</em></p>
+</blockquote>
+</section>
+<section id="energieerhaltung" class="slide level2">
+<h2>Energieerhaltung</h2>
+<blockquote>
+<p><em>TODO: <span class="math inline">\(k_d + k_s \leq 1\)</span> — warum das in Phong fehlt.</em></p>
+</blockquote>
+</section>
+<section id="zusammenspiel-der-prinzipien" class="slide level2">
+<h2>Zusammenspiel der Prinzipien</h2>
+<blockquote>
+<p><em>TODO: Alles zusammensetzen — Cook-Torrance + diffuse + Energieerhaltung.</em></p>
+</blockquote>
+</section>
+<section id="verständnis-check" class="slide level2">
+<h2>Verständnis-Check</h2>
+<blockquote>
+<p><em>TODO: Quizfrage(n) ans Publikum — vielleicht mit <code>incremental</code>-Reveal der Antwort.</em></p>
+</blockquote>
+</section></section>
+<section>
+<section id="materialmodell" class="title-slide slide level1 center" data-background-color="#1f2937">
+<h1>3 · Materialmodell</h1>
+
+</section>
+<section id="von-cook-torrance-zum-disney-workflow" class="slide level2">
+<h2>Von Cook-Torrance zum Disney-Workflow</h2>
+<blockquote>
+<p><em>TODO: Industriestandard, warum Disney die Parameter vereinfacht hat.</em></p>
+</blockquote>
+</section>
+<section id="base-color-albedo" class="slide level2">
+<h2>Base Color &amp; Albedo</h2>
+<blockquote>
+<p><em>TODO: Exkurs aus Kapitel 3 — sRGB vs.&nbsp;linear, gemessene Werte.</em></p>
+</blockquote>
+</section>
+<section id="das-material-labor" class="slide level2">
+<h2>Das Material-Labor</h2>
+<blockquote>
+<p><em>TODO: Globale Parameter vs.&nbsp;Texture Maps — Demo aus Kapitel 3.</em></p>
+</blockquote>
+</section>
+<section id="übergang-zu-ibl" class="slide level2">
+<h2>Übergang zu IBL</h2>
+<blockquote>
+<p><em>TODO: Warum direkte Beleuchtung alleine nicht reicht — Brücke zu Kapitel 4.</em></p>
+</blockquote>
+</section></section>
+<section>
+<section id="image-based-lighting-ibl" class="title-slide slide level1 center" data-background-color="#1f2937">
+<h1>4 · Image Based Lighting (IBL)</h1>
+
+</section>
+<section id="der-fehlende-baustein" class="slide level2">
+<h2>Der fehlende Baustein</h2>
+<blockquote>
+<p><em>TODO: Was bisher fehlt — indirekte Beleuchtung aus der Umgebung.</em></p>
+</blockquote>
+</section>
+<section id="was-ist-ibl" class="slide level2">
+<h2>Was ist IBL?</h2>
+<blockquote>
+<p><em>TODO: HDR-Environment-Maps, Cubemaps.</em></p>
+</blockquote>
+</section>
+<section id="demo-torus-knoten-in-verschiedenen-welten" class="slide level2">
+<h2>Demo: Torus-Knoten in verschiedenen Welten</h2>
+<blockquote>
+<p><em>TODO: Interaktive Demo aus <code>pages/4_ibl.qmd</code> einbetten.</em></p>
+</blockquote>
+</section>
+<section id="die-mathematische-lösung" class="slide level2">
+<h2>Die mathematische Lösung</h2>
+<blockquote>
+<p><em>TODO: Split-Sum-Approximation — Übersichtsfolie.</em></p>
+</blockquote>
+<h3 id="pre-filtered-environment-map">Pre-filtered Environment Map</h3>
+<blockquote>
+<p><em>TODO: Vorfilterung nach Roughness.</em></p>
+</blockquote>
+<h3 id="brdf-integration-look-up-table">BRDF-Integration (Look-Up-Table)</h3>
+<blockquote>
+<p><em>TODO: 2D-LUT, einmal pro Engine vorberechnet.</em></p>
+</blockquote>
+<h3 id="zusammenführung">Zusammenführung</h3>
+<blockquote>
+<p><em>TODO: <span class="math inline">\(L_o \approx \text{Prefilter}(R, \alpha) \cdot \text{LUT}(N\cdot V, \alpha)\)</span>.</em></p>
+</blockquote>
+</section></section>
+<section>
+<section id="x-vertiefung-materialalterung" class="title-slide slide level1 center" data-background-color="#1f2937">
+<h1>X · Vertiefung: Materialalterung</h1>
+
+</section>
+<section id="warum-materialalterung-eine-pbr-frage-ist" class="slide level2">
+<h2>Warum Materialalterung eine PBR-Frage ist</h2>
+<blockquote>
+<p><em>TODO: Aus Kapitel 6_X — Verbindung zwischen Material und Zeit.</em></p>
+</blockquote>
+</section>
+<section id="demo-ein-kupferschild-altert" class="slide level2">
+<h2>Demo: Ein Kupferschild altert</h2>
+<blockquote>
+<p><em>TODO: Interaktive Demo aus <code>pages/6_X.qmd</code>.</em></p>
+</blockquote>
+</section>
+<section id="was-an-der-demo-vereinfacht-ist" class="slide level2">
+<h2>Was an der Demo vereinfacht ist</h2>
+<blockquote>
+<p><em>TODO: Grenzen ehrlich benennen.</em></p>
+</blockquote>
+</section>
+<section id="ausblick" class="slide level2">
+<h2>Ausblick</h2>
+<blockquote>
+<p><em>TODO: Prozeduraler Entwurf → eigene Assets.</em></p>
+</blockquote>
+</section></section>
+<section>
+<section id="fazit" class="title-slide slide level1 center" data-background-color="#1f2937">
+<h1>Fazit</h1>
+
+</section>
+<section id="take-aways" class="slide level2">
+<h2>Take-Aways</h2>
+<blockquote>
+<p><em>TODO: 3–4 zentrale Botschaften als Bullets.</em></p>
+</blockquote>
+</section>
+<section id="fragen" class="slide level2">
+<h2>Fragen?</h2>
+<div style="text-align: center; margin-top: 100px; font-size: 2em;">
+<p>Vielen Dank! 🎨</p>
+</div>
+<div style="text-align: center; margin-top: 50px; font-size: 0.6em;">
+<p>Celia Baumann · Stefan Jordan · Alexander Kohl</p>
+</div>
+
+
+</section></section>
+    </div>
+  <div class="quarto-auto-generated-content" style="display: none;">
+<div class="footer footer-default">
+
+</div>
+</div></div>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script>
+  <script src="site_libs/revealjs/dist/reveal.js"></script>
+  <!-- reveal.js plugins -->
+  <script src="site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="site_libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="site_libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="site_libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="site_libs/revealjs/plugin/reveal-chalkboard/plugin.js"></script>
+  <script src="site_libs/revealjs/plugin/quarto-support/support.js"></script>
+  
+
+  <script src="site_libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="site_libs/revealjs/plugin/search/search.js"></script>
+  <script src="site_libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="site_libs/revealjs/plugin/math/math.js"></script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+'controlsAuto': true,
+'previewLinksAuto': false,
+'pdfSeparateFragments': false,
+'autoAnimateEasing': "ease",
+'autoAnimateDuration': 1,
+'autoAnimateUnmatched': true,
+'jumpToSlide': true,
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleChalkboard(event)\"><kbd>b</kbd> Toggle Chalkboard</a></li>\n<li class=\"slide-tool-item\" data-item=\"6\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleNotesCanvas(event)\"><kbd>c</kbd> Toggle Notes Canvas</a></li>\n<li class=\"slide-tool-item\" data-item=\"7\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.downloadDrawings(event)\"><kbd>d</kbd> Download Drawings</a></li>\n<li class=\"slide-tool-item\" data-item=\"8\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'chalkboard': {"buttons":true},
+'smaller': false,
+ 
+        // Display controls in the bottom right corner
+        controls: false,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: false,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'edges',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: 'c/t',
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: true,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: false,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'linear',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: false,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'slide',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'none',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1280,
+
+        height: 720,
+
+        // Factor of the display size that should remain empty around the content
+        margin: 0.1,
+
+        math: {
+          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@2.7.9/MathJax.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // reveal.js plugins
+        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, RevealChalkboard, QuartoSupport,
+
+          RevealMath,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    <script id="quarto-html-after-body" type="application/javascript">
+      window.document.addEventListener("DOMContentLoaded", function (event) {
+        const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
+        tabsets.forEach(function(tabset) {
+          const tabby = new Tabby('#' + tabset.id);
+        });
+        const isCodeAnnotation = (el) => {
+          for (const clz of el.classList) {
+            if (clz.startsWith('code-annotation-')) {                     
+              return true;
+            }
+          }
+          return false;
+        }
+        const onCopySuccess = function(e) {
+          // button target
+          const button = e.trigger;
+          // don't keep focus
+          button.blur();
+          // flash "checked"
+          button.classList.add('code-copy-button-checked');
+          var currentTitle = button.getAttribute("title");
+          button.setAttribute("title", "Copied!");
+          let tooltip;
+          if (window.bootstrap) {
+            button.setAttribute("data-bs-toggle", "tooltip");
+            button.setAttribute("data-bs-placement", "left");
+            button.setAttribute("data-bs-title", "Copied!");
+            tooltip = new bootstrap.Tooltip(button, 
+              { trigger: "manual", 
+                customClass: "code-copy-button-tooltip",
+                offset: [0, -8]});
+            tooltip.show();    
+          }
+          setTimeout(function() {
+            if (tooltip) {
+              tooltip.hide();
+              button.removeAttribute("data-bs-title");
+              button.removeAttribute("data-bs-toggle");
+              button.removeAttribute("data-bs-placement");
+            }
+            button.setAttribute("title", currentTitle);
+            button.classList.remove('code-copy-button-checked');
+          }, 1000);
+          // clear code selection
+          e.clearSelection();
+        }
+        const getTextToCopy = function(trigger) {
+          const outerScaffold = trigger.parentElement.cloneNode(true);
+          const codeEl = outerScaffold.querySelector('code');
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
+            }
+          }
+          return codeEl.innerText;
+        }
+        const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+          text: getTextToCopy
+        });
+        clipboard.on('success', onCopySuccess);
+        if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+          const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+            text: getTextToCopy,
+            container: window.document.getElementById('quarto-embedded-source-code-modal')
+          });
+          clipboardModal.on('success', onCopySuccess);
+        }
+          var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+          var mailtoRegex = new RegExp(/^mailto:/);
+            var filterRegex = new RegExp("https:\/\/SpaghettiPaletti\.github\.io\/vcde-pbr-gr7\/");
+          var isInternal = (href) => {
+              return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+          }
+          // Inspect non-navigation links and adorn them if external
+         var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+          for (var i=0; i<links.length; i++) {
+            const link = links[i];
+            if (!isInternal(link.href)) {
+              // undo the damage that might have been done by quarto-nav.js in the case of
+              // links that we want to consider external
+              if (link.dataset.originalHref !== undefined) {
+                link.href = link.dataset.originalHref;
+              }
+            }
+          }
+        function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+          const config = {
+            allowHTML: true,
+            maxWidth: 500,
+            delay: 100,
+            arrow: false,
+            appendTo: function(el) {
+                return el.closest('section.slide') || el.parentElement;
+            },
+            interactive: true,
+            interactiveBorder: 10,
+            theme: 'light-border',
+            placement: 'bottom-start',
+          };
+          if (contentFn) {
+            config.content = contentFn;
+          }
+          if (onTriggerFn) {
+            config.onTrigger = onTriggerFn;
+          }
+          if (onUntriggerFn) {
+            config.onUntrigger = onUntriggerFn;
+          }
+            config['offset'] = [0,0];
+            config['maxWidth'] = 700;
+          window.tippy(el, config); 
+        }
+        const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+        for (var i=0; i<noterefs.length; i++) {
+          const ref = noterefs[i];
+          tippyHover(ref, function() {
+            // use id or data attribute instead here
+            let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+            try { href = new URL(href).hash; } catch {}
+            const id = href.replace(/^#\/?/, "");
+            const note = window.document.getElementById(id);
+            if (note) {
+              return note.innerHTML;
+            } else {
+              return "";
+            }
+          });
+        }
+        const findCites = (el) => {
+          const parentEl = el.parentElement;
+          if (parentEl) {
+            const cites = parentEl.dataset.cites;
+            if (cites) {
+              return {
+                el,
+                cites: cites.split(' ')
+              };
+            } else {
+              return findCites(el.parentElement)
+            }
+          } else {
+            return undefined;
+          }
+        };
+        var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+        for (var i=0; i<bibliorefs.length; i++) {
+          const ref = bibliorefs[i];
+          const citeInfo = findCites(ref);
+          if (citeInfo) {
+            tippyHover(citeInfo.el, function() {
+              var popup = window.document.createElement('div');
+              citeInfo.cites.forEach(function(cite) {
+                var citeDiv = window.document.createElement('div');
+                citeDiv.classList.add('hanging-indent');
+                citeDiv.classList.add('csl-entry');
+                var biblioDiv = window.document.getElementById('ref-' + cite);
+                if (biblioDiv) {
+                  citeDiv.innerHTML = biblioDiv.innerHTML;
+                }
+                popup.appendChild(citeDiv);
+              });
+              return popup.innerHTML;
+            });
+          }
+        }
+      });
+      </script>
+    
+
+</body></html>

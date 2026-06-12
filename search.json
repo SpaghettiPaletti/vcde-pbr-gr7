@@ -40,6 +40,96 @@
     ]
   },
   {
+    "objectID": "pages/6_X.html",
+    "href": "pages/6_X.html",
+    "title": "Vertiefung: Materialalterung",
+    "section": "",
+    "text": "Auf den vorherigen Seiten wurden PBR-Materialien vor allem als Kombination aus Parametern beschrieben: Base Color, Metallic, Roughness und die Beleuchtung durch IBL. In einer echten Szene sind diese Werte jedoch selten konstant. Ein Objekt altert, wird benutzt, oxidiert, verschmutzt oder wird an Kanten wieder blank poliert.\nDamit ist Alterung kein reiner “Farbfilter”. Wenn Kupfer eine Patina bildet oder Eisen rostet, verändert sich nicht nur die sichtbare Farbe der Oberfläche. Auch das Reflexionsverhalten ändert sich:\n\nDie Oberfläche wird meist rauer.\nDie Spiegelung wird breiter und dunkler.\nOxidierte oder verschmutzte Bereiche verhalten sich nicht mehr wie blankes Metall.\nEinzelne Regionen können sehr unterschiedliche Materialzustände besitzen.\n\nDie zentrale Idee dieser Vertiefung lautet deshalb:\n\nRealistische Alterung entsteht, wenn mehrere PBR-Maps gemeinsam verändert werden.",
+    "crumbs": [
+      "X. Vertiefung"
+    ]
+  },
+  {
+    "objectID": "pages/6_X.html#warum-materialalterung-eine-pbr-frage-ist",
+    "href": "pages/6_X.html#warum-materialalterung-eine-pbr-frage-ist",
+    "title": "Vertiefung: Materialalterung",
+    "section": "",
+    "text": "Auf den vorherigen Seiten wurden PBR-Materialien vor allem als Kombination aus Parametern beschrieben: Base Color, Metallic, Roughness und die Beleuchtung durch IBL. In einer echten Szene sind diese Werte jedoch selten konstant. Ein Objekt altert, wird benutzt, oxidiert, verschmutzt oder wird an Kanten wieder blank poliert.\nDamit ist Alterung kein reiner “Farbfilter”. Wenn Kupfer eine Patina bildet oder Eisen rostet, verändert sich nicht nur die sichtbare Farbe der Oberfläche. Auch das Reflexionsverhalten ändert sich:\n\nDie Oberfläche wird meist rauer.\nDie Spiegelung wird breiter und dunkler.\nOxidierte oder verschmutzte Bereiche verhalten sich nicht mehr wie blankes Metall.\nEinzelne Regionen können sehr unterschiedliche Materialzustände besitzen.\n\nDie zentrale Idee dieser Vertiefung lautet deshalb:\n\nRealistische Alterung entsteht, wenn mehrere PBR-Maps gemeinsam verändert werden.",
+    "crumbs": [
+      "X. Vertiefung"
+    ]
+  },
+  {
+    "objectID": "pages/6_X.html#interaktive-demo-ein-kupferschild-altert",
+    "href": "pages/6_X.html#interaktive-demo-ein-kupferschild-altert",
+    "title": "Vertiefung: Materialalterung",
+    "section": "Interaktive Demo: Ein Kupferschild altert",
+    "text": "Interaktive Demo: Ein Kupferschild altert\nDie folgende Demo verwendet bewusst noch kein externes 3D-Modell. Das Objekt wird aus einfachen Babylon.js-Grundformen aufgebaut: eine leicht gewölbte Schildfläche mit erhabenem Rand und Nieten. Der interessante Teil liegt aber weiterhin in den prozedural erzeugten Texturen. Der Alterungsslider verändert gleichzeitig eine Albedo-Map, eine Roughness-Map und eine Metallic-Map.\nDie drei Schalter zeigen, warum eine reine Farbänderung nicht ausreicht:\n\nBase Color / Albedo: Die Patina wird als lokale Grundfarbe sichtbar.\nRoughness: Gealterte Bereiche werden matter und reflektieren unschärfer.\nMetallic: Oxidierte Bereiche verlieren ihre metallische Reflexion.\n\nAusgeschaltete Maps werden durch globale Materialwerte ersetzt. Dadurch kann beobachtet werden, welche Information durch welche Map in das PBR-Material eingebracht wird.\n\n\n  \n    \n      \n    \n\n    \n      \n        Umgebung\n        \n          Stadt (Neutral)\n          Landlandschaft (Offen)\n          Wald (Grünlich)\n          Innenraum (Warm)\n        \n      \n\n      \n        \n          Alterung\n          0%\n        \n        \n      \n\n      \n        Aktive Maps\n        \n          Base Color\n          Roughness\n          Metallic\n        \n      \n\n      \n        Aktiv:\n        Base Color, Roughness und Metallic werden aus den Alterungs-Maps gelesen.\n      \n\n      \n        \n          Albedo\n          \n        \n        \n          Metallic\n          \n        \n        \n          Roughness",
+    "crumbs": [
+      "X. Vertiefung"
+    ]
+  },
+  {
+    "objectID": "pages/6_X.html#was-an-der-demo-vereinfacht-ist",
+    "href": "pages/6_X.html#was-an-der-demo-vereinfacht-ist",
+    "title": "Vertiefung: Materialalterung",
+    "section": "Was an der Demo vereinfacht ist",
+    "text": "Was an der Demo vereinfacht ist\nDie Demo ist kein chemisch exaktes Korrosionsmodell. Sie simuliert nicht, wie schnell Kupfer unter bestimmten Umweltbedingungen oxidiert. Für die PBR-Erklärung ist das aber auch nicht der entscheidende Punkt. Wichtig ist die Kopplung der Materialparameter:\n\nIn der Albedo-Map entstehen dunkle und grünliche Bereiche.\nIn der Roughness-Map werden diese Bereiche matter.\nIn der Metallic-Map verlieren oxidierte Bereiche ihre metallische Reflexion.\n\nDamit wird aus einem globalen Materialwert ein ortsabhängiger Materialzustand. Das ist genau der Schritt, der in realen PBR-Workflows über Texture Maps, Substance Painter, Blender oder prozedurale Shader umgesetzt wird.",
+    "crumbs": [
+      "X. Vertiefung"
+    ]
+  },
+  {
+    "objectID": "pages/6_X.html#ausblick-vom-prozeduralen-entwurf-zum-eigenen-asset",
+    "href": "pages/6_X.html#ausblick-vom-prozeduralen-entwurf-zum-eigenen-asset",
+    "title": "Vertiefung: Materialalterung",
+    "section": "Ausblick: Vom prozeduralen Entwurf zum eigenen Asset",
+    "text": "Ausblick: Vom prozeduralen Entwurf zum eigenen Asset\nDieser erste Entwurf lässt sich später erweitern, ohne das didaktische Konzept zu ändern. Statt des einfachen prozeduralen Kupferschilds könnte ein eigenes CAD- oder Blender-Modell verwendet werden, zum Beispiel ein Schild mit sauber modellierten Falzen, Nieten, Kratzern und unterschiedlich stark gealterten Vertiefungen.\nDann würden die Alterungseffekte nicht nur aus einem 2D-Muster entstehen, sondern gezielt an sinnvollen Stellen auftreten:\n\nstärkere Oxidation in Vertiefungen,\npolierte Kanten an häufig berührten Stellen,\nSchmutzansammlung an Fugen,\nunterschiedliche Alterung für Metall, Kunststoff oder Lack.\n\nDer Kern bleibt aber gleich: Alterung ist in PBR keine einzelne Zahl, sondern eine gemeinsame Veränderung mehrerer Maps.",
+    "crumbs": [
+      "X. Vertiefung"
+    ]
+  },
+  {
+    "objectID": "pages/3_materialmodell.html",
+    "href": "pages/3_materialmodell.html",
+    "title": "Kapitel 3: Das Materialmodell & Mapping",
+    "section": "",
+    "text": "Zielsetzung: Die Brücke von der Theorie zur praktischen Anwendung. Während im vorherigen Kapitel die mathematischen Grundlagen (Cook-Torrance) beleuchtet wurden, widmet sich dieses Kapitel dem etablierten Interface der Industrie: Dem Metallic-Roughness-Workflow (geprägt durch Disney). Hier wird untersucht, wie die abstrakten Formeln über handhabbare Parameter gesteuert werden – und warum für eine realistische Darstellung im nächsten Schritt unbedingt komplexes Licht (IBL) nötig sein wird.",
+    "crumbs": [
+      "3. Materialmodell"
+    ]
+  },
+  {
+    "objectID": "pages/3_materialmodell.html#von-der-cook-torrance-theorie-zum-disney-workflow",
+    "href": "pages/3_materialmodell.html#von-der-cook-torrance-theorie-zum-disney-workflow",
+    "title": "Kapitel 3: Das Materialmodell & Mapping",
+    "section": "1. Von der Cook-Torrance-Theorie zum Disney-Workflow",
+    "text": "1. Von der Cook-Torrance-Theorie zum Disney-Workflow\nIm vorherigen Kapitel wurden die physikalischen Prinzipien und die Cook-Torrance-BRDF hergeleitet. Zur Erinnerung, die Formel für den gerichteten (spekularen) Anteil lautet:\n\\[\nf_s = \\frac{D \\cdot F \\cdot G}{4 \\, (\\mathbf{n} \\cdot \\mathbf{l}) \\, (\\mathbf{n} \\cdot \\mathbf{v})}\n\\]\nDort wurden gegebenenfalls Aspekte wie die Mikrofacetten-Verteilung (\\(D\\)) oder der Fresnel-Effekt (\\(F\\)) bereits visualisiert. In der praktischen Anwendung wird diese Formel jedoch selten direkt manipuliert. Stattdessen nutzen moderne Systeme ein standardisiertes Interface, das auf dem Disney Principled BSDF basiert (heute oft als OpenPBR bezeichnet).\nDieser Metallic-Roughness-Workflow abstrahiert die komplexe Mathematik in intuitive Steuerungsparameter für Anwender. Der Name ist dabei eine Kurzbezeichnung: Neben Metallic und Roughness wird auch Base Color bzw. Albedo als zentraler Eingabeparameter benötigt. Erst aus diesen drei Angaben entsteht eine vollständige Beschreibung der farblichen und reflektierenden Materialeigenschaften.\n\nRoughness (Rauheit): Steuert im Hintergrund direkt den \\(D\\)-Term (Normal Distribution Function) und den \\(G\\)-Term (Geometry). Der Anwender sieht nur: Hoher Wert = raue Oberfläche, niedriger Wert = glatte Oberfläche.\nMetallic (Metallizität): Bestimmt das grundlegende physikalische Verhalten und steuert den Fresnel-Term (\\(F\\)).\n\nDielektrika (Nicht-Metalle, Metallic = 0): Besitzen diffuse Farben und reflektieren Licht nur schwach an der Oberfläche.\nMetalle (Leiter, Metallic = 1): Besitzen keine diffuse Reflexion. Ihre Farbe wird ausschließlich aus der spiegelnden Reflexion gebildet.\n\nBase Color (Albedo): Definiert die Grundfarbe, deren physikalische Auswirkung durch den Metallic-Wert modifiziert wird.\n\nDieser Ansatz zwingt den Workflow automatisch zur Energieerhaltung. Es wird stark erschwert, unphysikalische Materialien zu erstellen.\n\nExkurs: Base Color und Albedo-Maps\nDer Begriff Albedo bezeichnet im PBR-Kontext die Grundfarbe einer Oberfläche unter neutraler Beleuchtung. Gemeint ist also nicht das fertig sichtbare Bild inklusive Schatten, Glanzpunkten oder Umgebungsreflexionen. Diese Effekte werden erst durch Beleuchtung, BRDF und Umgebung erzeugt.\nDer Rückbezug zur Cook-Torrance-Formel ist hierbei weniger direkt als bei Roughness. Die Albedo erscheint nicht als eigener Faktor im spekularen Term \\(D \\cdot F \\cdot G\\). Stattdessen wird sie für den diffusen Anteil des Materials verwendet und bei Metallen zur Färbung der spekularen Reflexion herangezogen. Im Metallic-Roughness-Workflow wird also über Metallic entschieden, wie die Base Color interpretiert wird.\nFür die Erstellung von PBR-Texturen ergibt sich daraus eine wichtige Regel: In eine Albedo-Map sollten keine bereits “eingebackenen” Schatten oder Highlights gemalt werden. Solche Informationen würden später ein zweites Mal durch das Beleuchtungsmodell entstehen und das Material unphysikalisch wirken lassen. Eine Holztextur darf also Maserung und Farbunterschiede enthalten, aber keine festen Lichtflecken. Eine Metalltextur darf unterschiedliche Färbungen oder Oxidation zeigen, aber keine vorgerenderten Spiegelungen.\nDie Bedeutung der Base Color hängt zusätzlich vom Metallic-Wert ab:\n\nBei Dielektrika (z.B. Holz, Kunststoff, Stein) beschreibt die Albedo-Map die diffuse Körperfarbe. Das Material besitzt weiterhin einen schwachen, meist fast weißen Spekularanteil.\nBei Metallen beschreibt die Base Color nicht eine diffuse Farbe, sondern die Färbung der spekularen Reflexion. Deshalb erscheinen Metalle wie Gold oder Kupfer farbig glänzend, besitzen aber praktisch keinen diffusen Anteil.\n\nEine Albedo-Map ist damit nicht einfach ein dekoratives Bild auf dem Objekt. Sie ist ein physikalisch interpretierter Eingabeparameter des Materialmodells. Erst im Zusammenspiel mit Metallic- und Roughness-Maps wird festgelegt, ob ein Pixel als raues Holz, blankes Metall oder matter Lack ausgewertet wird.",
+    "crumbs": [
+      "3. Materialmodell"
+    ]
+  },
+  {
+    "objectID": "pages/3_materialmodell.html#das-material-labor-globale-parameter-vs.-texture-maps",
+    "href": "pages/3_materialmodell.html#das-material-labor-globale-parameter-vs.-texture-maps",
+    "title": "Kapitel 3: Das Materialmodell & Mapping",
+    "section": "2. Das Material-Labor: Globale Parameter vs. Texture Maps",
+    "text": "2. Das Material-Labor: Globale Parameter vs. Texture Maps\nUm die Steuerung zu demonstrieren, bedienen wir uns eines klassischen Beispiels der Computergrafik: Einem Holzfass. Ein solches Fass weckt in unserem Gehirn klare Erwartungen – das Holz sollte eher rau und farbig (Dielektrikum) sein, während die Eisenbänder darum herum als metallisch und spiegelnd wahrgenommen werden sollten.\nDie Szene verzichtet zunächst bewusst auf Umgebungskartierung (IBL) und wird nur durch einfache, isolierte Lichtquellen in einem vollständig dunklen Labor beleuchtet.\n(A) Globale Slider: Durch das Verschieben der Regler Metallic und Roughness unten verändern wir die Materialeigenschaften für das gesamte Objekt gleichzeitig und überlagern alle Pixel. Dadurch wirkt das Fass entweder komplett wie ein rauer Plastikklotz oder wie ein massiver Chromzylinder.\n(B) Texture-Maps: Um dem Fass eine realistische materielle Mehrteiligkeit zu verleihen, müssen wir auf “globale” Werte verzichten. Bei Klick auf “Aktivieren (Maps laden)” werden die Slider deaktiviert und wir übergeben der Engine stattdessen 2D-Texturen. Die Albedo-Map legt dabei die lokalen Grundfarben von Holz und Eisen fest. Die Metallic-Roughness-Map steuert zusätzlich, welche Pixel metallisch sind und wie scharf oder diffus sie Licht reflektieren. Diese Maps flüstern jedem Pixel präzise PBR-Werte zu (z.B. “Hier bist du Eisen, also ist Metallic=1”, oder “Hier bist du raues Holz”).\n\n  \n    Steuerung:\n    Texturen / Maps:\n    Aktivieren (Maps laden)\n    Aus (Globale Slider aktiv)\n  \n  \n  \n    Globale Metallic:\n    \n    0.00\n    \n    Globale Roughness:\n    \n    0.40",
+    "crumbs": [
+      "3. Materialmodell"
+    ]
+  },
+  {
+    "objectID": "pages/3_materialmodell.html#die-grenzen-des-labors-der-übergang-zu-ibl",
+    "href": "pages/3_materialmodell.html#die-grenzen-des-labors-der-übergang-zu-ibl",
+    "title": "Kapitel 3: Das Materialmodell & Mapping",
+    "section": "3. Die Grenzen des Labors: Der Übergang zu IBL",
+    "text": "3. Die Grenzen des Labors: Der Übergang zu IBL\nEine wesentliche Beobachtung des Labor-Aufbaus: Sobald Teile des Objektes stark metallisch werden (z.B. die Eisenringe in unserer Texture-Map), fangen sie ausschließlich Glanzlichter von dedizierten Lampen ein. Dazwischen wirkt das Metall nahezu tiefschwarz.\nDas ist physikalisch korrekt! Metalle verhalten sich wie Spiegel. Ein Spiegel in einem dunklen Raum kann nur die spärlichen Lichtpunkte der Taschenlampen zeigen – der Rest bleibt schwarz.\nUm die Leistungsfähigkeit des Cinematic Workflows auszuschöpfen, erfordert PBR zwingend eine realistische Umgebung, die Lichtdaten aus allen Richtungen liefert. Nur so kann der Cook-Torrance-Ansatz seine volle physikalische Präzision ausspielen. Diese Lücke schließt das Konzept des Image Based Lighting (IBL), was im folgenden Kapitel detailliert ausgeführt und demonstriert wird.",
+    "crumbs": [
+      "3. Materialmodell"
+    ]
+  },
+  {
     "objectID": "pages/1_phong_grenzen.html",
     "href": "pages/1_phong_grenzen.html",
     "title": "Die Grenzen von Phong",
@@ -57,6 +147,66 @@
     "text": "Bevor wir in die Theorie abtauchen, lassen wir die Bilder für sich sprechen. Unten sieht man dasselbe Objekt, gerendert mit zwei völlig unterschiedlichen Ansätzen.\n\n  \n    \n    \n    Harter Glanzpunkt, keine Energieerhaltung.\n  \n\n  \n    \n    \n    Realistische Lichtverteilung und Energieerhaltung.\n  \n\n\n\nDie Lichtverhältnisse\nBeide Szenen nutzen eine identische Beleuchtungssituation: Ein Hemispheric Light dient als Grundlicht, während eine globale Umgebungskarte für komplexe Lichtinformationen und Reflexionen aus dem Raum sorgt.\nWarum sehen die Objekte so unterschiedlich aus?\nChrom ist ein Material, das seine Erscheinung fast vollständig aus der Spiegelung der Umgebung bezieht. Hier werden die theoretischen Grenzen von Phong besonders deutlich:\n\nKlassisches Phong: Damit Phing überhaupt eine Möglichkeit hat, Chrom darzustellen, wird es hier mit einer Reflection Map kombiniert. Da das Modell kein Verständnis für echtes Metall hat, wirkt die Reflexion wie ein “Aufkleber”. Es fehlt die physikalische Tiefe und das Objekt wirkt unnatürlich hell, weil das einfallende Licht der Umgebung ohne Begrenzung (keine Energieerhaltung) auf die Pixelfarbe addiert wird.\nPhysically Based Rendering: Bei PBR erkennt man, dass die Reflexionen an den Rändern des Knotens (flacher Blickwinkel) stärker und klarer als in der Mitte sind (Fresnel-Effekt). Zudem sorgt die Energieerhaltung dafür, dass das Material “schwer” und massiv wirkt. Das gespiegelte Licht kann nicht gleichzeitig die Oberfläche erhellen. Dadurch entsteht ein tiefer, realistischer Metall-Look.\n\n\n\nDas Phong-Beleuchtungsmodell, benannt nach seinem Erfinder Bui Tuong Phong (1973) war über Jahrzehnte der unangefochtene Standard in der Computergrafik. Auch heute noch findet es aufgrund seiner extrem geringen Rechenkosten in vielen Mobile-Games oder einfachen Web-Anwendungen Einsatz.\nEs handelt sich um ein lokales Beleuchtungsmodell. Das bedeutet: Die Farbe jedes Pixels wird nur anhand der direkten Beziehung zwischen Lichtquelle, Oberfläche und Kamera berechnet - Reflexionen anderer Objekte im Raum werden ignoriert.\nDie finale Farbe berechnet sich dabei als simple Addition aus vier Komponenten:\n\nEmissiv: Eigenleuchten des Materials.\nAmbient: Eine konstante für das globale, indirekte Grundlicht.\nDiffus: Die raue, matte Lichtstreuung (Lambert).\nSpekular: Der glänzende, spiegelnde Lichtfleck.\n\nLichtquellen sind in diesem Modell meist einfache, kleine Punktlichtquellen.\n\\[\\mathbf{Farbe} = \\underbrace{e_{mat}}_{\\text{Emissiv}} + \\underbrace{a_{light} * a_{mat}}_{\\text{Ambient}} + \\underbrace{\\max(l \\cdot n, 0) \\cdot d_{light} * d_{mat}}_{\\text{Diffus}} + \\underbrace{(\\max(h \\cdot n, 0))^S \\cdot s_{light} * s_{mat}}_{\\text{Spekular}}\\]\n\n\n\nProbiere es selbst aus: Schalte die einzelnen Komponenten der Phong-Gleichung ein und aus oder verändere ihre Werte, um zu sehen, wie sie das finale Rendering beeinflussen.\n\n    \n    \n    \n    \n        \n        \n        \n             Ambient (Grundlicht)\n            \n        \n        \n        \n             Diffus (Streuung)\n            \n        \n\n        \n             Spekular (Glanzpunkt)\n            \n        \n\n        \n            Exponent (Shininess / Glanzschärfe)\n            \n        \n    \n\n\n\n\n\n\n\n\n\n\nWarum sieht das Phong-Objekt eher aus wie Plastik?\n\nDas liegt am Spekular-Term, welcher immer die Farbe der Lichtquelle hat. Bei echten Metallen werden die Spiegelungen hingegen eingefärbt (Gold spiegelt golden). Phong erzeugt Glanzpunkte lediglich über einen mathematisch abstrakten Spiegelungsexponenten (Shininess). Es gibt kein echtes physikalisches Verständnis davon, woraus das Material besteht (z.B. Metall vs. Nicht-Metall).\n\n\n\n\nWarum wirken die Schatten beim Phong-Objekt so flach?\n\nIn der Realität wird Licht von Wänden und Böden in den Schattenbereich zurückgeworfen (Global Illumination –&gt; siehe IBL). Phong simuliert dieses komplexe indirekte Streulicht stark vereinfacht über einen simplen Ambient-Term, was Schatten oft unnatürlich flach wirken lässt.\n\n\n\n\nWas fehlt dem Modell grundsätzlich, um realistisch zu wirken?\n\nDie Physik. Klassische Modelle wie Phong schätzen das Licht nur ab, ignorieren aber grundlegende physikalische Gesetze der Optik.\n\n\n\n\n\nDer größte Fehler des Phong-Modells liegt in seiner Mathematik: Die Lichtwerte werden am Ende einfach stur addiert (Farbe = Emissiv + Ambient + Diffus + Spekular).\nDas führt zu einem massiven Problem: Dadurch kann ein Objekt am Ende mehr Licht reflektieren, als es von der Lichtquelle überhaupt empfangen hat! In der realen Welt ist das physikalisch absolut unmöglich und führt in der Computergrafik dazu, dass Materialien unter hellen Lichtern übersättigt wirken.\nDie Antwort von PBR: Wir brauchen das Gesetz der Energieerhaltung. Das eintreffende Licht wird aufgeteilt in reflektierendes Licht (Spekular) und gestreutes Licht (Diffus). Was spiegelnd reflektiert wird, kann nicht mehr im Material gestreut werden. Energieerhaltung ist also die Grundlage, auf der die weiteren PBR-Bausteine aufbauen. Diese lernen wir auf den weiteren Seiten kennen.",
     "crumbs": [
       "1. Phong und seine Schwächen"
+    ]
+  },
+  {
+    "objectID": "pages/4_ibl.html",
+    "href": "pages/4_ibl.html",
+    "title": "Image Based Lighting",
+    "section": "",
+    "text": "Bisher haben wir uns mit den PBR-Prinzipien (wie der Energieerhaltung und dem Fresnel-Effekt) sowie dem Materialmodell (Metallic/Roughness) beschäftigt. Diese definieren präzise, wie eine Oberfläche auf Licht reagiert.\nDoch ein physikalisch korrektes Material ist nur die halbe Miete. In einer rein schwarzen Umgebung ohne Lichtquellen würde selbst das perfekteste Gold-Material schwarz erscheinen. Hier kommt Image Based Lighting (IBL) ins Spiel: Es liefert die notwendigen Lichtinformationen, um die mathematischen Modelle, die wir auf den vorherigen Seiten gelernt haben, zum Leben zu erwecken.",
+    "crumbs": [
+      "4. Image Based Lighting (IBL)"
+    ]
+  },
+  {
+    "objectID": "pages/4_ibl.html#der-fehlende-baustein-im-pbr-system",
+    "href": "pages/4_ibl.html#der-fehlende-baustein-im-pbr-system",
+    "title": "Image Based Lighting",
+    "section": "",
+    "text": "Bisher haben wir uns mit den PBR-Prinzipien (wie der Energieerhaltung und dem Fresnel-Effekt) sowie dem Materialmodell (Metallic/Roughness) beschäftigt. Diese definieren präzise, wie eine Oberfläche auf Licht reagiert.\nDoch ein physikalisch korrektes Material ist nur die halbe Miete. In einer rein schwarzen Umgebung ohne Lichtquellen würde selbst das perfekteste Gold-Material schwarz erscheinen. Hier kommt Image Based Lighting (IBL) ins Spiel: Es liefert die notwendigen Lichtinformationen, um die mathematischen Modelle, die wir auf den vorherigen Seiten gelernt haben, zum Leben zu erwecken.",
+    "crumbs": [
+      "4. Image Based Lighting (IBL)"
+    ]
+  },
+  {
+    "objectID": "pages/4_ibl.html#warum-ibl-für-die-vollständigkeit-nötig-ist",
+    "href": "pages/4_ibl.html#warum-ibl-für-die-vollständigkeit-nötig-ist",
+    "title": "Image Based Lighting",
+    "section": "Warum IBL für die Vollständigkeit nötig ist",
+    "text": "Warum IBL für die Vollständigkeit nötig ist\nOhne IBL bleibt PBR unvollständig. In der klassischen Grafik (Phong) haben wir die Punktlicher manuell platziert. In der Realität kommt Licht jedoch von überall.\n\nVervollständigung der Energieerhaltung: Wie wir gelernt haben, darf ein Objekt nicht mehr Licht reflektieren, als es erhält. IBL liefert ein definiertes “Budget” an Umgebungslicht, das das Materialmodell dann physikalisch korrekt aufteilt.\nInteraktion mit dem Materialmodell: Ein hoher Metallic-Wert macht ein Objekt zum spiegel. Ohne IBL hätte dieser Spiegel jedoch nichts, was er zeigen könnte. Erst die Umgebnungsinformaionen machen den Unterschied zwischen Metall und einem nicht spiegelnden Objekt greifbar.\nKontext für den Fresnel-Effekt: Der Fresnel-Effekt sorgt dafür, dass Reflexionen am Radn stärker werden. Damit dieser Effekt sichtbar wird, muss die Umgebung Licht aus allen Winkeln (0° bis 90°) liefern - genau das leistet eine HDRI-Umgebungskarte.",
+    "crumbs": [
+      "4. Image Based Lighting (IBL)"
+    ]
+  },
+  {
+    "objectID": "pages/4_ibl.html#die-lichtquelle-was-ist-ibl",
+    "href": "pages/4_ibl.html#die-lichtquelle-was-ist-ibl",
+    "title": "Image Based Lighting",
+    "section": "Die Lichtquelle: Was ist IBL?",
+    "text": "Die Lichtquelle: Was ist IBL?\nAnstatt einzelne Lichtpunkte im Raum zu verteilen, nutzen wir beim IBL die gesamte Umgebung als Lichtquelle:\n\nHDRI statt Punktlicht: Wir nutzen 360°-Panorama-Bilder der echten Welt (High Dynamic Range Images).\nPixel als Emitter: Jeder einzelne Pixel des Bildes wird als winzige Lichtquelle behandelt. Ein HDRI mit einer Sonne liefert dort extream viel Energie, während die blauen Pixel des Himmels sanftes, farbiges Licht beisteuern.",
+    "crumbs": [
+      "4. Image Based Lighting (IBL)"
+    ]
+  },
+  {
+    "objectID": "pages/4_ibl.html#interaktive-analyse-der-torus-knoten-und-verschiedenen-welten",
+    "href": "pages/4_ibl.html#interaktive-analyse-der-torus-knoten-und-verschiedenen-welten",
+    "title": "Image Based Lighting",
+    "section": "Interaktive Analyse: Der Torus-Knoten und verschiedenen Welten",
+    "text": "Interaktive Analyse: Der Torus-Knoten und verschiedenen Welten\nUm die Konsistenz zu wahren, nutzen wir wieder den Torus-Knoten von Seite 1. Beaobachtet, wie das Material (kosntant auf Chrom/Metall eingestellt) allein druch den Wechsel der Umgebung seine Identität verändert. Das Materialmodell bleibt gleich, aber die Lichtinformation ändert sich.\n\n\nUmgebung wählen:   Stadt (Neutral) Landlandschaft (Offen) Wald (Grünlich) Nacht (Dunkel/Kontrastreich) Innenraum (Warm)",
+    "crumbs": [
+      "4. Image Based Lighting (IBL)"
+    ]
+  },
+  {
+    "objectID": "pages/4_ibl.html#zusammenfassung-der-mathematischen-lösung",
+    "href": "pages/4_ibl.html#zusammenfassung-der-mathematischen-lösung",
+    "title": "Image Based Lighting",
+    "section": "Zusammenfassung der mathematischen Lösung",
+    "text": "Zusammenfassung der mathematischen Lösung\nIBL löst das Problem der komlpexen Lichtberechnung durch Vorberechnung (Pre-Filtering):\n\nDiffuse Irradiance: Ein weichgezeichnetes Abbild der Umgebung liefert das diffuse Licht.\nSpecular Reflection: Verschiedene Unschärfegrade der Umgebung werden für unterschiedliche Rougchness-Stufen genutzt.\n\nErst durch dieses Zusammenspiel von Umgebungslicht und den physikalischen Materialgesetzen wird PBR zu eine vollständigen, fotorealistischen System.\nUm IBL in EChtzeit zu ermöglichen, muss die Rendering-Gleichung für die Umgebung gelöst werden. Das INtegral für den spekularen Anteil lautet:\n\\[L_o(p, \\omega_o) = \\int_{\\Omega} L_i(p, \\omega_i) \\, f_r(p, \\omega_i, \\omega_o) \\, (n \\cdot \\omega_i) \\, d\\omega_i\\]\nDa dieses Integral für jeden Frame und jeden Pixle zu rechenintensiv ist, nutzen modeerne Engines wie Babylon.js den von Epic Games entwickelten Split-Sum Ansatz. Dabei wird das Integral in zwei Teile zerlegt:\n\n1. Das gefilterte Umgebungslicht (Pre-filtered Map)\nDer erste Teil des Produkts berechnet die eintreffende Strahlung für verschiedene Rauheitsgrade:\n\\[S_1 \\approx \\frac{1}{N} \\sum_{i=1}^{N} L_i(\\omega_i)\\]\nDabei wird das Umgebungslicht vorab mit einem Gauß-Filter weichgezeichnet. Je höher die Roughness des Materials, desto unschärfer ist die Version der Textur, die ausgelesen wird.\n\n\n2. Die BRDF-Integration (Look-Up Table)\nDer zweite Teil berechnet den Rest der Gleichung, der vom Betrachtungswinkel (\\(\\theta\\)) und der Rauheit abhängt:\n\\[S_2 \\approx \\int_{\\Omega} f_r(p, \\omega_i, \\omega_o) \\, (n \\cdot \\omega_i) \\, d\\omega_i\\]\nDiese Werte werden in einer speziellen Textur, der BRDF-LUT, gespeichert. Sie kombiniert den Fresnel-Effekt mit der Geometrie-Abschattung.\n\n\nZusammenführung\nIn der Grafikkarte werden diese beiden Werte schließlich einfach multipliziert:\n\\[L_{IBL} = S_1 \\cdot (F_0 \\cdot \\text{Scale} + \\text{Bias})\\]\nDies ermöglich die Darstellung von komplexen physikalischen Reflexionen mit nur zwei Texturzugriffen pro Pixel.",
+    "crumbs": [
+      "4. Image Based Lighting (IBL)"
     ]
   },
   {
@@ -150,153 +300,332 @@
     ]
   },
   {
-    "objectID": "pages/4_ibl.html",
-    "href": "pages/4_ibl.html",
-    "title": "Image Based Lighting",
-    "section": "",
-    "text": "Bisher haben wir uns mit den PBR-Prinzipien (wie der Energieerhaltung und dem Fresnel-Effekt) sowie dem Materialmodell (Metallic/Roughness) beschäftigt. Diese definieren präzise, wie eine Oberfläche auf Licht reagiert.\nDoch ein physikalisch korrektes Material ist nur die halbe Miete. In einer rein schwarzen Umgebung ohne Lichtquellen würde selbst das perfekteste Gold-Material schwarz erscheinen. Hier kommt Image Based Lighting (IBL) ins Spiel: Es liefert die notwendigen Lichtinformationen, um die mathematischen Modelle, die wir auf den vorherigen Seiten gelernt haben, zum Leben zu erwecken.",
-    "crumbs": [
-      "4. Image Based Lighting (IBL)"
-    ]
+    "objectID": "slides.html#bullet-listen",
+    "href": "slides.html#bullet-listen",
+    "title": "Physically Based Rendering",
+    "section": "Bullet-Listen",
+    "text": "Bullet-Listen\nStandardmäßig auf einmal:\n\nErster Punkt\nZweiter Punkt\nDritter Punkt\n\n\nMit . . . (drei Punkte) kannst du manuell weitere Inhalte einblenden lassen."
   },
   {
-    "objectID": "pages/4_ibl.html#der-fehlende-baustein-im-pbr-system",
-    "href": "pages/4_ibl.html#der-fehlende-baustein-im-pbr-system",
-    "title": "Image Based Lighting",
-    "section": "",
-    "text": "Bisher haben wir uns mit den PBR-Prinzipien (wie der Energieerhaltung und dem Fresnel-Effekt) sowie dem Materialmodell (Metallic/Roughness) beschäftigt. Diese definieren präzise, wie eine Oberfläche auf Licht reagiert.\nDoch ein physikalisch korrektes Material ist nur die halbe Miete. In einer rein schwarzen Umgebung ohne Lichtquellen würde selbst das perfekteste Gold-Material schwarz erscheinen. Hier kommt Image Based Lighting (IBL) ins Spiel: Es liefert die notwendigen Lichtinformationen, um die mathematischen Modelle, die wir auf den vorherigen Seiten gelernt haben, zum Leben zu erwecken.",
-    "crumbs": [
-      "4. Image Based Lighting (IBL)"
-    ]
+    "objectID": "slides.html#bullets-nacheinander-incremental",
+    "href": "slides.html#bullets-nacheinander-incremental",
+    "title": "Physically Based Rendering",
+    "section": "Bullets nacheinander (incremental)",
+    "text": "Bullets nacheinander (incremental)\n\nErst dieser Punkt\nDann dieser\nUnd dann dieser"
   },
   {
-    "objectID": "pages/4_ibl.html#warum-ibl-für-die-vollständigkeit-nötig-ist",
-    "href": "pages/4_ibl.html#warum-ibl-für-die-vollständigkeit-nötig-ist",
-    "title": "Image Based Lighting",
-    "section": "Warum IBL für die Vollständigkeit nötig ist",
-    "text": "Warum IBL für die Vollständigkeit nötig ist\nOhne IBL bleibt PBR unvollständig. In der klassischen Grafik (Phong) haben wir die Punktlicher manuell platziert. In der Realität kommt Licht jedoch von überall.\n\nVervollständigung der Energieerhaltung: Wie wir gelernt haben, darf ein Objekt nicht mehr Licht reflektieren, als es erhält. IBL liefert ein definiertes “Budget” an Umgebungslicht, das das Materialmodell dann physikalisch korrekt aufteilt.\nInteraktion mit dem Materialmodell: Ein hoher Metallic-Wert macht ein Objekt zum spiegel. Ohne IBL hätte dieser Spiegel jedoch nichts, was er zeigen könnte. Erst die Umgebnungsinformaionen machen den Unterschied zwischen Metall und einem nicht spiegelnden Objekt greifbar.\nKontext für den Fresnel-Effekt: Der Fresnel-Effekt sorgt dafür, dass Reflexionen am Radn stärker werden. Damit dieser Effekt sichtbar wird, muss die Umgebung Licht aus allen Winkeln (0° bis 90°) liefern - genau das leistet eine HDRI-Umgebungskarte.",
-    "crumbs": [
-      "4. Image Based Lighting (IBL)"
-    ]
+    "objectID": "slides.html#bilder",
+    "href": "slides.html#bilder",
+    "title": "Physically Based Rendering",
+    "section": "Bilder",
+    "text": "Bilder\nBild aus eurem pages/images/ einbinden:\n![](images/beispiel.png){width=50%}\nMit Größenangabe: {width=60%} oder {height=400px}."
   },
   {
-    "objectID": "pages/4_ibl.html#die-lichtquelle-was-ist-ibl",
-    "href": "pages/4_ibl.html#die-lichtquelle-was-ist-ibl",
-    "title": "Image Based Lighting",
-    "section": "Die Lichtquelle: Was ist IBL?",
-    "text": "Die Lichtquelle: Was ist IBL?\nAnstatt einzelne Lichtpunkte im Raum zu verteilen, nutzen wir beim IBL die gesamte Umgebung als Lichtquelle:\n\nHDRI statt Punktlicht: Wir nutzen 360°-Panorama-Bilder der echten Welt (High Dynamic Range Images).\nPixel als Emitter: Jeder einzelne Pixel des Bildes wird als winzige Lichtquelle behandelt. Ein HDRI mit einer Sonne liefert dort extream viel Energie, während die blauen Pixel des Himmels sanftes, farbiges Licht beisteuern.",
-    "crumbs": [
-      "4. Image Based Lighting (IBL)"
-    ]
+    "objectID": "slides.html#latex-formeln",
+    "href": "slides.html#latex-formeln",
+    "title": "Physically Based Rendering",
+    "section": "LaTeX-Formeln",
+    "text": "LaTeX-Formeln\nInline: \\(E = mc^2\\) — funktioniert mitten im Text.\nBlock:\n\\[\nL_o(\\mathbf{x}, \\omega_o) = L_e + \\int_\\Omega f_r\\,L_i\\,(\\omega_i \\cdot \\mathbf{n})\\,d\\omega_i\n\\]"
   },
   {
-    "objectID": "pages/4_ibl.html#interaktive-analyse-der-torus-knoten-und-verschiedenen-welten",
-    "href": "pages/4_ibl.html#interaktive-analyse-der-torus-knoten-und-verschiedenen-welten",
-    "title": "Image Based Lighting",
-    "section": "Interaktive Analyse: Der Torus-Knoten und verschiedenen Welten",
-    "text": "Interaktive Analyse: Der Torus-Knoten und verschiedenen Welten\nUm die Konsistenz zu wahren, nutzen wir wieder den Torus-Knoten von Seite 1. Beaobachtet, wie das Material (kosntant auf Chrom/Metall eingestellt) allein druch den Wechsel der Umgebung seine Identität verändert. Das Materialmodell bleibt gleich, aber die Lichtinformation ändert sich.\n\n\nUmgebung wählen:   Stadt (Neutral) Landlandschaft (Offen) Wald (Grünlich) Nacht (Dunkel/Kontrastreich) Innenraum (Warm)",
-    "crumbs": [
-      "4. Image Based Lighting (IBL)"
-    ]
+    "objectID": "slides.html#zwei-spalten",
+    "href": "slides.html#zwei-spalten",
+    "title": "Physically Based Rendering",
+    "section": "Zwei Spalten",
+    "text": "Zwei Spalten\n\n\nLinks: Phong\n\nEmpirisch\nPlastik-Look\nKein Fresnel\n\n\nRechts: PBR\n\nPhysikbasiert\nRealistisch\nEnergieerhaltend"
   },
   {
-    "objectID": "pages/4_ibl.html#zusammenfassung-der-mathematischen-lösung",
-    "href": "pages/4_ibl.html#zusammenfassung-der-mathematischen-lösung",
-    "title": "Image Based Lighting",
-    "section": "Zusammenfassung der mathematischen Lösung",
-    "text": "Zusammenfassung der mathematischen Lösung\nIBL löst das Problem der komlpexen Lichtberechnung durch Vorberechnung (Pre-Filtering):\n\nDiffuse Irradiance: Ein weichgezeichnetes Abbild der Umgebung liefert das diffuse Licht.\nSpecular Reflection: Verschiedene Unschärfegrade der Umgebung werden für unterschiedliche Rougchness-Stufen genutzt.\n\nErst durch dieses Zusammenspiel von Umgebungslicht und den physikalischen Materialgesetzen wird PBR zu eine vollständigen, fotorealistischen System.\nUm IBL in EChtzeit zu ermöglichen, muss die Rendering-Gleichung für die Umgebung gelöst werden. Das INtegral für den spekularen Anteil lautet:\n\\[L_o(p, \\omega_o) = \\int_{\\Omega} L_i(p, \\omega_i) \\, f_r(p, \\omega_i, \\omega_o) \\, (n \\cdot \\omega_i) \\, d\\omega_i\\]\nDa dieses Integral für jeden Frame und jeden Pixle zu rechenintensiv ist, nutzen modeerne Engines wie Babylon.js den von Epic Games entwickelten Split-Sum Ansatz. Dabei wird das Integral in zwei Teile zerlegt:\n\n1. Das gefilterte Umgebungslicht (Pre-filtered Map)\nDer erste Teil des Produkts berechnet die eintreffende Strahlung für verschiedene Rauheitsgrade:\n\\[S_1 \\approx \\frac{1}{N} \\sum_{i=1}^{N} L_i(\\omega_i)\\]\nDabei wird das Umgebungslicht vorab mit einem Gauß-Filter weichgezeichnet. Je höher die Roughness des Materials, desto unschärfer ist die Version der Textur, die ausgelesen wird.\n\n\n2. Die BRDF-Integration (Look-Up Table)\nDer zweite Teil berechnet den Rest der Gleichung, der vom Betrachtungswinkel (\\(\\theta\\)) und der Rauheit abhängt:\n\\[S_2 \\approx \\int_{\\Omega} f_r(p, \\omega_i, \\omega_o) \\, (n \\cdot \\omega_i) \\, d\\omega_i\\]\nDiese Werte werden in einer speziellen Textur, der BRDF-LUT, gespeichert. Sie kombiniert den Fresnel-Effekt mit der Geometrie-Abschattung.\n\n\nZusammenführung\nIn der Grafikkarte werden diese beiden Werte schließlich einfach multipliziert:\n\\[L_{IBL} = S_1 \\cdot (F_0 \\cdot \\text{Scale} + \\text{Bias})\\]\nDies ermöglich die Darstellung von komplexen physikalischen Reflexionen mit nur zwei Texturzugriffen pro Pixel.",
-    "crumbs": [
-      "4. Image Based Lighting (IBL)"
-    ]
+    "objectID": "slides.html#tabellen",
+    "href": "slides.html#tabellen",
+    "title": "Physically Based Rendering",
+    "section": "Tabellen",
+    "text": "Tabellen\n\n\n\nModell\nEnergieerhaltung\nRealismus\n\n\n\n\nPhong\n❌\nniedrig\n\n\nCook-Torrance\n✅\nhoch\n\n\nDisney\n✅\nsehr hoch"
   },
   {
-    "objectID": "pages/3_materialmodell.html",
-    "href": "pages/3_materialmodell.html",
-    "title": "Kapitel 3: Das Materialmodell & Mapping",
-    "section": "",
-    "text": "Zielsetzung: Die Brücke von der Theorie zur praktischen Anwendung. Während im vorherigen Kapitel die mathematischen Grundlagen (Cook-Torrance) beleuchtet wurden, widmet sich dieses Kapitel dem etablierten Interface der Industrie: Dem Metallic-Roughness-Workflow (geprägt durch Disney). Hier wird untersucht, wie die abstrakten Formeln über handhabbare Parameter gesteuert werden – und warum für eine realistische Darstellung im nächsten Schritt unbedingt komplexes Licht (IBL) nötig sein wird.",
-    "crumbs": [
-      "3. Materialmodell"
-    ]
+    "objectID": "slides.html#fragments-schritt-für-schritt",
+    "href": "slides.html#fragments-schritt-für-schritt",
+    "title": "Physically Based Rendering",
+    "section": "Fragments (Schritt-für-Schritt)",
+    "text": "Fragments (Schritt-für-Schritt)\nDieser Teil ist sofort da.\nDieser Teil kommt erst beim ersten Klick.\nDieser Teil kommt beim zweiten Klick.\nUnd dieser hier sogar in Rot."
   },
   {
-    "objectID": "pages/3_materialmodell.html#von-der-cook-torrance-theorie-zum-disney-workflow",
-    "href": "pages/3_materialmodell.html#von-der-cook-torrance-theorie-zum-disney-workflow",
-    "title": "Kapitel 3: Das Materialmodell & Mapping",
-    "section": "1. Von der Cook-Torrance-Theorie zum Disney-Workflow",
-    "text": "1. Von der Cook-Torrance-Theorie zum Disney-Workflow\nIm vorherigen Kapitel wurden die physikalischen Prinzipien und die Cook-Torrance-BRDF hergeleitet. Zur Erinnerung, die Formel für den gerichteten (spekularen) Anteil lautet:\n\\[\nf_s = \\frac{D \\cdot F \\cdot G}{4 \\, (\\mathbf{n} \\cdot \\mathbf{l}) \\, (\\mathbf{n} \\cdot \\mathbf{v})}\n\\]\nDort wurden gegebenenfalls Aspekte wie die Mikrofacetten-Verteilung (\\(D\\)) oder der Fresnel-Effekt (\\(F\\)) bereits visualisiert. In der praktischen Anwendung wird diese Formel jedoch selten direkt manipuliert. Stattdessen nutzen moderne Systeme ein standardisiertes Interface, das auf dem Disney Principled BSDF basiert (heute oft als OpenPBR bezeichnet).\nDieser Metallic-Roughness-Workflow abstrahiert die komplexe Mathematik in intuitive Steuerungsparameter für Anwender. Der Name ist dabei eine Kurzbezeichnung: Neben Metallic und Roughness wird auch Base Color bzw. Albedo als zentraler Eingabeparameter benötigt. Erst aus diesen drei Angaben entsteht eine vollständige Beschreibung der farblichen und reflektierenden Materialeigenschaften.\n\nRoughness (Rauheit): Steuert im Hintergrund direkt den \\(D\\)-Term (Normal Distribution Function) und den \\(G\\)-Term (Geometry). Der Anwender sieht nur: Hoher Wert = raue Oberfläche, niedriger Wert = glatte Oberfläche.\nMetallic (Metallizität): Bestimmt das grundlegende physikalische Verhalten und steuert den Fresnel-Term (\\(F\\)).\n\nDielektrika (Nicht-Metalle, Metallic = 0): Besitzen diffuse Farben und reflektieren Licht nur schwach an der Oberfläche.\nMetalle (Leiter, Metallic = 1): Besitzen keine diffuse Reflexion. Ihre Farbe wird ausschließlich aus der spiegelnden Reflexion gebildet.\n\nBase Color (Albedo): Definiert die Grundfarbe, deren physikalische Auswirkung durch den Metallic-Wert modifiziert wird.\n\nDieser Ansatz zwingt den Workflow automatisch zur Energieerhaltung. Es wird stark erschwert, unphysikalische Materialien zu erstellen.\n\nExkurs: Base Color und Albedo-Maps\nDer Begriff Albedo bezeichnet im PBR-Kontext die Grundfarbe einer Oberfläche unter neutraler Beleuchtung. Gemeint ist also nicht das fertig sichtbare Bild inklusive Schatten, Glanzpunkten oder Umgebungsreflexionen. Diese Effekte werden erst durch Beleuchtung, BRDF und Umgebung erzeugt.\nDer Rückbezug zur Cook-Torrance-Formel ist hierbei weniger direkt als bei Roughness. Die Albedo erscheint nicht als eigener Faktor im spekularen Term \\(D \\cdot F \\cdot G\\). Stattdessen wird sie für den diffusen Anteil des Materials verwendet und bei Metallen zur Färbung der spekularen Reflexion herangezogen. Im Metallic-Roughness-Workflow wird also über Metallic entschieden, wie die Base Color interpretiert wird.\nFür die Erstellung von PBR-Texturen ergibt sich daraus eine wichtige Regel: In eine Albedo-Map sollten keine bereits “eingebackenen” Schatten oder Highlights gemalt werden. Solche Informationen würden später ein zweites Mal durch das Beleuchtungsmodell entstehen und das Material unphysikalisch wirken lassen. Eine Holztextur darf also Maserung und Farbunterschiede enthalten, aber keine festen Lichtflecken. Eine Metalltextur darf unterschiedliche Färbungen oder Oxidation zeigen, aber keine vorgerenderten Spiegelungen.\nDie Bedeutung der Base Color hängt zusätzlich vom Metallic-Wert ab:\n\nBei Dielektrika (z.B. Holz, Kunststoff, Stein) beschreibt die Albedo-Map die diffuse Körperfarbe. Das Material besitzt weiterhin einen schwachen, meist fast weißen Spekularanteil.\nBei Metallen beschreibt die Base Color nicht eine diffuse Farbe, sondern die Färbung der spekularen Reflexion. Deshalb erscheinen Metalle wie Gold oder Kupfer farbig glänzend, besitzen aber praktisch keinen diffusen Anteil.\n\nEine Albedo-Map ist damit nicht einfach ein dekoratives Bild auf dem Objekt. Sie ist ein physikalisch interpretierter Eingabeparameter des Materialmodells. Erst im Zusammenspiel mit Metallic- und Roughness-Maps wird festgelegt, ob ein Pixel als raues Holz, blankes Metall oder matter Lack ausgewertet wird.",
-    "crumbs": [
-      "3. Materialmodell"
-    ]
+    "objectID": "slides.html#code-blöcke-mit-syntax-highlighting",
+    "href": "slides.html#code-blöcke-mit-syntax-highlighting",
+    "title": "Physically Based Rendering",
+    "section": "Code-Blöcke mit Syntax-Highlighting",
+    "text": "Code-Blöcke mit Syntax-Highlighting\nimport numpy as np\n\ndef fresnel_schlick(cos_theta, F0):\n    return F0 + (1 - F0) * (1 - cos_theta) ** 5\n// In einem Fragment-Shader\nvec3 F = F0 + (1.0 - F0) * pow(1.0 - dot(N, V), 5.0);"
   },
   {
-    "objectID": "pages/3_materialmodell.html#das-material-labor-globale-parameter-vs.-texture-maps",
-    "href": "pages/3_materialmodell.html#das-material-labor-globale-parameter-vs.-texture-maps",
-    "title": "Kapitel 3: Das Materialmodell & Mapping",
-    "section": "2. Das Material-Labor: Globale Parameter vs. Texture Maps",
-    "text": "2. Das Material-Labor: Globale Parameter vs. Texture Maps\nUm die Steuerung zu demonstrieren, bedienen wir uns eines klassischen Beispiels der Computergrafik: Einem Holzfass. Ein solches Fass weckt in unserem Gehirn klare Erwartungen – das Holz sollte eher rau und farbig (Dielektrikum) sein, während die Eisenbänder darum herum als metallisch und spiegelnd wahrgenommen werden sollten.\nDie Szene verzichtet zunächst bewusst auf Umgebungskartierung (IBL) und wird nur durch einfache, isolierte Lichtquellen in einem vollständig dunklen Labor beleuchtet.\n(A) Globale Slider: Durch das Verschieben der Regler Metallic und Roughness unten verändern wir die Materialeigenschaften für das gesamte Objekt gleichzeitig und überlagern alle Pixel. Dadurch wirkt das Fass entweder komplett wie ein rauer Plastikklotz oder wie ein massiver Chromzylinder.\n(B) Texture-Maps: Um dem Fass eine realistische materielle Mehrteiligkeit zu verleihen, müssen wir auf “globale” Werte verzichten. Bei Klick auf “Aktivieren (Maps laden)” werden die Slider deaktiviert und wir übergeben der Engine stattdessen 2D-Texturen. Die Albedo-Map legt dabei die lokalen Grundfarben von Holz und Eisen fest. Die Metallic-Roughness-Map steuert zusätzlich, welche Pixel metallisch sind und wie scharf oder diffus sie Licht reflektieren. Diese Maps flüstern jedem Pixel präzise PBR-Werte zu (z.B. “Hier bist du Eisen, also ist Metallic=1”, oder “Hier bist du raues Holz”).\n\n  \n    Steuerung:\n    Texturen / Maps:\n    Aktivieren (Maps laden)\n    Aus (Globale Slider aktiv)\n  \n  \n  \n    Globale Metallic:\n    \n    0.00\n    \n    Globale Roughness:\n    \n    0.40",
-    "crumbs": [
-      "3. Materialmodell"
-    ]
+    "objectID": "slides.html#ausführbares-python-plot",
+    "href": "slides.html#ausführbares-python-plot",
+    "title": "Physically Based Rendering",
+    "section": "Ausführbares Python (Plot)",
+    "text": "Ausführbares Python (Plot)\n\n\n\n\n\n\n\n\n\n→ Plots werden beim Rendern automatisch eingebettet."
   },
   {
-    "objectID": "pages/3_materialmodell.html#die-grenzen-des-labors-der-übergang-zu-ibl",
-    "href": "pages/3_materialmodell.html#die-grenzen-des-labors-der-übergang-zu-ibl",
-    "title": "Kapitel 3: Das Materialmodell & Mapping",
-    "section": "3. Die Grenzen des Labors: Der Übergang zu IBL",
-    "text": "3. Die Grenzen des Labors: Der Übergang zu IBL\nEine wesentliche Beobachtung des Labor-Aufbaus: Sobald Teile des Objektes stark metallisch werden (z.B. die Eisenringe in unserer Texture-Map), fangen sie ausschließlich Glanzlichter von dedizierten Lampen ein. Dazwischen wirkt das Metall nahezu tiefschwarz.\nDas ist physikalisch korrekt! Metalle verhalten sich wie Spiegel. Ein Spiegel in einem dunklen Raum kann nur die spärlichen Lichtpunkte der Taschenlampen zeigen – der Rest bleibt schwarz.\nUm die Leistungsfähigkeit des Cinematic Workflows auszuschöpfen, erfordert PBR zwingend eine realistische Umgebung, die Lichtdaten aus allen Richtungen liefert. Nur so kann der Cook-Torrance-Ansatz seine volle physikalische Präzision ausspielen. Diese Lücke schließt das Konzept des Image Based Lighting (IBL), was im folgenden Kapitel detailliert ausgeführt und demonstriert wird.",
-    "crumbs": [
-      "3. Materialmodell"
-    ]
+    "objectID": "slides.html#interaktive-3d-demo-babylon.js",
+    "href": "slides.html#interaktive-3d-demo-babylon.js",
+    "title": "Physically Based Rendering",
+    "section": "Interaktive 3D-Demo (Babylon.js)",
+    "text": "Interaktive 3D-Demo (Babylon.js)\n\n\n\n\nSpeaker-Note: Drehe die Kugel mit der Maus — die Demo läuft live in der Folie. Eindeutige Canvas-ID pro Folie!"
   },
   {
-    "objectID": "pages/6_X.html",
-    "href": "pages/6_X.html",
-    "title": "Vertiefung: Materialalterung",
-    "section": "",
-    "text": "Auf den vorherigen Seiten wurden PBR-Materialien vor allem als Kombination aus Parametern beschrieben: Base Color, Metallic, Roughness und die Beleuchtung durch IBL. In einer echten Szene sind diese Werte jedoch selten konstant. Ein Objekt altert, wird benutzt, oxidiert, verschmutzt oder wird an Kanten wieder blank poliert.\nDamit ist Alterung kein reiner “Farbfilter”. Wenn Kupfer eine Patina bildet oder Eisen rostet, verändert sich nicht nur die sichtbare Farbe der Oberfläche. Auch das Reflexionsverhalten ändert sich:\n\nDie Oberfläche wird meist rauer.\nDie Spiegelung wird breiter und dunkler.\nOxidierte oder verschmutzte Bereiche verhalten sich nicht mehr wie blankes Metall.\nEinzelne Regionen können sehr unterschiedliche Materialzustände besitzen.\n\nDie zentrale Idee dieser Vertiefung lautet deshalb:\n\nRealistische Alterung entsteht, wenn mehrere PBR-Maps gemeinsam verändert werden.",
-    "crumbs": [
-      "X. Vertiefung"
-    ]
+    "objectID": "slides.html#callouts-hinweis-boxen",
+    "href": "slides.html#callouts-hinweis-boxen",
+    "title": "Physically Based Rendering",
+    "section": "Callouts (Hinweis-Boxen)",
+    "text": "Callouts (Hinweis-Boxen)\n\n\n\n\n\n\nNote\n\n\nNote-Box für allgemeine Hinweise.\n\n\n\n\n\n\n\n\n\nTip\n\n\nTipp für die Praxis.\n\n\n\n\n\n\n\n\n\nWarning\n\n\nAchtung-Box.\n\n\n\n\n\n\n\n\n\nImportant\n\n\nWichtige Aussage hervorheben."
   },
   {
-    "objectID": "pages/6_X.html#warum-materialalterung-eine-pbr-frage-ist",
-    "href": "pages/6_X.html#warum-materialalterung-eine-pbr-frage-ist",
-    "title": "Vertiefung: Materialalterung",
-    "section": "",
-    "text": "Auf den vorherigen Seiten wurden PBR-Materialien vor allem als Kombination aus Parametern beschrieben: Base Color, Metallic, Roughness und die Beleuchtung durch IBL. In einer echten Szene sind diese Werte jedoch selten konstant. Ein Objekt altert, wird benutzt, oxidiert, verschmutzt oder wird an Kanten wieder blank poliert.\nDamit ist Alterung kein reiner “Farbfilter”. Wenn Kupfer eine Patina bildet oder Eisen rostet, verändert sich nicht nur die sichtbare Farbe der Oberfläche. Auch das Reflexionsverhalten ändert sich:\n\nDie Oberfläche wird meist rauer.\nDie Spiegelung wird breiter und dunkler.\nOxidierte oder verschmutzte Bereiche verhalten sich nicht mehr wie blankes Metall.\nEinzelne Regionen können sehr unterschiedliche Materialzustände besitzen.\n\nDie zentrale Idee dieser Vertiefung lautet deshalb:\n\nRealistische Alterung entsteht, wenn mehrere PBR-Maps gemeinsam verändert werden.",
-    "crumbs": [
-      "X. Vertiefung"
-    ]
+    "objectID": "slides.html#folien-hintergrundfarbe",
+    "href": "slides.html#folien-hintergrundfarbe",
+    "title": "Physically Based Rendering",
+    "section": "Folien-Hintergrundfarbe",
+    "text": "Folien-Hintergrundfarbe\nSetze hinter den Titel {background-color=\"#1f2937\"} — diese Section-Folie (# 🧪 SHOWCASE) macht genau das.\nAuch möglich: {background-image=\"bild.jpg\"} für Vollbild-Bilder."
   },
   {
-    "objectID": "pages/6_X.html#interaktive-demo-ein-kupferschild-altert",
-    "href": "pages/6_X.html#interaktive-demo-ein-kupferschild-altert",
-    "title": "Vertiefung: Materialalterung",
-    "section": "Interaktive Demo: Ein Kupferschild altert",
-    "text": "Interaktive Demo: Ein Kupferschild altert\nDie folgende Demo verwendet bewusst noch kein externes 3D-Modell. Das Objekt wird aus einfachen Babylon.js-Grundformen aufgebaut: eine leicht gewölbte Schildfläche mit erhabenem Rand und Nieten. Der interessante Teil liegt aber weiterhin in den prozedural erzeugten Texturen. Der Alterungsslider verändert gleichzeitig eine Albedo-Map, eine Roughness-Map und eine Metallic-Map.\nDie drei Schalter zeigen, warum eine reine Farbänderung nicht ausreicht:\n\nBase Color / Albedo: Die Patina wird als lokale Grundfarbe sichtbar.\nRoughness: Gealterte Bereiche werden matter und reflektieren unschärfer.\nMetallic: Oxidierte Bereiche verlieren ihre metallische Reflexion.\n\nAusgeschaltete Maps werden durch globale Materialwerte ersetzt. Dadurch kann beobachtet werden, welche Information durch welche Map in das PBR-Material eingebracht wird.\n\n\n  \n    \n      \n    \n\n    \n      \n        Umgebung\n        \n          Stadt (Neutral)\n          Landlandschaft (Offen)\n          Wald (Grünlich)\n          Innenraum (Warm)\n        \n      \n\n      \n        \n          Alterung\n          0%\n        \n        \n      \n\n      \n        Aktive Maps\n        \n          Base Color\n          Roughness\n          Metallic\n        \n      \n\n      \n        Aktiv:\n        Base Color, Roughness und Metallic werden aus den Alterungs-Maps gelesen.\n      \n\n      \n        \n          Albedo\n          \n        \n        \n          Metallic\n          \n        \n        \n          Roughness",
-    "crumbs": [
-      "X. Vertiefung"
-    ]
+    "objectID": "slides.html#speaker-notes-für-s-view",
+    "href": "slides.html#speaker-notes-für-s-view",
+    "title": "Physically Based Rendering",
+    "section": "Speaker-Notes (für S-View)",
+    "text": "Speaker-Notes (für S-View)\nSchreibe so:\n::: {.notes}\nStichpunkte, die nur ihr im Speaker-View seht.\n:::\nMit S öffnet sich ein zweites Fenster mit Notizen + Timer + Vorschau der nächsten Folie."
   },
   {
-    "objectID": "pages/6_X.html#was-an-der-demo-vereinfacht-ist",
-    "href": "pages/6_X.html#was-an-der-demo-vereinfacht-ist",
-    "title": "Vertiefung: Materialalterung",
+    "objectID": "slides.html#ende-showcase",
+    "href": "slides.html#ende-showcase",
+    "title": "Physically Based Rendering",
+    "section": "— Ende Showcase —",
+    "text": "— Ende Showcase —\n\n\n\n\n\n\nTip\n\n\nAb hier beginnt das eigentliche Grundgerüst eurer Präsentation. Alles davor kann gelöscht werden."
+  },
+  {
+    "objectID": "slides.html#was-ist-pbr",
+    "href": "slides.html#was-ist-pbr",
+    "title": "Physically Based Rendering",
+    "section": "Was ist PBR?",
+    "text": "Was ist PBR?\n\nTODO: Kernaussage aus index.qmd — physikalisch korrekte Simulation von Licht-Material-Interaktion.\n\n\nEmpirisch → physikbasiert\nMikrofacetten + Energieerhaltung"
+  },
+  {
+    "objectID": "slides.html#warum-pbr",
+    "href": "slides.html#warum-pbr",
+    "title": "Physically Based Rendering",
+    "section": "Warum PBR?",
+    "text": "Warum PBR?\n\nTODO: 3-4 Vorteile als Bullets (Fotorealismus, Konsistenz, Workflow, Industriestandard)."
+  },
+  {
+    "objectID": "slides.html#das-ziel-fotorealismus-in-echtzeit",
+    "href": "slides.html#das-ziel-fotorealismus-in-echtzeit",
+    "title": "Physically Based Rendering",
+    "section": "Das Ziel: Fotorealismus in Echtzeit",
+    "text": "Das Ziel: Fotorealismus in Echtzeit\n\nTODO: Babylon-Goldkugel-Demo aus index.qmd einbetten (Canvas-ID anpassen!)."
+  },
+  {
+    "objectID": "slides.html#was-war-phong",
+    "href": "slides.html#was-war-phong",
+    "title": "Physically Based Rendering",
+    "section": "Was war Phong?",
+    "text": "Was war Phong?\n\nTODO: Kurz-Erinnerung, die drei Komponenten (Ambient, Diffuse, Specular)."
+  },
+  {
+    "objectID": "slides.html#phong-vs.-pbr-direkter-vergleich",
+    "href": "slides.html#phong-vs.-pbr-direkter-vergleich",
+    "title": "Physically Based Rendering",
+    "section": "Phong vs. PBR – direkter Vergleich",
+    "text": "Phong vs. PBR – direkter Vergleich\n\nTODO: Demo aus pages/1_phong_grenzen.qmd (zwei Canvases nebeneinander) übernehmen."
+  },
+  {
+    "objectID": "slides.html#interaktive-analyse-der-komponenten",
+    "href": "slides.html#interaktive-analyse-der-komponenten",
+    "title": "Physically Based Rendering",
+    "section": "Interaktive Analyse der Komponenten",
+    "text": "Interaktive Analyse der Komponenten\n\nTODO: Phong-Slider-Demo aus Kapitel 1."
+  },
+  {
+    "objectID": "slides.html#diskussion-mit-dem-publikum",
+    "href": "slides.html#diskussion-mit-dem-publikum",
+    "title": "Physically Based Rendering",
+    "section": "Diskussion mit dem Publikum",
+    "text": "Diskussion mit dem Publikum\n\nTODO: Die Vergleichsfragen aus Kapitel 1 — als Bullets oder Frage-Fragments."
+  },
+  {
+    "objectID": "slides.html#warum-reichen-empirische-modelle-nicht",
+    "href": "slides.html#warum-reichen-empirische-modelle-nicht",
+    "title": "Physically Based Rendering",
+    "section": "Warum reichen empirische Modelle nicht?",
+    "text": "Warum reichen empirische Modelle nicht?\n\nTODO: Brücke zu Kapitel 2 — Motivation für physikalische Grundlagen."
+  },
+  {
+    "objectID": "slides.html#die-rendering-gleichung",
+    "href": "slides.html#die-rendering-gleichung",
+    "title": "Physically Based Rendering",
+    "section": "Die Rendering-Gleichung",
+    "text": "Die Rendering-Gleichung\n\nTODO: Formel + kurze Worte zu jedem Term."
+  },
+  {
+    "objectID": "slides.html#die-brdf-f_r",
+    "href": "slides.html#die-brdf-f_r",
+    "title": "Physically Based Rendering",
+    "section": "Die BRDF \\(f_r\\)",
+    "text": "Die BRDF \\(f_r\\)\n\nTODO: Definition + Rolle in der Rendering-Gleichung."
+  },
+  {
+    "objectID": "slides.html#mikrofacetten-theorie",
+    "href": "slides.html#mikrofacetten-theorie",
+    "title": "Physically Based Rendering",
+    "section": "Mikrofacetten-Theorie",
+    "text": "Mikrofacetten-Theorie\n\nTODO: Grundidee — Oberflächen aus mikroskopischen Spiegelchen."
+  },
+  {
+    "objectID": "slides.html#cook-torrance-brdf",
+    "href": "slides.html#cook-torrance-brdf",
+    "title": "Physically Based Rendering",
+    "section": "Cook-Torrance-BRDF",
+    "text": "Cook-Torrance-BRDF\n\nTODO: Die Formel mit den drei Termen F, D, G."
+  },
+  {
+    "objectID": "slides.html#fresnel-term-f",
+    "href": "slides.html#fresnel-term-f",
+    "title": "Physically Based Rendering",
+    "section": "Fresnel-Term \\(F\\)",
+    "text": "Fresnel-Term \\(F\\)\n\nTODO: Schlick-Approximation + Diagramm (Python-Plot ist im Showcase)."
+  },
+  {
+    "objectID": "slides.html#normal-distribution-function-d",
+    "href": "slides.html#normal-distribution-function-d",
+    "title": "Physically Based Rendering",
+    "section": "Normal Distribution Function \\(D\\)",
+    "text": "Normal Distribution Function \\(D\\)\n\nTODO: GGX/Trowbridge-Reitz — was steuert Roughness?"
+  },
+  {
+    "objectID": "slides.html#geometry-term-g",
+    "href": "slides.html#geometry-term-g",
+    "title": "Physically Based Rendering",
+    "section": "Geometry-Term \\(G\\)",
+    "text": "Geometry-Term \\(G\\)\n\nTODO: Self-Shadowing der Mikrofacetten."
+  },
+  {
+    "objectID": "slides.html#der-diffuse-anteil",
+    "href": "slides.html#der-diffuse-anteil",
+    "title": "Physically Based Rendering",
+    "section": "Der diffuse Anteil",
+    "text": "Der diffuse Anteil\n\nTODO: Lambert vs. Disney-Diffuse."
+  },
+  {
+    "objectID": "slides.html#energieerhaltung",
+    "href": "slides.html#energieerhaltung",
+    "title": "Physically Based Rendering",
+    "section": "Energieerhaltung",
+    "text": "Energieerhaltung\n\nTODO: \\(k_d + k_s \\leq 1\\) — warum das in Phong fehlt."
+  },
+  {
+    "objectID": "slides.html#zusammenspiel-der-prinzipien",
+    "href": "slides.html#zusammenspiel-der-prinzipien",
+    "title": "Physically Based Rendering",
+    "section": "Zusammenspiel der Prinzipien",
+    "text": "Zusammenspiel der Prinzipien\n\nTODO: Alles zusammensetzen — Cook-Torrance + diffuse + Energieerhaltung."
+  },
+  {
+    "objectID": "slides.html#verständnis-check",
+    "href": "slides.html#verständnis-check",
+    "title": "Physically Based Rendering",
+    "section": "Verständnis-Check",
+    "text": "Verständnis-Check\n\nTODO: Quizfrage(n) ans Publikum — vielleicht mit incremental-Reveal der Antwort."
+  },
+  {
+    "objectID": "slides.html#von-cook-torrance-zum-disney-workflow",
+    "href": "slides.html#von-cook-torrance-zum-disney-workflow",
+    "title": "Physically Based Rendering",
+    "section": "Von Cook-Torrance zum Disney-Workflow",
+    "text": "Von Cook-Torrance zum Disney-Workflow\n\nTODO: Industriestandard, warum Disney die Parameter vereinfacht hat."
+  },
+  {
+    "objectID": "slides.html#base-color-albedo",
+    "href": "slides.html#base-color-albedo",
+    "title": "Physically Based Rendering",
+    "section": "Base Color & Albedo",
+    "text": "Base Color & Albedo\n\nTODO: Exkurs aus Kapitel 3 — sRGB vs. linear, gemessene Werte."
+  },
+  {
+    "objectID": "slides.html#das-material-labor",
+    "href": "slides.html#das-material-labor",
+    "title": "Physically Based Rendering",
+    "section": "Das Material-Labor",
+    "text": "Das Material-Labor\n\nTODO: Globale Parameter vs. Texture Maps — Demo aus Kapitel 3."
+  },
+  {
+    "objectID": "slides.html#übergang-zu-ibl",
+    "href": "slides.html#übergang-zu-ibl",
+    "title": "Physically Based Rendering",
+    "section": "Übergang zu IBL",
+    "text": "Übergang zu IBL\n\nTODO: Warum direkte Beleuchtung alleine nicht reicht — Brücke zu Kapitel 4."
+  },
+  {
+    "objectID": "slides.html#der-fehlende-baustein",
+    "href": "slides.html#der-fehlende-baustein",
+    "title": "Physically Based Rendering",
+    "section": "Der fehlende Baustein",
+    "text": "Der fehlende Baustein\n\nTODO: Was bisher fehlt — indirekte Beleuchtung aus der Umgebung."
+  },
+  {
+    "objectID": "slides.html#was-ist-ibl",
+    "href": "slides.html#was-ist-ibl",
+    "title": "Physically Based Rendering",
+    "section": "Was ist IBL?",
+    "text": "Was ist IBL?\n\nTODO: HDR-Environment-Maps, Cubemaps."
+  },
+  {
+    "objectID": "slides.html#demo-torus-knoten-in-verschiedenen-welten",
+    "href": "slides.html#demo-torus-knoten-in-verschiedenen-welten",
+    "title": "Physically Based Rendering",
+    "section": "Demo: Torus-Knoten in verschiedenen Welten",
+    "text": "Demo: Torus-Knoten in verschiedenen Welten\n\nTODO: Interaktive Demo aus pages/4_ibl.qmd einbetten."
+  },
+  {
+    "objectID": "slides.html#die-mathematische-lösung",
+    "href": "slides.html#die-mathematische-lösung",
+    "title": "Physically Based Rendering",
+    "section": "Die mathematische Lösung",
+    "text": "Die mathematische Lösung\n\nTODO: Split-Sum-Approximation — Übersichtsfolie.\n\nPre-filtered Environment Map\n\nTODO: Vorfilterung nach Roughness.\n\nBRDF-Integration (Look-Up-Table)\n\nTODO: 2D-LUT, einmal pro Engine vorberechnet.\n\nZusammenführung\n\nTODO: \\(L_o \\approx \\text{Prefilter}(R, \\alpha) \\cdot \\text{LUT}(N\\cdot V, \\alpha)\\)."
+  },
+  {
+    "objectID": "slides.html#warum-materialalterung-eine-pbr-frage-ist",
+    "href": "slides.html#warum-materialalterung-eine-pbr-frage-ist",
+    "title": "Physically Based Rendering",
+    "section": "Warum Materialalterung eine PBR-Frage ist",
+    "text": "Warum Materialalterung eine PBR-Frage ist\n\nTODO: Aus Kapitel 6_X — Verbindung zwischen Material und Zeit."
+  },
+  {
+    "objectID": "slides.html#demo-ein-kupferschild-altert",
+    "href": "slides.html#demo-ein-kupferschild-altert",
+    "title": "Physically Based Rendering",
+    "section": "Demo: Ein Kupferschild altert",
+    "text": "Demo: Ein Kupferschild altert\n\nTODO: Interaktive Demo aus pages/6_X.qmd."
+  },
+  {
+    "objectID": "slides.html#was-an-der-demo-vereinfacht-ist",
+    "href": "slides.html#was-an-der-demo-vereinfacht-ist",
+    "title": "Physically Based Rendering",
     "section": "Was an der Demo vereinfacht ist",
-    "text": "Was an der Demo vereinfacht ist\nDie Demo ist kein chemisch exaktes Korrosionsmodell. Sie simuliert nicht, wie schnell Kupfer unter bestimmten Umweltbedingungen oxidiert. Für die PBR-Erklärung ist das aber auch nicht der entscheidende Punkt. Wichtig ist die Kopplung der Materialparameter:\n\nIn der Albedo-Map entstehen dunkle und grünliche Bereiche.\nIn der Roughness-Map werden diese Bereiche matter.\nIn der Metallic-Map verlieren oxidierte Bereiche ihre metallische Reflexion.\n\nDamit wird aus einem globalen Materialwert ein ortsabhängiger Materialzustand. Das ist genau der Schritt, der in realen PBR-Workflows über Texture Maps, Substance Painter, Blender oder prozedurale Shader umgesetzt wird.",
-    "crumbs": [
-      "X. Vertiefung"
-    ]
+    "text": "Was an der Demo vereinfacht ist\n\nTODO: Grenzen ehrlich benennen."
   },
   {
-    "objectID": "pages/6_X.html#ausblick-vom-prozeduralen-entwurf-zum-eigenen-asset",
-    "href": "pages/6_X.html#ausblick-vom-prozeduralen-entwurf-zum-eigenen-asset",
-    "title": "Vertiefung: Materialalterung",
-    "section": "Ausblick: Vom prozeduralen Entwurf zum eigenen Asset",
-    "text": "Ausblick: Vom prozeduralen Entwurf zum eigenen Asset\nDieser erste Entwurf lässt sich später erweitern, ohne das didaktische Konzept zu ändern. Statt des einfachen prozeduralen Kupferschilds könnte ein eigenes CAD- oder Blender-Modell verwendet werden, zum Beispiel ein Schild mit sauber modellierten Falzen, Nieten, Kratzern und unterschiedlich stark gealterten Vertiefungen.\nDann würden die Alterungseffekte nicht nur aus einem 2D-Muster entstehen, sondern gezielt an sinnvollen Stellen auftreten:\n\nstärkere Oxidation in Vertiefungen,\npolierte Kanten an häufig berührten Stellen,\nSchmutzansammlung an Fugen,\nunterschiedliche Alterung für Metall, Kunststoff oder Lack.\n\nDer Kern bleibt aber gleich: Alterung ist in PBR keine einzelne Zahl, sondern eine gemeinsame Veränderung mehrerer Maps.",
-    "crumbs": [
-      "X. Vertiefung"
-    ]
+    "objectID": "slides.html#ausblick",
+    "href": "slides.html#ausblick",
+    "title": "Physically Based Rendering",
+    "section": "Ausblick",
+    "text": "Ausblick\n\nTODO: Prozeduraler Entwurf → eigene Assets."
+  },
+  {
+    "objectID": "slides.html#take-aways",
+    "href": "slides.html#take-aways",
+    "title": "Physically Based Rendering",
+    "section": "Take-Aways",
+    "text": "Take-Aways\n\nTODO: 3–4 zentrale Botschaften als Bullets."
+  },
+  {
+    "objectID": "slides.html#fragen",
+    "href": "slides.html#fragen",
+    "title": "Physically Based Rendering",
+    "section": "Fragen?",
+    "text": "Fragen?\n\nVielen Dank! 🎨\n\n\nCelia Baumann · Stefan Jordan · Alexander Kohl"
   }
 ]
