@@ -4,5 +4,6 @@
 .DS_Store
 __pycache__/
 *.html
-**/*.quarto_ipynb
+**/*.quarto_ipynb*
 /.vscode/
+/.venv/

@@ -1,0 +1,385 @@
+---
+title: "Physically Based Rendering"
+subtitle: "Gruppe 7 – VCDE"
+author: "Celia Baumann · Stefan Jordan · Alexander Kohl"
+date: "2026-06-25"
+format:
+  revealjs:
+    theme: dracula
+    slide-number: true
+    chalkboard: true
+    transition: slide
+    width: 1280
+    height: 720
+    # embed-resources: true   # für Präsi-Tag aktivieren (single-file HTML),
+                              # dann aber chalkboard rausnehmen (inkompatibel)
+jupyter: python3
+---
+
+# 🧪 SHOWCASE — Quarto-Features {background-color="#9b1c1c"}
+
+::: {.callout-warning}
+Dieser Abschnitt ist **nur als Referenz** gedacht. Vor der echten Präsentation einfach alle Folien bis zur Markierung *"Ende Showcase"* löschen.
+:::
+
+## Bullet-Listen
+
+Standardmäßig auf einmal:
+
+- Erster Punkt
+- Zweiter Punkt
+- Dritter Punkt
+
+. . .
+
+Mit `. . .` (drei Punkte) kannst du **manuell** weitere Inhalte einblenden lassen.
+
+## Bullets nacheinander (`incremental`)
+
+::: {.incremental}
+- Erst dieser Punkt
+- Dann dieser
+- Und dann dieser
+:::
+
+## Bilder
+
+Bild aus eurem `pages/images/` einbinden:
+
+```markdown
+![](images/beispiel.png){width=50%}
+```
+
+Mit Größenangabe: `{width=60%}` oder `{height=400px}`.
+
+## LaTeX-Formeln
+
+Inline: $E = mc^2$ — funktioniert mitten im Text.
+
+Block:
+
+$$
+L_o(\mathbf{x}, \omega_o) = L_e + \int_\Omega f_r\,L_i\,(\omega_i \cdot \mathbf{n})\,d\omega_i
+$$
+
+## Zwei Spalten
+
+:::: {.columns}
+
+::: {.column width="50%"}
+**Links: Phong**
+
+- Empirisch
+- Plastik-Look
+- Kein Fresnel
+:::
+
+::: {.column width="50%"}
+**Rechts: PBR**
+
+- Physikbasiert
+- Realistisch
+- Energieerhaltend
+:::
+
+::::
+
+## Tabellen
+
+| Modell | Energieerhaltung | Realismus |
+|--------|:----------------:|:---------:|
+| Phong  | ❌               | niedrig   |
+| Cook-Torrance | ✅       | hoch      |
+| Disney | ✅               | sehr hoch |
+
+## Fragments (Schritt-für-Schritt)
+
+[Dieser Teil ist sofort da.]{}
+
+[Dieser Teil kommt erst beim ersten Klick.]{.fragment}
+
+[Dieser Teil kommt beim zweiten Klick.]{.fragment}
+
+[Und dieser hier sogar in Rot.]{.fragment style="color:#dc2626;"}
+
+## Code-Blöcke mit Syntax-Highlighting
+
+```python
+import numpy as np
+
+def fresnel_schlick(cos_theta, F0):
+    return F0 + (1 - F0) * (1 - cos_theta) ** 5
+```
+
+```glsl
+// In einem Fragment-Shader
+vec3 F = F0 + (1.0 - F0) * pow(1.0 - dot(N, V), 5.0);
+```
+
+## Ausführbares Python (Plot)
+
+```{python}
+#| echo: false
+#| fig-align: center
+import numpy as np
+import matplotlib.pyplot as plt
+
+theta = np.linspace(0, np.pi/2, 100)
+F0_values = [0.04, 0.5, 0.95]
+labels = ["Dielektrikum (F0=0.04)", "Halbleiter (F0=0.5)", "Metall (F0=0.95)"]
+
+fig, ax = plt.subplots(figsize=(8, 4))
+for F0, label in zip(F0_values, labels):
+    F = F0 + (1 - F0) * (1 - np.cos(theta)) ** 5
+    ax.plot(np.degrees(theta), F, label=label, linewidth=2)
+
+ax.set_xlabel("Einfallswinkel θ (°)")
+ax.set_ylabel("Reflexion F(θ)")
+ax.set_title("Fresnel-Schlick-Approximation")
+ax.legend()
+ax.grid(alpha=0.3)
+plt.tight_layout()
+plt.show()
+```
+
+→ Plots werden beim Rendern automatisch eingebettet.
+
+## Interaktive 3D-Demo (Babylon.js)
+
+```{=html}
+<canvas id="showcase-sphere" style="width: 100%; height: 400px; border-radius: 8px;"></canvas>
+<script src="https://cdn.babylonjs.com/babylon.js"></script>
+<script>
+  (function() {
+    const canvas = document.getElementById("showcase-sphere");
+    const engine = new BABYLON.Engine(canvas, true);
+    const scene = new BABYLON.Scene(engine);
+    scene.createDefaultEnvironment({ createSkybox: false, createGround: false });
+    scene.clearColor = new BABYLON.Color4(0.95, 0.95, 0.97, 1);
+    const camera = new BABYLON.ArcRotateCamera("c", -Math.PI/2, Math.PI/2.5, 4, BABYLON.Vector3.Zero(), scene);
+    camera.attachControl(canvas, true);
+    const sphere = BABYLON.MeshBuilder.CreateSphere("s", { diameter: 2, segments: 64 }, scene);
+    const mat = new BABYLON.PBRMaterial("m", scene);
+    mat.albedoColor = new BABYLON.Color3(0.9, 0.7, 0.3);
+    mat.metallic = 1.0;
+    mat.roughness = 0.25;
+    sphere.material = mat;
+    engine.runRenderLoop(() => scene.render());
+    window.addEventListener("resize", () => engine.resize());
+  })();
+</script>
+```
+
+::: {.notes}
+**Speaker-Note:** Drehe die Kugel mit der Maus — die Demo läuft live in der Folie. Eindeutige Canvas-ID pro Folie!
+:::
+
+## Callouts (Hinweis-Boxen)
+
+::: {.callout-note}
+Note-Box für allgemeine Hinweise.
+:::
+
+::: {.callout-tip}
+Tipp für die Praxis.
+:::
+
+::: {.callout-warning}
+Achtung-Box.
+:::
+
+::: {.callout-important}
+Wichtige Aussage hervorheben.
+:::
+
+## Folien-Hintergrundfarbe
+
+Setze hinter den Titel `{background-color="#1f2937"}` — diese Section-Folie (`# 🧪 SHOWCASE`) macht genau das.
+
+Auch möglich: `{background-image="bild.jpg"}` für Vollbild-Bilder.
+
+## Speaker-Notes (für `S`-View)
+
+Schreibe so:
+
+```markdown
+::: {.notes}
+Stichpunkte, die nur ihr im Speaker-View seht.
+:::
+```
+
+Mit `S` öffnet sich ein zweites Fenster mit Notizen + Timer + Vorschau der nächsten Folie.
+
+## — Ende Showcase —
+
+::: {.callout-tip}
+**Ab hier beginnt das eigentliche Grundgerüst eurer Präsentation.**
+Alles davor kann gelöscht werden.
+:::
+
+# Einleitung {background-color="#1f2937"}
+
+## Was ist PBR?
+
+> *TODO: Kernaussage aus `index.qmd` — physikalisch korrekte Simulation von Licht-Material-Interaktion.*
+
+- Empirisch → physikbasiert
+- Mikrofacetten + Energieerhaltung
+
+## Warum PBR?
+
+> *TODO: 3-4 Vorteile als Bullets (Fotorealismus, Konsistenz, Workflow, Industriestandard).*
+
+## Das Ziel: Fotorealismus in Echtzeit
+
+> *TODO: Babylon-Goldkugel-Demo aus `index.qmd` einbetten (Canvas-ID anpassen!).*
+
+# 1 · Phong und seine Schwächen {background-color="#1f2937"}
+
+## Was war Phong?
+
+> *TODO: Kurz-Erinnerung, die drei Komponenten (Ambient, Diffuse, Specular).*
+
+## Phong vs. PBR – direkter Vergleich
+
+> *TODO: Demo aus `pages/1_phong_grenzen.qmd` (zwei Canvases nebeneinander) übernehmen.*
+
+## Interaktive Analyse der Komponenten
+
+> *TODO: Phong-Slider-Demo aus Kapitel 1.*
+
+## Diskussion mit dem Publikum
+
+> *TODO: Die Vergleichsfragen aus Kapitel 1 — als Bullets oder Frage-Fragments.*
+
+## Warum reichen empirische Modelle nicht?
+
+> *TODO: Brücke zu Kapitel 2 — Motivation für physikalische Grundlagen.*
+
+# 2 · PBR-Prinzipien {background-color="#1f2937"}
+
+## Die Rendering-Gleichung
+
+> *TODO: Formel + kurze Worte zu jedem Term.*
+
+## Die BRDF $f_r$
+
+> *TODO: Definition + Rolle in der Rendering-Gleichung.*
+
+## Mikrofacetten-Theorie
+
+> *TODO: Grundidee — Oberflächen aus mikroskopischen Spiegelchen.*
+
+## Cook-Torrance-BRDF
+
+> *TODO: Die Formel mit den drei Termen F, D, G.*
+
+## Fresnel-Term $F$
+
+> *TODO: Schlick-Approximation + Diagramm (Python-Plot ist im Showcase).*
+
+## Normal Distribution Function $D$
+
+> *TODO: GGX/Trowbridge-Reitz — was steuert Roughness?*
+
+## Geometry-Term $G$
+
+> *TODO: Self-Shadowing der Mikrofacetten.*
+
+## Der diffuse Anteil
+
+> *TODO: Lambert vs. Disney-Diffuse.*
+
+## Energieerhaltung
+
+> *TODO: $k_d + k_s \leq 1$ — warum das in Phong fehlt.*
+
+## Zusammenspiel der Prinzipien
+
+> *TODO: Alles zusammensetzen — Cook-Torrance + diffuse + Energieerhaltung.*
+
+## Verständnis-Check
+
+> *TODO: Quizfrage(n) ans Publikum — vielleicht mit `incremental`-Reveal der Antwort.*
+
+# 3 · Materialmodell {background-color="#1f2937"}
+
+## Von Cook-Torrance zum Disney-Workflow
+
+> *TODO: Industriestandard, warum Disney die Parameter vereinfacht hat.*
+
+## Base Color & Albedo
+
+> *TODO: Exkurs aus Kapitel 3 — sRGB vs. linear, gemessene Werte.*
+
+## Das Material-Labor
+
+> *TODO: Globale Parameter vs. Texture Maps — Demo aus Kapitel 3.*
+
+## Übergang zu IBL
+
+> *TODO: Warum direkte Beleuchtung alleine nicht reicht — Brücke zu Kapitel 4.*
+
+# 4 · Image Based Lighting (IBL) {background-color="#1f2937"}
+
+## Der fehlende Baustein
+
+> *TODO: Was bisher fehlt — indirekte Beleuchtung aus der Umgebung.*
+
+## Was ist IBL?
+
+> *TODO: HDR-Environment-Maps, Cubemaps.*
+
+## Demo: Torus-Knoten in verschiedenen Welten
+
+> *TODO: Interaktive Demo aus `pages/4_ibl.qmd` einbetten.*
+
+## Die mathematische Lösung
+
+> *TODO: Split-Sum-Approximation — Übersichtsfolie.*
+
+### Pre-filtered Environment Map
+
+> *TODO: Vorfilterung nach Roughness.*
+
+### BRDF-Integration (Look-Up-Table)
+
+> *TODO: 2D-LUT, einmal pro Engine vorberechnet.*
+
+### Zusammenführung
+
+> *TODO: $L_o \approx \text{Prefilter}(R, \alpha) \cdot \text{LUT}(N\cdot V, \alpha)$.*
+
+# X · Vertiefung: Materialalterung {background-color="#1f2937"}
+
+## Warum Materialalterung eine PBR-Frage ist
+
+> *TODO: Aus Kapitel 6_X — Verbindung zwischen Material und Zeit.*
+
+## Demo: Ein Kupferschild altert
+
+> *TODO: Interaktive Demo aus `pages/6_X.qmd`.*
+
+## Was an der Demo vereinfacht ist
+
+> *TODO: Grenzen ehrlich benennen.*
+
+## Ausblick
+
+> *TODO: Prozeduraler Entwurf → eigene Assets.*
+
+# Fazit {background-color="#1f2937"}
+
+## Take-Aways
+
+> *TODO: 3–4 zentrale Botschaften als Bullets.*
+
+## Fragen?
+
+::: {style="text-align: center; margin-top: 100px; font-size: 2em;"}
+Vielen Dank! 🎨
+:::
+
+::: {style="text-align: center; margin-top: 50px; font-size: 0.6em;"}
+Celia Baumann · Stefan Jordan · Alexander Kohl
+:::
