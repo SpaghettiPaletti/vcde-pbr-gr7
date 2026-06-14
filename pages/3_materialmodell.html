@@ -184,12 +184,13 @@ window.Quarto = {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#von-der-cook-torrance-theorie-zum-disney-workflow" id="toc-von-der-cook-torrance-theorie-zum-disney-workflow" class="nav-link active" data-scroll-target="#von-der-cook-torrance-theorie-zum-disney-workflow">1. Von der Cook-Torrance-Theorie zum Disney-Workflow</a>
+  <li><a href="#von-cook-torrance-zur-babylon.js-materialsteuerung" id="toc-von-cook-torrance-zur-babylon.js-materialsteuerung" class="nav-link active" data-scroll-target="#von-cook-torrance-zur-babylon.js-materialsteuerung">1. Von Cook-Torrance zur Babylon.js-Materialsteuerung</a>
   <ul class="collapse">
-  <li><a href="#exkurs-base-color-und-albedo-maps" id="toc-exkurs-base-color-und-albedo-maps" class="nav-link" data-scroll-target="#exkurs-base-color-und-albedo-maps">Exkurs: Base Color und Albedo-Maps</a></li>
+  <li><a href="#base-color-und-albedo-maps" id="toc-base-color-und-albedo-maps" class="nav-link" data-scroll-target="#base-color-und-albedo-maps">Base Color und Albedo-Maps</a></li>
   </ul></li>
-  <li><a href="#materialvergleich-globale-parameter-vs.-texture-maps" id="toc-materialvergleich-globale-parameter-vs.-texture-maps" class="nav-link" data-scroll-target="#materialvergleich-globale-parameter-vs.-texture-maps">2. Materialvergleich: Globale Parameter vs.&nbsp;Texture Maps</a></li>
-  <li><a href="#die-grenzen-der-isolierten-beleuchtung-der-übergang-zu-ibl" id="toc-die-grenzen-der-isolierten-beleuchtung-der-übergang-zu-ibl" class="nav-link" data-scroll-target="#die-grenzen-der-isolierten-beleuchtung-der-übergang-zu-ibl">3. Die Grenzen der isolierten Beleuchtung: Der Übergang zu IBL</a></li>
+  <li><a href="#interaktive-demo-globale-parameter-vs.-texture-maps" id="toc-interaktive-demo-globale-parameter-vs.-texture-maps" class="nav-link" data-scroll-target="#interaktive-demo-globale-parameter-vs.-texture-maps">2. Interaktive Demo: Globale Parameter vs.&nbsp;Texture Maps</a></li>
+  <li><a href="#exkurs-openpbr-und-materialx" id="toc-exkurs-openpbr-und-materialx" class="nav-link" data-scroll-target="#exkurs-openpbr-und-materialx">3. Exkurs: OpenPBR und MaterialX</a></li>
+  <li><a href="#die-grenzen-der-isolierten-beleuchtung-der-übergang-zu-ibl" id="toc-die-grenzen-der-isolierten-beleuchtung-der-übergang-zu-ibl" class="nav-link" data-scroll-target="#die-grenzen-der-isolierten-beleuchtung-der-übergang-zu-ibl">4. Die Grenzen der isolierten Beleuchtung: Der Übergang zu IBL</a></li>
   </ul>
 </nav>
     </div>
@@ -222,73 +223,106 @@ window.Quarto = {
 
 
 <blockquote class="blockquote">
-<p><strong>Zielsetzung:</strong> Die Brücke von der Theorie zur praktischen Anwendung. Während im vorherigen Kapitel die mathematischen Grundlagen (Cook-Torrance) beleuchtet wurden, widmet sich dieses Kapitel dem etablierten Interface der Industrie: Dem Metallic-Roughness-Workflow (geprägt durch Disney). Hier wird untersucht, wie die abstrakten Formeln über handhabbare Parameter gesteuert werden – und warum für eine realistische Darstellung im nächsten Schritt unbedingt komplexes Licht (IBL) nötig sein wird.</p>
+<p><strong>Zielsetzung:</strong> Die Brücke von der Theorie zur praktischen Anwendung. Während im vorherigen Kapitel die mathematischen Grundlagen der Cook-Torrance-BRDF beleuchtet wurden, widmet sich dieses Kapitel der Materialsteuerung, die in den interaktiven Babylon.js-Demos der Webseite verwendet wird. Im Mittelpunkt stehen Base Color, Metallic, Roughness und Texture Maps – und warum für eine realistische Darstellung im nächsten Schritt zusätzlich komplexes Licht (IBL) nötig sein wird.</p>
 </blockquote>
-<section id="von-der-cook-torrance-theorie-zum-disney-workflow" class="level2">
-<h2 class="anchored" data-anchor-id="von-der-cook-torrance-theorie-zum-disney-workflow">1. Von der Cook-Torrance-Theorie zum Disney-Workflow</h2>
+<section id="von-cook-torrance-zur-babylon.js-materialsteuerung" class="level2">
+<h2 class="anchored" data-anchor-id="von-cook-torrance-zur-babylon.js-materialsteuerung">1. Von Cook-Torrance zur Babylon.js-Materialsteuerung</h2>
 <p>Im vorherigen Kapitel wurden die physikalischen Prinzipien und die <strong>Cook-Torrance-BRDF</strong> hergeleitet. Zur Erinnerung, die Formel für den gerichteten (spekularen) Anteil lautet:</p>
 <p><span class="math display">\[
 f_s = \frac{D \cdot F \cdot G}{4 \, (\mathbf{n} \cdot \mathbf{l}) \, (\mathbf{n} \cdot \mathbf{v})}
 \]</span></p>
-<p>Dort wurden gegebenenfalls Aspekte wie die Mikrofacetten-Verteilung (<span class="math inline">\(D\)</span>) oder der Fresnel-Effekt (<span class="math inline">\(F\)</span>) bereits visualisiert. In der praktischen Anwendung wird diese Formel jedoch selten direkt manipuliert. Stattdessen nutzen moderne Systeme ein standardisiertes Interface, das auf dem <strong>Disney Principled BSDF</strong> basiert (heute oft als OpenPBR bezeichnet).</p>
-<p>Dieser <strong>Metallic-Roughness-Workflow</strong> abstrahiert die komplexe Mathematik in intuitive Steuerungsparameter für Anwender. Der Name ist dabei eine Kurzbezeichnung: Neben <code>Metallic</code> und <code>Roughness</code> wird auch <code>Base Color</code> bzw. <code>Albedo</code> als zentraler Eingabeparameter benötigt. Erst aus diesen drei Angaben entsteht eine vollständige Beschreibung der farblichen und reflektierenden Materialeigenschaften.</p>
+<p>Dort wurden Aspekte wie die Mikrofacetten-Verteilung (<span class="math inline">\(D\)</span>), der Fresnel-Effekt (<span class="math inline">\(F\)</span>) und die geometrische Abschattung (<span class="math inline">\(G\)</span>) bereits betrachtet. Diese Begriffe bleiben auch in der praktischen Umsetzung relevant. In einer Echtzeit-Engine wie Babylon.js wird die Formel jedoch nicht direkt durch die Anwender manipuliert. Stattdessen werden wenige Materialparameter gesetzt, aus denen die Engine intern eine PBR-Beleuchtung berechnet.</p>
+<p>In den folgenden Beispielen wird diese Abstraktion anhand des in Babylon.js verfügbaren <code>PBRMetallicRoughnessMaterial</code> betrachtet. Dieses Material stellt die für den Metal-Roughness-Workflow typischen Eingaben <code>baseColor</code>, <code>metallic</code>, <code>roughness</code> und <code>metallicRoughnessTexture</code> bereit. Dadurch kann an die theoretischen Begriffe aus Kapitel 2 angeschlossen werden, ohne die BRDF-Terme direkt einstellen zu müssen.</p>
+<p>Für die Demonstration sind insbesondere diese Parameter relevant:</p>
 <ul>
-<li><strong>Roughness (Rauheit):</strong> Steuert im Hintergrund direkt den <strong><span class="math inline">\(D\)</span>-Term</strong> (Normal Distribution Function) und den <strong><span class="math inline">\(G\)</span>-Term</strong> (Geometry). Wichtig: Das <span class="math inline">\(D\)</span> in der Cook-Torrance-Formel steht hier nicht für “diffus”, sondern für die statistische Verteilung der Mikrofacetten. Der Anwender sieht nur: Hoher Wert = raue Oberfläche, niedriger Wert = glatte Oberfläche.</li>
-<li><strong>Metallic (Metallizität):</strong> Bestimmt das grundlegende physikalische Verhalten und steuert den <strong>Fresnel-Term (<span class="math inline">\(F\)</span>)</strong>.
-<ul>
-<li><em>Dielektrika (Nicht-Metalle, Metallic = 0):</em> Besitzen diffuse Farben und reflektieren Licht nur schwach an der Oberfläche.</li>
-<li><em>Metalle (Leiter, Metallic = 1):</em> Besitzen keine diffuse Reflexion. Ihre Farbe wird ausschließlich aus der spiegelnden Reflexion gebildet.</li>
-</ul></li>
-<li><strong>Base Color (Albedo):</strong> Definiert die Grundfarbe, deren physikalische Auswirkung durch den Metallic-Wert modifiziert wird.</li>
+<li><strong><code>baseColor</code> / <code>baseTexture</code>:</strong> Definiert die farbliche Materialinformation. Die Bedeutung dieser Farbe hängt davon ab, ob ein Pixel als Metall oder Nichtmetall interpretiert wird.</li>
+<li><strong><code>metallic</code>:</strong> Bestimmt, ob ein Material eher als Dielektrikum oder als Metall behandelt wird. Nichtmetalle besitzen einen diffusen Anteil, Metalle dagegen praktisch nicht.</li>
+<li><strong><code>roughness</code>:</strong> Steuert die Rauheit der spekularen Reflexion. Ein niedriger Wert erzeugt scharfe Glanzlichter, ein hoher Wert breitere und mattere Reflexionen. Damit wird anschaulich vor allem die Mikrofacettenverteilung aus dem <span class="math inline">\(D\)</span>-Term sichtbar.</li>
+<li><strong><code>metallicRoughnessTexture</code>:</strong> Speichert Metallic- und Roughness-Werte als Texture Map. In Babylon.js liegt Roughness im grünen Kanal und Metallic im blauen Kanal.</li>
 </ul>
-<p>Dieser Ansatz zwingt den Workflow automatisch zur <strong>Energieerhaltung</strong>. Es wird stark erschwert, unphysikalische Materialien zu erstellen.</p>
-<section id="exkurs-base-color-und-albedo-maps" class="level3">
-<h3 class="anchored" data-anchor-id="exkurs-base-color-und-albedo-maps">Exkurs: Base Color und Albedo-Maps</h3>
-<p>Der Begriff <strong>Albedo</strong> bezeichnet im PBR-Kontext die Grundfarbe einer Oberfläche unter neutraler Beleuchtung. Gemeint ist also nicht das fertig sichtbare Bild inklusive Schatten, Glanzpunkten oder Umgebungsreflexionen. Diese Effekte werden erst durch Beleuchtung, BRDF und Umgebung erzeugt.</p>
-<p>Der Rückbezug zur Cook-Torrance-Formel ist hierbei weniger direkt als bei <code>Roughness</code>. Zunächst muss zwischen dem diffusen Anteil <span class="math inline">\(f_d\)</span> und dem spekularen Cook-Torrance-Anteil <span class="math inline">\(f_s\)</span> unterschieden werden. Die Albedo erscheint nicht als eigener Faktor im spekularen Term <span class="math inline">\(D \cdot F \cdot G\)</span>. Bei Dielektrika wird sie vor allem für den diffusen Anteil verwendet, vereinfacht also für die Körperfarbe des Materials. Bei Metallen wird der diffuse Anteil dagegen nahezu entfernt; die Base Color wird dann zur Färbung der spekularen Reflexion genutzt. Im Metallic-Roughness-Workflow wird also über <code>Metallic</code> entschieden, wie die Base Color interpretiert wird.</p>
+<p>Die Parameter bilden damit eine praktische Steuerungsebene über der zuvor beschriebenen BRDF. Statt <span class="math inline">\(D\)</span>, <span class="math inline">\(F\)</span> und <span class="math inline">\(G\)</span> direkt einzustellen, werden Materialeigenschaften gewählt, aus denen die Engine die Reflexionen plausibel approximiert.</p>
+<section id="base-color-und-albedo-maps" class="level3">
+<h3 class="anchored" data-anchor-id="base-color-und-albedo-maps">Base Color und Albedo-Maps</h3>
+<p>In Kapitel 2 wurde die Albedo bereits als <span class="math inline">\(c\)</span> im diffusen Lambert-Anteil eingeführt. Im praktischen PBR-Workflow bezeichnet sie die Grundfarbe einer Oberfläche unter neutraler Beleuchtung. In Babylon.js wird dafür bei der Metal-Roughness-Variante der Parameter <code>baseColor</code> bzw. eine <code>baseTexture</code> verwendet. Gemeint ist also nicht das fertig sichtbare Bild inklusive Schatten, Glanzpunkten oder Umgebungsreflexionen. Diese Effekte werden erst durch Beleuchtung, BRDF und Umgebung erzeugt.</p>
+<p>Der Rückbezug zur Cook-Torrance-Formel ist hierbei weniger direkt als bei <code>roughness</code>. Zunächst muss zwischen dem diffusen Anteil <span class="math inline">\(f_d\)</span> und dem spekularen Cook-Torrance-Anteil <span class="math inline">\(f_s\)</span> unterschieden werden. Die Albedo erscheint nicht als zusätzlicher eigener Faktor neben <span class="math inline">\(D\)</span>, <span class="math inline">\(F\)</span> und <span class="math inline">\(G\)</span>. Bei Dielektrika wird sie vor allem für den diffusen Anteil verwendet, vereinfacht also für die Körperfarbe des Materials. Bei Metallen wird der diffuse Anteil dagegen nahezu entfernt; die Base Color wird dann als farbige spekulare Basisreflektivität interpretiert. Über <code>metallic</code> wird also entschieden, wie die Farbinformation ausgewertet wird.</p>
 <p>Für die Erstellung von PBR-Texturen ergibt sich daraus eine wichtige Regel: In eine Albedo-Map sollten keine bereits “eingebackenen” Schatten oder Highlights gemalt werden. Solche Informationen würden später ein zweites Mal durch das Beleuchtungsmodell entstehen und das Material unphysikalisch wirken lassen. Eine Holztextur darf also Maserung und Farbunterschiede enthalten, aber keine festen Lichtflecken. Eine Metalltextur darf unterschiedliche Färbungen oder Oxidation zeigen, aber keine vorgerenderten Spiegelungen.</p>
-<p>Die Bedeutung der Base Color hängt zusätzlich vom <strong>Metallic-Wert</strong> ab:</p>
+<p>Die Bedeutung der Base Color hängt zusätzlich vom Wert <code>metallic</code> ab:</p>
 <ul>
 <li>Bei <strong>Dielektrika</strong> (z.B. Holz, Kunststoff, Stein) beschreibt die Albedo-Map die diffuse Körperfarbe. Das Material besitzt weiterhin einen schwachen, meist fast weißen Spekularanteil.</li>
 <li>Bei <strong>Metallen</strong> beschreibt die Base Color nicht eine diffuse Farbe, sondern die Färbung der spekularen Reflexion. Deshalb erscheinen Metalle wie Gold oder Kupfer farbig glänzend, besitzen aber praktisch keinen diffusen Anteil.</li>
 </ul>
-<p>Eine Albedo-Map ist damit nicht einfach ein dekoratives Bild auf dem Objekt. Sie ist ein physikalisch interpretierter Eingabeparameter des Materialmodells. Erst im Zusammenspiel mit Metallic- und Roughness-Maps wird festgelegt, ob ein Pixel als raues Holz, blankes Metall oder matter Lack ausgewertet wird.</p>
+<p>Eine Albedo- bzw. Base-Color-Map ist damit nicht einfach ein dekoratives Bild auf dem Objekt. Sie ist ein physikalisch interpretierter Eingabeparameter des Materialmodells. Erst im Zusammenspiel mit Metallic- und Roughness-Maps wird festgelegt, ob ein Pixel als raues Holz, blankes Metall oder matter Lack ausgewertet wird.</p>
 <hr>
 </section>
 </section>
-<section id="materialvergleich-globale-parameter-vs.-texture-maps" class="level2">
-<h2 class="anchored" data-anchor-id="materialvergleich-globale-parameter-vs.-texture-maps">2. Materialvergleich: Globale Parameter vs.&nbsp;Texture Maps</h2>
-<p>Um die Steuerung zu demonstrieren, bedienen wir uns eines klassischen Beispiels der Computergrafik: Einem <strong>Holzfass</strong>. Ein solches Fass weckt in unserem Gehirn klare Erwartungen – das Holz sollte eher rau und farbig (Dielektrikum) sein, während die Eisenbänder darum herum als metallisch und spiegelnd wahrgenommen werden sollten.</p>
-<p>Die Szene verzichtet zunächst bewusst auf Umgebungskartierung (IBL) und wird nur durch einfache, isolierte Lichtquellen in einer vollständig dunklen Umgebung beleuchtet.</p>
-<p><strong>(A) Globale Slider:</strong> Durch das Verschieben der Regler <code>Metallic</code> und <code>Roughness</code> unten verändern wir die Materialeigenschaften für das <strong>gesamte</strong> Objekt gleichzeitig und überlagern alle Pixel. Dadurch wirkt das Fass entweder komplett wie ein rauer Plastikklotz oder wie ein massiver Chromzylinder.</p>
-<p><strong>(B) Texture-Maps:</strong> Um dem Fass eine realistische materielle Mehrteiligkeit zu verleihen, müssen wir auf “globale” Werte verzichten. Bei Klick auf <strong>“Aktivieren (Maps laden)”</strong> werden die Slider deaktiviert und wir übergeben der Engine stattdessen 2D-Texturen. Die Albedo-Map legt dabei die lokalen Grundfarben von Holz und Eisen fest. Die Metallic-Roughness-Map steuert zusätzlich, welche Pixel metallisch sind und wie scharf oder diffus sie Licht reflektieren. Diese Maps flüstern jedem Pixel präzise PBR-Werte zu (z.B. “Hier bist du Eisen, also ist Metallic=1”, oder “Hier bist du raues Holz”).</p>
+<section id="interaktive-demo-globale-parameter-vs.-texture-maps" class="level2">
+<h2 class="anchored" data-anchor-id="interaktive-demo-globale-parameter-vs.-texture-maps">2. Interaktive Demo: Globale Parameter vs.&nbsp;Texture Maps</h2>
+<p>Die folgende Szene zeigt diese Babylon.js-Parameter in einer bewusst einfachen Beleuchtungssituation. Auf Umgebungskartierung (IBL) wird zunächst verzichtet, damit der Unterschied zwischen globalen Materialwerten und Texture Maps isoliert betrachtet werden kann. Rauheit beeinflusst die Mikrofacettenverteilung, Metallizität verändert die Aufteilung zwischen diffusem und spekularem Verhalten, und die Base Color liefert die farbliche Materialinformation.</p>
+<p>Um diese Steuerung zu demonstrieren, wird ein klassisches Beispiel der Computergrafik verwendet: ein <strong>Holzfass</strong>. Ein solches Fass weckt klare Erwartungen – das Holz sollte eher rau und farbig (Dielektrikum) sein, während die Eisenbänder als metallisch und spiegelnd wahrgenommen werden sollten.</p>
+<p><strong>(A) Globale Werte:</strong> Im einfachsten Fall werden konstante Werte für das gesamte Objekt gesetzt: eine einheitliche <code>baseColor</code>, ein <code>metallic</code>-Wert und ein <code>roughness</code>-Wert. In der Demo wird die Base Color über ein Farbfeld gewählt, während Metallic und Roughness per Slider verändert werden.</p>
+<p><strong>(B) Texture Maps:</strong> Für ein mehrteiliges Objekt reichen globale Werte nicht aus. Bei Klick auf <strong>“Aktivieren (Maps laden)”</strong> werden die globalen Eingaben deaktiviert und stattdessen Texturen verwendet. Die <code>baseTexture</code> legt die lokale Grundfarbe von Holz und Eisen fest. Die <code>metallicRoughnessTexture</code> steuert zusätzlich pro Texel, welche Bereiche metallisch sind und wie scharf oder diffus sie Licht reflektieren. Dadurch erhält jeder Bildpunkt eigene Materialparameter, z.B. “Holz: nichtmetallisch und rau” oder “Eisenring: metallisch und glatter”.</p>
+<p>Die Demonstration wird mit Babylon.js umgesetzt. Die Begriffe bleiben deshalb bewusst bei der Babylon.js-Metal-Roughness-Konvention. Für den Rückbezug zur Theorie ist entscheidend:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Babylon.js</th>
+<th>Bedeutung in der Demo</th>
+<th>Rückbezug zu Kapitel 2</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>baseColor</code> / <code>baseTexture</code></td>
+<td>Grundfarbe ohne eingebackene Beleuchtung</td>
+<td>beeinflusst den diffusen Anteil bzw. bei Metallen die Farbe der spekularen Reflexion</td>
+</tr>
+<tr class="even">
+<td><code>metallic</code></td>
+<td>Mischung zwischen Nichtmetall und Metall</td>
+<td>verändert die Gewichtung zwischen diffusem und spekularem Verhalten</td>
+</tr>
+<tr class="odd">
+<td><code>roughness</code></td>
+<td>Rauheit der Oberfläche</td>
+<td>beeinflusst die Breite der spekularen Reflexion und damit die Wirkung des <span class="math inline">\(D\)</span>-Terms</td>
+</tr>
+</tbody>
+</table>
 <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
   <div style="margin-bottom: 15px;">
     <strong>Steuerung:</strong><br>
     <label style="display:inline-block; width: 120px;">Texturen / Maps:</label>
     <button id="toggleMapsBtn" style="padding: 5px 15px; cursor: pointer; font-weight:bold;">Aktivieren (Maps laden)</button>
-    <span id="mapStatus" style="color: #666; margin-left:10px;">Aus (Globale Slider aktiv)</span>
+    <span id="mapStatus" style="color: #666; margin-left:10px;">Aus (Globale Parameter aktiv)</span>
   </div>
   
   <div id="sliderControls" style="margin-bottom: 15px; transition: opacity 0.3s;">
-    <label style="display:inline-block; width: 120px;">Globale Metallic:</label>
+    <label style="display:inline-block; width: 140px;">Globale Base Color:</label>
+    <input type="color" id="baseColorPicker" value="#808080" style="vertical-align: middle;">
+    <br>
+    <label style="display:inline-block; width: 140px;">Globale Metallic:</label>
     <input type="range" id="metallicSlider" min="0" max="1" step="0.01" value="0.0" style="vertical-align: middle;">
     <span id="metVal" style="display:inline-block; width: 40px; text-align:right;">0.00</span>
     <br>
-    <label style="display:inline-block; width: 120px;">Globale Roughness:</label>
+    <label style="display:inline-block; width: 140px;">Globale Roughness:</label>
     <input type="range" id="roughnessSlider" min="0" max="1" step="0.01" value="0.4" style="vertical-align: middle;">
     <span id="rogVal" style="display:inline-block; width: 40px; text-align:right;">0.40</span>
   </div>
 
   <div style="border: 1px solid #ccc; border-radius: 4px; overflow: hidden; background: #fff;">
-    <canvas id="laborCanvas" style="width: 100%; height: 500px; touch-action: none; outline: none;"></canvas>
+    <canvas id="basisCanvas" style="width: 100%; height: 500px; touch-action: none; outline: none;"></canvas>
   </div>
 </div>
 
 <script src="https://cdn.babylonjs.com/babylon.js"></script>
 <script>
 window.addEventListener('DOMContentLoaded', function() {
-    const canvas = document.getElementById("laborCanvas");
+    const canvas = document.getElementById("basisCanvas");
     if (!canvas) return; 
     const engine = new BABYLON.Engine(canvas, true);
 
@@ -309,11 +343,20 @@ window.addEventListener('DOMContentLoaded', function() {
         // Unser "Fass" aus einem Zylinder generiert
         const barrel = BABYLON.MeshBuilder.CreateCylinder("barrel", {height: 2, diameter: 1.2, tessellation: 64}, scene);
         
-        const pbrMat = new BABYLON.PBRMaterial("barrelMat", scene);
+        const colorFromHex = (hex) => {
+            const value = parseInt(hex.slice(1), 16);
+            return new BABYLON.Color3(
+                ((value >> 16) & 255) / 255,
+                ((value >> 8) & 255) / 255,
+                (value & 255) / 255
+            );
+        };
+
+        const pbrMat = new BABYLON.PBRMetallicRoughnessMaterial("barrelMat", scene);
         pbrMat.environmentIntensity = 0.0; // Isolierte Szene ohne IBL
         
         // Startwerte
-        pbrMat.albedoColor = new BABYLON.Color3(0.5, 0.5, 0.5); 
+        pbrMat.baseColor = colorFromHex(document.getElementById("baseColorPicker").value);
         pbrMat.metallic = parseFloat(document.getElementById("metallicSlider").value);
         pbrMat.roughness = parseFloat(document.getElementById("roughnessSlider").value);
         barrel.material = pbrMat;
@@ -323,9 +366,9 @@ window.addEventListener('DOMContentLoaded', function() {
         // --- Programmatische Maps für Holzfass & Eisenringe ---
         const texSize = 512;
         
-        // 1. Albedo Map (Base Color)
-        const albedoTex = new BABYLON.DynamicTexture("albedoTex", texSize, scene, true);
-        const ctxA = albedoTex.getContext();
+        // 1. Base Color Map
+        const baseTex = new BABYLON.DynamicTexture("baseTex", texSize, scene, true);
+        const ctxA = baseTex.getContext();
         // Grundfläche Holz
         ctxA.fillStyle = "#6B4423"; 
         ctxA.fillRect(0, 0, texSize, texSize);
@@ -336,10 +379,10 @@ window.addEventListener('DOMContentLoaded', function() {
         ctxA.fillStyle = "#7F8C8D"; 
         ctxA.fillRect(0, texSize * 0.2, texSize, texSize * 0.15); // Oberer Ring
         ctxA.fillRect(0, texSize * 0.65, texSize, texSize * 0.15); // Unterer Ring
-        albedoTex.update();
+        baseTex.update();
 
-        // 2. Metallic-Roughness Map
-        // PBR Standard Kanalbelegung: Grün = Roughness, Blau = Metallic
+        // 2. Metalness-Roughness Map
+        // Babylon-Kanalbelegung: Grün = Roughness, Blau = Metallic/Metalness
         const mrTex = new BABYLON.DynamicTexture("mrTex", texSize, scene, true);
         const ctxMR = mrTex.getContext();
         // Holz-Definition: Nicht-metallisch (Blau=0), sehr rau (Grün=220) -> rgb(0, 220, 0)
@@ -352,6 +395,9 @@ window.addEventListener('DOMContentLoaded', function() {
         mrTex.update();
         // -------------------------------------------------------------
 
+        document.getElementById("baseColorPicker").addEventListener("input", e => {
+            if(!mapsActive) pbrMat.baseColor = colorFromHex(e.target.value);
+        });
         document.getElementById("metallicSlider").addEventListener("input", e => {
             if(!mapsActive) pbrMat.metallic = parseFloat(e.target.value);
             document.getElementById("metVal").innerText = parseFloat(e.target.value).toFixed(2);
@@ -366,17 +412,19 @@ window.addEventListener('DOMContentLoaded', function() {
             const btn = document.getElementById("toggleMapsBtn");
             const status = document.getElementById("mapStatus");
             const sliders = document.getElementById("sliderControls");
+            const colorPicker = document.getElementById("baseColorPicker");
 
             if(mapsActive) {
                 btn.innerText = "Deaktivieren (Globale Werte)";
-                status.innerText = "An (PBR Texture-Maps setzen exakte Werte pro Pixel)";
+                status.innerText = "An (Texture-Maps setzen Werte pro Pixel)";
                 status.style.color = "green";
                 sliders.style.opacity = "0.3";
                 sliders.style.pointerEvents = "none";
+                colorPicker.disabled = true;
                 
                 // Mappen der generierten Texturen aktivieren
-                pbrMat.albedoTexture = albedoTex;
-                pbrMat.metallicTexture = mrTex;
+                pbrMat.baseTexture = baseTex;
+                pbrMat.metallicRoughnessTexture = mrTex;
                 
                 pbrMat.useMetallnessFromMetallicTextureBlue = true;
                 pbrMat.useRoughnessFromMetallicTextureGreen = true;
@@ -385,20 +433,21 @@ window.addEventListener('DOMContentLoaded', function() {
                 // WICHTIG: Erlauben, dass Maps bis zum Maximum greifen können
                 pbrMat.roughness = 1.0; 
                 pbrMat.metallic = 1.0; 
-                pbrMat.albedoColor = new BABYLON.Color3(1, 1, 1);
+                pbrMat.baseColor = new BABYLON.Color3(1, 1, 1);
             } else {
                 btn.innerText = "Aktivieren (Maps laden)";
-                status.innerText = "Aus (Globale Slider erzwingen identisches Material für alle Pixel)";
+                status.innerText = "Aus (Globale Parameter erzwingen identisches Material für alle Pixel)";
                 status.style.color = "#666";
                 sliders.style.opacity = "1.0";
                 sliders.style.pointerEvents = "auto";
+                colorPicker.disabled = false;
                 
                 // Maps abschalten
-                pbrMat.albedoTexture = null;
-                pbrMat.metallicTexture = null;
+                pbrMat.baseTexture = null;
+                pbrMat.metallicRoughnessTexture = null;
                 
                 // Globale Slider-Werte wieder auf das Material übertragen
-                pbrMat.albedoColor = new BABYLON.Color3(0.5, 0.5, 0.5);
+                pbrMat.baseColor = colorFromHex(colorPicker.value);
                 pbrMat.metallic = parseFloat(document.getElementById("metallicSlider").value);
                 pbrMat.roughness = parseFloat(document.getElementById("roughnessSlider").value);
             }
@@ -414,11 +463,22 @@ window.addEventListener('DOMContentLoaded', function() {
 </script>
 <hr>
 </section>
+<section id="exkurs-openpbr-und-materialx" class="level2">
+<h2 class="anchored" data-anchor-id="exkurs-openpbr-und-materialx">3. Exkurs: OpenPBR und MaterialX</h2>
+<p>Der Metal-Roughness-Workflow ist nicht die einzige Möglichkeit, PBR-Materialien zu beschreiben. OpenPBR verfolgt einen allgemeineren Ansatz: Es ist kein Babylon-Material, sondern ein offener Surface-Shading-Standard der Academy Software Foundation. Er soll als gemeinsame Materialbeschreibung zwischen Anwendungen und Renderern dienen.</p>
+<p>OpenPBR organisiert Materialien allgemeiner als der hier verwendete Metal-Roughness-Basisfall. Neben einer Basisschicht aus Metall oder Dielektrikum werden unter anderem optionale Schichten wie Coat und Fuzz beschrieben.</p>
+<figure id="fig-openpbr-schichtmodell" class="figure">
+  <img src="images/OpenPbr_Schichtmodell.png" alt="OpenPBR-Schichtmodell mit Base, Metallic Base, Dielectric Base, Translucent Base, Subsurface, Glossy-Diffuse, Coat, Fuzz und Thin-Film." style="width: 100%;" class="figure-img">
+  <figcaption>OpenPBR-Schichtmodell. Quelle: <a href="https://academysoftwarefoundation.github.io/OpenPBR/">OpenPBR Surface Specification, Kapitel 1</a>, Academy Software Foundation.</figcaption>
+</figure>
+<p>Für weiterführende Experimente ist vor allem <strong>MaterialX</strong> relevant. Die OpenPBR-Spezifikation stellt eine MaterialX-Referenzimplementierung bereit; der <a href="https://academysoftwarefoundation.github.io/MaterialX/">MaterialX Web Viewer</a> kann MaterialX-Materialien direkt im Browser anzeigen. Der Exkurs ordnet damit ein, dass PBR-Workflows über die hier gezeigte Echtzeit-Demo hinaus auch als offene, anwendungsübergreifende Materialstandards formuliert werden.</p>
+<hr>
+</section>
 <section id="die-grenzen-der-isolierten-beleuchtung-der-übergang-zu-ibl" class="level2">
-<h2 class="anchored" data-anchor-id="die-grenzen-der-isolierten-beleuchtung-der-übergang-zu-ibl">3. Die Grenzen der isolierten Beleuchtung: Der Übergang zu IBL</h2>
-<p>Eine wesentliche Beobachtung dieses Aufbaus: Sobald Teile des Objektes stark metallisch werden (z.B. die Eisenringe in unserer Texture-Map), fangen sie ausschließlich Glanzlichter von dedizierten Lampen ein. Dazwischen wirkt das Metall nahezu tiefschwarz.</p>
-<p>Das ist physikalisch korrekt! Metalle verhalten sich wie Spiegel. Ein Spiegel in einem dunklen Raum kann nur die spärlichen Lichtpunkte der Taschenlampen zeigen – der Rest bleibt schwarz.</p>
-<p>Um die Leistungsfähigkeit des Cinematic Workflows auszuschöpfen, erfordert PBR zwingend eine realistische Umgebung, die Lichtdaten aus allen Richtungen liefert. Nur so kann der Cook-Torrance-Ansatz seine volle physikalische Präzision ausspielen. Diese Lücke schließt das Konzept des <strong>Image Based Lighting (IBL)</strong>, was im folgenden Kapitel detailliert ausgeführt und demonstriert wird.</p>
+<h2 class="anchored" data-anchor-id="die-grenzen-der-isolierten-beleuchtung-der-übergang-zu-ibl">4. Die Grenzen der isolierten Beleuchtung: Der Übergang zu IBL</h2>
+<p>Nach dem Exkurs wird wieder die Babylon.js-Demo aus Abschnitt 2 betrachtet. Dort zeigt sich eine wesentliche Grenze der isolierten Beleuchtung: Sobald Teile des Fasses stark metallisch werden, etwa die Eisenringe in der Texture Map, fangen sie fast nur die Glanzlichter der gesetzten Lampen ein. Dazwischen wirkt das Metall nahezu tiefschwarz.</p>
+<p>Das ist physikalisch plausibel: Metalle verhalten sich näherungsweise wie Spiegel. Ein Spiegel in einem dunklen Raum kann nur die vorhandenen Lichtquellen zeigen; der Rest bleibt dunkel.</p>
+<p>Damit die Babylon.js-PBR-Materialparameter plausibel sichtbar werden, wird eine realistische Umgebung benötigt, die Lichtdaten aus vielen Richtungen liefert. Besonders metallische Bereiche spiegeln nicht nur einzelne Lampen, sondern ihre Umgebung. Diese Lücke schließt das Konzept des <strong>Image Based Lighting (IBL)</strong>, was im folgenden Kapitel detailliert ausgeführt und demonstriert wird.</p>
 
 
 </section>
