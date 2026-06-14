@@ -49,7 +49,7 @@ Eine Albedo- bzw. Base-Color-Map ist damit nicht einfach ein dekoratives Bild au
 
 ## 2. Interaktive Demo: Globale Parameter vs. Texture Maps
 
-Die folgende Szene zeigt diese Babylon.js-Parameter in einer bewusst einfachen Beleuchtungssituation. Auf Umgebungskartierung (IBL) wird zunächst verzichtet, damit der Unterschied zwischen globalen Materialwerten und Texture Maps isoliert betrachtet werden kann. Rauheit beeinflusst die Mikrofacettenverteilung, Metallizität verändert die Aufteilung zwischen diffusem und spekularem Verhalten, und die Base Color liefert die farbliche Materialinformation.
+Die folgende Szene zeigt diese Babylon.js-Parameter in einer bewusst einfachen Beleuchtungssituation. Auf Umgebungskartierung (IBL) wird zunächst verzichtet; stattdessen werden kontrollierte Testlichter verwendet. So kann der Unterschied zwischen globalen Materialwerten und Texture Maps isoliert betrachtet werden. Rauheit beeinflusst die Mikrofacettenverteilung, Metallizität verändert die Aufteilung zwischen diffusem und spekularem Verhalten, und die Base Color liefert die farbliche Materialinformation.
 
 Um diese Steuerung zu demonstrieren, wird ein klassisches Beispiel der Computergrafik verwendet: ein **Holzfass**. Ein solches Fass weckt klare Erwartungen – das Holz sollte eher rau und farbig (Dielektrikum) sein, während die Eisenbänder als metallisch und spiegelnd wahrgenommen werden sollten.
 
@@ -77,7 +77,7 @@ Die Presets in der Demo setzen gezielt Grenzfälle mit gleicher Base Color. Dadu
     <div style="margin-top: 10px;">
       <label style="display:inline-block; width: 120px;">Presets:</label>
       <button class="materialPresetBtn" data-color="#b86a43" data-metallic="0.0" data-roughness="0.70" style="padding: 4px 10px; cursor: pointer;">Mattes Dielektrikum</button>
-      <button class="materialPresetBtn" data-color="#b86a43" data-metallic="1.0" data-roughness="0.18" style="padding: 4px 10px; cursor: pointer;">Glattes Metall</button>
+      <button class="materialPresetBtn" data-color="#b86a43" data-metallic="1.0" data-roughness="0.38" style="padding: 4px 10px; cursor: pointer;">Glattes Metall</button>
       <button class="materialPresetBtn" data-color="#b86a43" data-metallic="1.0" data-roughness="0.75" style="padding: 4px 10px; cursor: pointer;">Raues Metall</button>
     </div>
   </div>
@@ -109,17 +109,27 @@ window.addEventListener('DOMContentLoaded', function() {
 
     const createScene = function () {
         const scene = new BABYLON.Scene(engine);
-        scene.clearColor = new BABYLON.Color4(0.08, 0.08, 0.08, 1); // Sehr dunkle Umgebung
+        scene.clearColor = new BABYLON.Color4(0.11, 0.11, 0.11, 1); // Dunkle Szene ohne IBL
 
-        const camera = new BABYLON.ArcRotateCamera("camera", Math.PI/2, Math.PI/2.5, 4, BABYLON.Vector3.Zero(), scene);
-        camera.lowerRadiusLimit = 1.5; camera.upperRadiusLimit = 10;
+        const camera = new BABYLON.ArcRotateCamera("camera", Math.PI * 0.58, Math.PI/2.35, 3.2, BABYLON.Vector3.Zero(), scene);
+        camera.lowerRadiusLimit = 3.2;
+        camera.upperRadiusLimit = 3.2;
+        camera.lowerBetaLimit = 0.4;
+        camera.upperBetaLimit = Math.PI - 0.4;
+        camera.panningSensibility = 0;
+        camera.inputs.removeByType("ArcRotateCameraMouseWheelInput");
         camera.attachControl(canvas, true);
         
-        // Punktförmige und gerichtete Testbeleuchtung
-        const light1 = new BABYLON.PointLight("pointLight", new BABYLON.Vector3(2, 3, 2), scene);
-        light1.intensity = 6.0;
-        const light2 = new BABYLON.DirectionalLight("dirLight", new BABYLON.Vector3(-1, -1, -1), scene);
-        light2.intensity = 1.5;
+        // Lokale Testbeleuchtung ohne Umgebungskarte
+        const keyLight = new BABYLON.PointLight("keyLight", new BABYLON.Vector3(-3, 4, -3), scene);
+        keyLight.intensity = 5.0;
+        const fillLight = new BABYLON.PointLight("fillLight", new BABYLON.Vector3(4, 2.5, 3), scene);
+        fillLight.intensity = 0.8;
+        fillLight.specular = new BABYLON.Color3(0.15, 0.15, 0.15);
+        const rimLight = new BABYLON.PointLight("rimLight", new BABYLON.Vector3(-2.5, 2.5, 4), scene);
+        rimLight.intensity = 1.6;
+        const softFill = new BABYLON.HemisphericLight("softFill", new BABYLON.Vector3(0, 1, 0), scene);
+        softFill.intensity = 0.25;
 
         // Unser "Fass" aus einem Zylinder generiert
         const barrel = BABYLON.MeshBuilder.CreateCylinder("barrel", {height: 2, diameter: 1.2, tessellation: 64}, scene);
@@ -290,8 +300,8 @@ Für weiterführende Experimente ist vor allem **MaterialX** relevant. Die OpenP
 
 ## 4. Die Grenzen der isolierten Beleuchtung: Der Übergang zu IBL
 
-Nach dem Exkurs wird wieder die Babylon.js-Demo aus Abschnitt 2 betrachtet. Dort zeigt sich eine wesentliche Grenze der isolierten Beleuchtung: Sobald Teile des Fasses stark metallisch werden, etwa die Eisenringe in der Texture Map, fangen sie fast nur die Glanzlichter der gesetzten Lampen ein. Dazwischen wirkt das Metall nahezu tiefschwarz.
+Nach dem Exkurs wird wieder die Babylon.js-Demo aus Abschnitt 2 betrachtet. Dort zeigt sich eine wesentliche Grenze der isolierten Beleuchtung: Sobald Teile des Fasses stark metallisch werden, etwa die Eisenringe in der Texture Map, hängt ihr Erscheinungsbild stark von Blickwinkel und Position der gesetzten Lampen ab. Einzelne Glanzlichter werden sichtbar, dazwischen fehlen jedoch die Reflexionen einer realen Umgebung.
 
-Das ist physikalisch plausibel: Metalle verhalten sich näherungsweise wie Spiegel. Ein Spiegel in einem dunklen Raum kann nur die vorhandenen Lichtquellen zeigen; der Rest bleibt dunkel.
+Das ist physikalisch plausibel: Metalle verhalten sich näherungsweise wie Spiegel. Ein Spiegel in einem nur lokal beleuchteten Raum kann vor allem die vorhandenen Lichtquellen zeigen; ohne Umgebung bleibt ein großer Teil der Reflexion informationsarm.
 
 Damit die Babylon.js-PBR-Materialparameter plausibel sichtbar werden, wird eine realistische Umgebung benötigt, die Lichtdaten aus vielen Richtungen liefert. Besonders metallische Bereiche spiegeln nicht nur einzelne Lampen, sondern ihre Umgebung. Diese Lücke schließt das Konzept des **Image Based Lighting (IBL)**, was im folgenden Kapitel detailliert ausgeführt und demonstriert wird.
