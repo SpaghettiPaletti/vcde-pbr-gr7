@@ -65,6 +65,8 @@ Die Demonstration wird mit Babylon.js umgesetzt. Die Begriffe bleiben deshalb be
 | `metallic` | Mischung zwischen Nichtmetall und Metall | verändert die Gewichtung zwischen diffusem und spekularem Verhalten |
 | `roughness` | Rauheit der Oberfläche | beeinflusst die Breite der spekularen Reflexion und damit die Wirkung des $D$-Terms |
 
+Die Presets in der Demo setzen gezielt Grenzfälle mit gleicher Base Color. Dadurch wird sichtbar, dass die Farbe je nach `metallic`-Wert entweder als diffuse Körperfarbe oder als farbige spekulare Reflexion ausgewertet wird.
+
 ```{=html}
 <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
   <div style="margin-bottom: 15px;">
@@ -72,6 +74,12 @@ Die Demonstration wird mit Babylon.js umgesetzt. Die Begriffe bleiben deshalb be
     <label style="display:inline-block; width: 120px;">Texturen / Maps:</label>
     <button id="toggleMapsBtn" style="padding: 5px 15px; cursor: pointer; font-weight:bold;">Aktivieren (Maps laden)</button>
     <span id="mapStatus" style="color: #666; margin-left:10px;">Aus (Globale Parameter aktiv)</span>
+    <div style="margin-top: 10px;">
+      <label style="display:inline-block; width: 120px;">Presets:</label>
+      <button class="materialPresetBtn" data-color="#b86a43" data-metallic="0.0" data-roughness="0.70" style="padding: 4px 10px; cursor: pointer;">Mattes Dielektrikum</button>
+      <button class="materialPresetBtn" data-color="#b86a43" data-metallic="1.0" data-roughness="0.18" style="padding: 4px 10px; cursor: pointer;">Glattes Metall</button>
+      <button class="materialPresetBtn" data-color="#b86a43" data-metallic="1.0" data-roughness="0.75" style="padding: 4px 10px; cursor: pointer;">Raues Metall</button>
+    </div>
   </div>
   
   <div id="sliderControls" style="margin-bottom: 15px; transition: opacity 0.3s;">
@@ -135,6 +143,17 @@ window.addEventListener('DOMContentLoaded', function() {
         barrel.material = pbrMat;
 
         let mapsActive = false;
+        const applyGlobalMaterial = (color, metallic, roughness) => {
+            document.getElementById("baseColorPicker").value = color;
+            document.getElementById("metallicSlider").value = metallic;
+            document.getElementById("roughnessSlider").value = roughness;
+            document.getElementById("metVal").innerText = Number(metallic).toFixed(2);
+            document.getElementById("rogVal").innerText = Number(roughness).toFixed(2);
+
+            pbrMat.baseColor = colorFromHex(color);
+            pbrMat.metallic = Number(metallic);
+            pbrMat.roughness = Number(roughness);
+        };
 
         // --- Programmatische Maps für Holzfass & Eisenringe ---
         const texSize = 512;
@@ -224,6 +243,20 @@ window.addEventListener('DOMContentLoaded', function() {
                 pbrMat.metallic = parseFloat(document.getElementById("metallicSlider").value);
                 pbrMat.roughness = parseFloat(document.getElementById("roughnessSlider").value);
             }
+        });
+
+        document.querySelectorAll(".materialPresetBtn").forEach(button => {
+            button.addEventListener("click", () => {
+                if(mapsActive) {
+                    document.getElementById("toggleMapsBtn").click();
+                }
+
+                applyGlobalMaterial(
+                    button.dataset.color,
+                    button.dataset.metallic,
+                    button.dataset.roughness
+                );
+            });
         });
 
         return scene;
