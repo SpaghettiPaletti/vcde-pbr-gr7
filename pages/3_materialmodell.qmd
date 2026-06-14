@@ -21,7 +21,7 @@ Dort wurden gegebenenfalls Aspekte wie die Mikrofacetten-Verteilung ($D$) oder d
 
 Dieser **Metallic-Roughness-Workflow** abstrahiert die komplexe Mathematik in intuitive Steuerungsparameter für Anwender. Der Name ist dabei eine Kurzbezeichnung: Neben `Metallic` und `Roughness` wird auch `Base Color` bzw. `Albedo` als zentraler Eingabeparameter benötigt. Erst aus diesen drei Angaben entsteht eine vollständige Beschreibung der farblichen und reflektierenden Materialeigenschaften.
 
-*   **Roughness (Rauheit):** Steuert im Hintergrund direkt den **$D$-Term** (Normal Distribution Function) und den **$G$-Term** (Geometry). Der Anwender sieht nur: Hoher Wert = raue Oberfläche, niedriger Wert = glatte Oberfläche.
+*   **Roughness (Rauheit):** Steuert im Hintergrund direkt den **$D$-Term** (Normal Distribution Function) und den **$G$-Term** (Geometry). Wichtig: Das $D$ in der Cook-Torrance-Formel steht hier nicht für "diffus", sondern für die statistische Verteilung der Mikrofacetten. Der Anwender sieht nur: Hoher Wert = raue Oberfläche, niedriger Wert = glatte Oberfläche.
 *   **Metallic (Metallizität):** Bestimmt das grundlegende physikalische Verhalten und steuert den **Fresnel-Term ($F$)**.
     *   *Dielektrika (Nicht-Metalle, Metallic = 0):* Besitzen diffuse Farben und reflektieren Licht nur schwach an der Oberfläche.
     *   *Metalle (Leiter, Metallic = 1):* Besitzen keine diffuse Reflexion. Ihre Farbe wird ausschließlich aus der spiegelnden Reflexion gebildet.
@@ -33,7 +33,7 @@ Dieser Ansatz zwingt den Workflow automatisch zur **Energieerhaltung**. Es wird 
 
 Der Begriff **Albedo** bezeichnet im PBR-Kontext die Grundfarbe einer Oberfläche unter neutraler Beleuchtung. Gemeint ist also nicht das fertig sichtbare Bild inklusive Schatten, Glanzpunkten oder Umgebungsreflexionen. Diese Effekte werden erst durch Beleuchtung, BRDF und Umgebung erzeugt.
 
-Der Rückbezug zur Cook-Torrance-Formel ist hierbei weniger direkt als bei `Roughness`. Die Albedo erscheint nicht als eigener Faktor im spekularen Term $D \cdot F \cdot G$. Stattdessen wird sie für den diffusen Anteil des Materials verwendet und bei Metallen zur Färbung der spekularen Reflexion herangezogen. Im Metallic-Roughness-Workflow wird also über `Metallic` entschieden, wie die Base Color interpretiert wird.
+Der Rückbezug zur Cook-Torrance-Formel ist hierbei weniger direkt als bei `Roughness`. Zunächst muss zwischen dem diffusen Anteil $f_d$ und dem spekularen Cook-Torrance-Anteil $f_s$ unterschieden werden. Die Albedo erscheint nicht als eigener Faktor im spekularen Term $D \cdot F \cdot G$. Bei Dielektrika wird sie vor allem für den diffusen Anteil verwendet, vereinfacht also für die Körperfarbe des Materials. Bei Metallen wird der diffuse Anteil dagegen nahezu entfernt; die Base Color wird dann zur Färbung der spekularen Reflexion genutzt. Im Metallic-Roughness-Workflow wird also über `Metallic` entschieden, wie die Base Color interpretiert wird.
 
 Für die Erstellung von PBR-Texturen ergibt sich daraus eine wichtige Regel: In eine Albedo-Map sollten keine bereits "eingebackenen" Schatten oder Highlights gemalt werden. Solche Informationen würden später ein zweites Mal durch das Beleuchtungsmodell entstehen und das Material unphysikalisch wirken lassen. Eine Holztextur darf also Maserung und Farbunterschiede enthalten, aber keine festen Lichtflecken. Eine Metalltextur darf unterschiedliche Färbungen oder Oxidation zeigen, aber keine vorgerenderten Spiegelungen.
 
@@ -46,11 +46,11 @@ Eine Albedo-Map ist damit nicht einfach ein dekoratives Bild auf dem Objekt. Sie
 
 ---
 
-## 2. Das Material-Labor: Globale Parameter vs. Texture Maps
+## 2. Materialvergleich: Globale Parameter vs. Texture Maps
 
 Um die Steuerung zu demonstrieren, bedienen wir uns eines klassischen Beispiels der Computergrafik: Einem **Holzfass**. Ein solches Fass weckt in unserem Gehirn klare Erwartungen – das Holz sollte eher rau und farbig (Dielektrikum) sein, während die Eisenbänder darum herum als metallisch und spiegelnd wahrgenommen werden sollten. 
 
-Die Szene verzichtet zunächst bewusst auf Umgebungskartierung (IBL) und wird nur durch einfache, isolierte Lichtquellen in einem vollständig dunklen Labor beleuchtet. 
+Die Szene verzichtet zunächst bewusst auf Umgebungskartierung (IBL) und wird nur durch einfache, isolierte Lichtquellen in einer vollständig dunklen Umgebung beleuchtet.
 
 **(A) Globale Slider:** Durch das Verschieben der Regler `Metallic` und `Roughness` unten verändern wir die Materialeigenschaften für das **gesamte** Objekt gleichzeitig und überlagern alle Pixel. Dadurch wirkt das Fass entweder komplett wie ein rauer Plastikklotz oder wie ein massiver Chromzylinder.
 
@@ -89,13 +89,13 @@ window.addEventListener('DOMContentLoaded', function() {
 
     const createScene = function () {
         const scene = new BABYLON.Scene(engine);
-        scene.clearColor = new BABYLON.Color4(0.08, 0.08, 0.08, 1); // Sehr dunkles Labor
+        scene.clearColor = new BABYLON.Color4(0.08, 0.08, 0.08, 1); // Sehr dunkle Umgebung
 
         const camera = new BABYLON.ArcRotateCamera("camera", Math.PI/2, Math.PI/2.5, 4, BABYLON.Vector3.Zero(), scene);
         camera.lowerRadiusLimit = 1.5; camera.upperRadiusLimit = 10;
         camera.attachControl(canvas, true);
         
-        // Punktförmige und gerichtete Laborlampen
+        // Punktförmige und gerichtete Testbeleuchtung
         const light1 = new BABYLON.PointLight("pointLight", new BABYLON.Vector3(2, 3, 2), scene);
         light1.intensity = 6.0;
         const light2 = new BABYLON.DirectionalLight("dirLight", new BABYLON.Vector3(-1, -1, -1), scene);
@@ -105,7 +105,7 @@ window.addEventListener('DOMContentLoaded', function() {
         const barrel = BABYLON.MeshBuilder.CreateCylinder("barrel", {height: 2, diameter: 1.2, tessellation: 64}, scene);
         
         const pbrMat = new BABYLON.PBRMaterial("barrelMat", scene);
-        pbrMat.environmentIntensity = 0.0; // Isoliertes Labor ohne IBL
+        pbrMat.environmentIntensity = 0.0; // Isolierte Szene ohne IBL
         
         // Startwerte
         pbrMat.albedoColor = new BABYLON.Color3(0.5, 0.5, 0.5); 
@@ -211,9 +211,9 @@ window.addEventListener('DOMContentLoaded', function() {
 
 ---
 
-## 3. Die Grenzen des Labors: Der Übergang zu IBL
+## 3. Die Grenzen der isolierten Beleuchtung: Der Übergang zu IBL
 
-Eine wesentliche Beobachtung des Labor-Aufbaus: Sobald Teile des Objektes stark metallisch werden (z.B. die Eisenringe in unserer Texture-Map), fangen sie ausschließlich Glanzlichter von dedizierten Lampen ein. Dazwischen wirkt das Metall nahezu tiefschwarz.
+Eine wesentliche Beobachtung dieses Aufbaus: Sobald Teile des Objektes stark metallisch werden (z.B. die Eisenringe in unserer Texture-Map), fangen sie ausschließlich Glanzlichter von dedizierten Lampen ein. Dazwischen wirkt das Metall nahezu tiefschwarz.
 
 Das ist physikalisch korrekt! Metalle verhalten sich wie Spiegel. Ein Spiegel in einem dunklen Raum kann nur die spärlichen Lichtpunkte der Taschenlampen zeigen – der Rest bleibt schwarz. 
 
