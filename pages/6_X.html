@@ -208,14 +208,20 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="interaktive-demo-ein-buckler-altert" class="level2">
 <h2 class="anchored" data-anchor-id="interaktive-demo-ein-buckler-altert">Interaktive Demo: Ein Buckler altert</h2>
-<p>Die folgende Demo verwendet ein eigenes rundes Buckler-Schild. Es besitzt eine gewölbte Stahlfläche mit Dellen, eine verrundete Außenkante, einen zentralen Stahlbuckel, aufgesetzte Nieten und eine matte Lederhalterung auf der Rückseite. Damit kommen an einem erkennbaren Objekt mehrere PBR-Materialkategorien zusammen: blankes Metall, rauere oxidierte Metallbereiche und ein nichtmetallischer Dielektrikum-Anteil.</p>
+<p>Die folgende Demo verwendet ein rundes Buckler-Schild. Es besitzt eine gewölbte Stahlfläche mit gravierten Radialrillen, eine vergoldete Randeinlage mit durchgehendem Ring und abwechselnden Zähnen, Dellen, einen zentralen Messingbuckel, flache Stahlziernieten mit großen Trillianten sowie eine matte Lederhalterung auf der Rückseite. Damit kommen an einem erkennbaren Objekt mehrere PBR-Materialkategorien zusammen: blankes Metall, rauere oxidierte Metallbereiche, facettierte Edelsteine und ein nichtmetallischer Dielektrikum-Anteil.</p>
 <p>Der Alterungsslider verändert gemeinsam mehrere Maps:</p>
+<div class="agingPreviewHero" style="margin: 20px 0; text-align: center;">
+  <img id="agingPreviewGif" src="../assets/aging_preview.gif" alt="Vorschau: Das Buckler-Schild altert von blankem Metall zu Rost und Patina" style="width: min(100%, 640px); border-radius: 8px; border: 1px solid #ccc; background: #111;" loading="lazy">
+  <div style="font-size: 0.9em; color: #555; margin-top: 8px;">
+  Vorschau des Alterungsverlaufs. Unten kann derselbe Zustand interaktiv erkundet werden.
+  </div>
+</div>
 <ul>
-<li><strong>Base Color / Albedo:</strong> Stahl dunkelt nach, Rost wird um Nieten, Kanten und Dellen sichtbar.</li>
+<li><strong>Base Color / Albedo:</strong> Stahl dunkelt nach, Rost sammelt sich in Rillen, Nieten, Kanten und Dellen. Die Gold-Randeinlage bekommt fleckige Anlaufstellen, dunkle Risse und glänzende Inseln — kein homogenes Vergilben.</li>
 <li><strong>Roughness:</strong> Gealterte Bereiche werden matter; der Specular-Lobe der Cook-Torrance-BRDF wird dadurch breiter.</li>
 <li><strong>Metallic:</strong> Rost und Leder verhalten sich nichtmetallisch, blanke Stahlbereiche bleiben metallisch.</li>
 <li><strong>Normal:</strong> Rost, Mikrostruktur und feine Oberflächenunruhe verändern die Oberflächennormale.</li>
-<li><strong>AO/Cavity:</strong> Fugen, Dellen und Nietränder werden lokal abgedunkelt.</li>
+<li><strong>AO/Cavity:</strong> Fugen, Dellen, Nietränder und Radialrillen werden lokal abgedunkelt.</li>
 </ul>
 <p>Normal- und Cavity-Maps sind dabei keine zusätzlichen Materialparameter der Cook-Torrance-Gleichung. Sie gehören zum praktischen PBR-Workflow: Die Normal Map ergänzt Mikrostruktur, während AO/Cavity lokale Abschattung in engen Vertiefungen annähert. In Babylon wird diese Occlusion-Information beim <code>PBRMaterial</code> als <code>ambientTexture</code> eingebunden; die Base Color bleibt dabei ein eigener Kanal. Durch die Schalter kann beobachtet werden, welche Information durch welche Map in die Darstellung eingebracht wird.</p>
 <style>
@@ -224,6 +230,23 @@ ul.task-list li input[type="checkbox"] {
     grid-template-columns: 1fr;
     gap: 16px;
     align-items: stretch;
+  }
+
+  .agingMapPreviewSection {
+    width: min(100%, 780px);
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .agingMapPreviewSelect {
+    width: 100%;
+    padding: 8px 10px;
+    border-radius: 4px;
+    border: 1px solid #bbb;
+    background: #fff;
+    font-size: 0.95em;
   }
 
   .agingControlGrid {
@@ -240,9 +263,11 @@ ul.task-list li input[type="checkbox"] {
   }
 
   .agingCanvasWrap {
-    width: min(100%, 720px);
+    width: min(100%, 780px);
     aspect-ratio: 1;
     margin: 0 auto;
+    position: relative;
+    z-index: 0;
   }
 
   #agingCanvas {
@@ -282,10 +307,10 @@ ul.task-list li input[type="checkbox"] {
 
   .agingPreviewGrid {
     display: grid;
-    grid-template-columns: repeat(3, minmax(120px, 1fr));
+    grid-template-columns: repeat(5, minmax(110px, 1fr));
     gap: 12px;
-    width: min(100%, 780px);
-    margin: 0 auto;
+    width: 100%;
+    margin: 0;
   }
 
   .agingPreviewLabel {
@@ -311,7 +336,7 @@ ul.task-list li input[type="checkbox"] {
     }
   }
 
-  @media (max-width: 520px) {
+  @media (max-width: 720px) {
     .agingPreviewGrid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
@@ -384,7 +409,18 @@ ul.task-list li input[type="checkbox"] {
       <span id="agingModeText">Alle Maps werden aus dem Alterungszustand erzeugt.</span>
     </div>
 
-    <div class="agingPreviewGrid">
+    <div class="agingMapPreviewSection">
+      <label for="mapPreviewMaterial" style="font-weight:600; font-size:0.92em;">2D-Map-Vorschau</label>
+      <select id="mapPreviewMaterial" class="agingMapPreviewSelect">
+        <option value="body">Stahlschildfläche</option>
+        <option value="boss">Messingbuckel</option>
+        <option value="rim">Gold-Randeinlage</option>
+        <option value="rivet">Stahlzierniete</option>
+        <option value="leather">Leder (Rückseite)</option>
+        <option value="back">Rückseite (Metall)</option>
+      </select>
+
+      <div class="agingPreviewGrid">
       <div>
         <div class="agingPreviewLabel">Albedo</div>
         <canvas id="albedoPreview" width="256" height="256" class="agingPreviewCanvas"></canvas>
@@ -404,6 +440,7 @@ ul.task-list li input[type="checkbox"] {
       <div>
         <div class="agingPreviewLabel">AO/Cavity</div>
         <canvas id="aoPreview" width="256" height="256" class="agingPreviewCanvas"></canvas>
+      </div>
       </div>
     </div>
   </div>
@@ -426,6 +463,7 @@ ul.task-list li input[type="checkbox"] {
     const modeText = document.getElementById("agingModeText");
     const mapButtons = Array.from(document.querySelectorAll(".agingMapBtn"));
     const presetButtons = Array.from(document.querySelectorAll(".agingPresetBtn"));
+    const previewMaterialSelect = document.getElementById("mapPreviewMaterial");
 
     const previewContexts = {
       albedo: document.getElementById("albedoPreview").getContext("2d"),
@@ -579,7 +617,8 @@ ul.task-list li input[type="checkbox"] {
         aoTex: createDataTexture(name + "_ao", profile.size, "data"),
         latestAlbedoData: null,
         latestAoData: null,
-        latestMrData: null
+        latestMrData: null,
+        latestNormalData: null
       };
     }
 
@@ -596,24 +635,45 @@ ul.task-list li input[type="checkbox"] {
     });
 
     const bossSet = createMaterialSet("bucklerMirrorBoss", {
-      kind: "steel",
+      kind: "brass",
       size: accessorySize,
-      flatColor: new BABYLON.Color3(0.74, 0.73, 0.70),
+      flatColor: new BABYLON.Color3(0.78, 0.62, 0.28),
       flatMetallic: 1.0,
-      flatRoughness: 0.15,
-      environmentIntensity: 1.16,
+      flatRoughness: 0.12,
+      environmentIntensity: 1.20,
       normalStrength: 10,
       normalLevel: 0.22,
       aoStrength: 0.72,
-      steelPolish: 0.78,
-      rustScale: 0.34,
+      metalPolish: 0.82,
+      patinaScale: 0.78,
       damageStyle: "bossDent"
+    });
+
+    const rimInlaySet = createMaterialSet("bucklerBrassRimInlay", {
+      kind: "brass",
+      surfaceDetail: "rimInlay",
+      size: accessorySize,
+      flatColor: new BABYLON.Color3(0.90, 0.74, 0.22),
+      flatMetallic: 1.0,
+      flatRoughness: 0.08,
+      environmentIntensity: 1.38,
+      normalStrength: 12,
+      normalLevel: 0.26,
+      aoStrength: 0.62,
+      metalPolish: 0.96,
+      patinaScale: 0.95,
+      ageImpact: 1.05,
+      seed: 0.37,
+      rimCircumference: 5.81,
+      rimBandWidth: 0.074
     });
 
     function createRivetSet(index) {
       const seed = index * 0.137 + 0.11;
       return createMaterialSet("bucklerRoughRivet_" + (index + 1), {
         kind: "steel",
+        surfaceDetail: "rivet",
+        gemSeatUv: [0.454, 0.481],
         size: rivetSize,
         flatColor: new BABYLON.Color3(0.64, 0.63, 0.60),
         flatMetallic: 1.0,
@@ -623,13 +683,38 @@ ul.task-list li input[type="checkbox"] {
         normalLevel: 0.58,
         aoStrength: 0.90,
         steelPolish: 0.38 + (index % 4) * 0.035,
-        rustScale: 0.66 + (index % 5) * 0.055,
-        ageImpact: 1.35 + (index % 4) * 0.10,
+        rustScale: 0.80 + (index % 5) * 0.055,
+        ageImpact: 1.48 + (index % 4) * 0.10,
         seed
       });
     }
 
+    function createGemMaterial(name, color, ior, envIntensity) {
+      const material = new BABYLON.PBRMaterial(name, scene);
+      material.albedoColor = color;
+      material.metallic = 0.0;
+      material.roughness = 0.045;
+      material.environmentIntensity = envIntensity;
+      material.indexOfRefraction = ior;
+      material.specularIntensity = 1.0;
+      material.usePhysicalLightFalloff = true;
+      return material;
+    }
+
     const rivetSets = Array.from({ length: 10 }, (_, index) => createRivetSet(index));
+
+    const emeraldGemMaterial = createGemMaterial(
+      "bucklerEmeraldGem",
+      new BABYLON.Color3(0.05, 0.62, 0.32),
+      1.58,
+      1.62
+    );
+    const rubyGemMaterial = createGemMaterial(
+      "bucklerRubyGem",
+      new BABYLON.Color3(0.82, 0.06, 0.14),
+      1.76,
+      1.66
+    );
 
     const leatherSet = createMaterialSet("bucklerLeatherBack", {
       kind: "leather",
@@ -655,7 +740,30 @@ ul.task-list li input[type="checkbox"] {
       aoStrength: 0.74
     });
 
-    const materialSets = [bodySet, bossSet, ...rivetSets, leatherSet, backSet];
+    const materialSets = [bodySet, bossSet, rimInlaySet, ...rivetSets, leatherSet, backSet];
+
+    const previewMaterialSets = {
+      body: bodySet,
+      boss: bossSet,
+      rim: rimInlaySet,
+      rivet: rivetSets[0],
+      leather: leatherSet,
+      back: backSet
+    };
+
+    function getPreviewMaterialSet() {
+      if (!previewMaterialSelect) return bodySet;
+      return previewMaterialSets[previewMaterialSelect.value] || bodySet;
+    }
+
+    function drawMapPreviews(set) {
+      if (!set || !set.latestAlbedoData || !set.latestMrData || !set.latestNormalData) return;
+      drawPreview(previewContexts.albedo, set.latestAlbedoData, "albedo");
+      drawPreview(previewContexts.metallic, set.latestMrData, "metallic");
+      drawPreview(previewContexts.roughness, set.latestMrData, "roughness");
+      drawPreview(previewContexts.normal, set.latestNormalData, "normal");
+      drawPreview(previewContexts.ao, set.latestAoData, "ao");
+    }
 
     const rivetUv = [];
     for (let i = 0; i < 8; i++) {
@@ -679,6 +787,35 @@ ul.task-list li input[type="checkbox"] {
         halo = Math.max(halo, smoothstep(0.105, 0.018, distance));
       });
       return halo;
+    }
+
+    function gemSeatMaskAt(u, v, profile) {
+      const seat = profile.gemSeatUv || [0.454, 0.481];
+      const dx = (u - seat[0]) * 1.05;
+      const dy = v - seat[1];
+      const distance = Math.sqrt(dx * dx + dy * dy);
+      return smoothstep(0.20, 0.055, distance);
+    }
+
+    function gemSeatRingAt(u, v, profile) {
+      const seat = profile.gemSeatUv || [0.454, 0.481];
+      const dx = (u - seat[0]) * 1.05;
+      const dy = v - seat[1];
+      const distance = Math.sqrt(dx * dx + dy * dy);
+      return smoothstep(0.058, 0.078, distance) * (1 - smoothstep(0.118, 0.155, distance));
+    }
+
+    function radialGrooveAt(x, z) {
+      const r = Math.sqrt(x * x + z * z);
+      if (r < 0.30 || r > 0.94) return 0;
+      const ang = Math.atan2(z, x);
+      const period = Math.PI / 4;
+      let rel = (ang + Math.PI) % period;
+      rel = Math.min(rel, period - rel);
+      const angFade = 1 - rel / 0.028;
+      if (angFade <= 0) return 0;
+      const edgeFade = smoothstep(0.30, 0.40, r) * (1 - smoothstep(0.86, 0.94, r));
+      return clamp01(angFade * edgeFade);
     }
 
     function dentMaskAt(x, z) {
@@ -757,6 +894,7 @@ ul.task-list li input[type="checkbox"] {
       const edgeCavity = band(r, 0.990, 0.012);
       const bossContact = band(r, 0.285, 0.018);
       const rivetHalo = rivetHaloAt(u, v);
+      const radialGroove = radialGrooveAt(x, z);
       const dent = dentMaskAt(x, z);
       const hammer = hammerMarkAt(u, v) * (1 - smoothstep(0.76, 0.92, r)) * (1 - bossContact * 0.60);
       const bottomMoisture = smoothstep(0.60, 0.98, v);
@@ -765,6 +903,7 @@ ul.task-list li input[type="checkbox"] {
         bossContact * 0.22 +
         dent * 1.18 +
         edgeCavity * 0.70 +
+        radialGroove * 0.58 +
         edgeWear * 0.08
       );
 
@@ -772,6 +911,7 @@ ul.task-list li input[type="checkbox"] {
         largeNoise * 0.14 +
         mediumNoise * 0.10 +
         cavity * 0.52 +
+        radialGroove * 0.22 +
         bottomMoisture * 0.12 -
         edgeWear * 0.04 +
         speckle * 0.04
@@ -793,8 +933,13 @@ ul.task-list li input[type="checkbox"] {
       const damageOxide = smoothstep(0.14, 0.78, age) *
         smoothstep(0.16, 0.92, dentDamage + mediumNoise * 0.08);
       const rustColorAge = smoothstep(0.76, 1.0, age);
-      const visibleOxide = clamp01(earlyRust * 0.30 + damageOxide * 0.64 + surfaceWear * age * 0.58 + fieldRust * age * 0.34 + fullRust * 0.20);
-      const rust = clamp01((fullRust * 0.22 + damageOxide * 0.20 + surfaceWear * 0.50 + fieldRust * 0.64 + edgeCavity * 0.08) * rustColorAge);
+      const visibleOxide = clamp01(earlyRust * 0.30 + damageOxide * 0.64 + surfaceWear * age * 0.48 + fieldRust * age * 0.24 + fullRust * 0.20);
+      const grooveRust = radialGroove * smoothstep(0.42, 1.0, age) *
+        clamp01(rustPotential * 0.72 + cavity * 0.18 + mediumNoise * 0.10);
+      const rust = clamp01(
+        (fullRust * 0.18 + damageOxide * 0.18 + surfaceWear * 0.34 + fieldRust * age * 0.42 +
+        grooveRust * 0.72 + edgeCavity * 0.08) * rustColorAge
+      );
       const darkOxide = clamp01(age * (0.18 + largeNoise * 0.22) + cavity * age * 0.16 + mediumNoise * age * 0.10 + surfaceWear * age * 0.10 + visibleOxide * 0.18);
       const rubbedEdge = edgeWear * smoothstep(0.16, 0.86, age) * (1 - rust * 0.82);
 
@@ -834,7 +979,7 @@ ul.task-list li input[type="checkbox"] {
       green = mix(green, rustGreen, rust);
       blue = mix(blue, rustBlue, rust);
 
-      const deepRust = fullRust * rustColorAge * clamp01(cavity * 0.78 + bottomMoisture * 0.18 + speckle * 0.14);
+      const deepRust = fullRust * rustColorAge * clamp01(cavity * 0.78 + radialGroove * 0.46 + bottomMoisture * 0.18 + speckle * 0.14);
       red = mix(red, blackRust[0], deepRust * 0.72);
       green = mix(green, blackRust[1], deepRust * 0.72);
       blue = mix(blue, blackRust[2], deepRust * 0.72);
@@ -843,9 +988,9 @@ ul.task-list li input[type="checkbox"] {
       green = mix(green, polishedSteel[1], rubbedEdge * 0.42);
       blue = mix(blue, polishedSteel[2], rubbedEdge * 0.42);
 
-      red = mix(red, darkSteel[0], cavity * age * 0.10);
-      green = mix(green, darkSteel[1], cavity * age * 0.10);
-      blue = mix(blue, darkSteel[2], cavity * age * 0.10);
+      red = mix(red, darkSteel[0], cavity * age * 0.10 + radialGroove * 0.14);
+      green = mix(green, darkSteel[1], cavity * age * 0.10 + radialGroove * 0.14);
+      blue = mix(blue, darkSteel[2], cavity * age * 0.10 + radialGroove * 0.14);
 
       const roughness = clamp01(
         0.24 +
@@ -858,6 +1003,7 @@ ul.task-list li input[type="checkbox"] {
         damageOxide * 0.20 +
         fullRust * 0.12 +
         cavity * 0.18 +
+        radialGroove * (0.10 + age * 0.14) +
         rubbedEdge * 0.12
       );
       const metallic = clamp01(1.0 - rust * 0.78 - visibleOxide * 0.26 - damageOxide * 0.22 - fullRust * 0.18 - darkOxide * 0.04 + rubbedEdge * 0.03);
@@ -872,12 +1018,19 @@ ul.task-list li input[type="checkbox"] {
         rust * 0.060 +
         fullRust * 0.040 +
         rivetHalo * 0.052 -
+        radialGroove * 0.030 -
         dent * (0.045 + age * 0.014) -
         edgeCavity * 0.032 -
         bossContact * 0.018 +
         edgeWear * 0.008
       );
-      const ao = 1 - clamp01(cavity * 0.72 + dent * (0.22 + age * 0.18) + edgeCavity * 0.34 + bossContact * 0.08) * 0.62;
+      const ao = 1 - clamp01(
+        cavity * 0.72 +
+        dent * (0.22 + age * 0.18) +
+        edgeCavity * 0.34 +
+        bossContact * 0.08 +
+        radialGroove * (0.52 + age * 0.22)
+      ) * 0.68;
 
       return { red, green, blue, roughness, metallic, height, ao };
     }
@@ -890,8 +1043,11 @@ ul.task-list li input[type="checkbox"] {
       const speckle = valueNoise(u - 3.9 + seed * 13.0, v + 4.7 - seed * 7.0, 104.0);
       const shieldDetail = profile.surfaceDetail === "shield";
       const rimDetail = profile.surfaceDetail === "rim";
+      const rivetDetail = profile.surfaceDetail === "rivet";
       const ageImpact = profile.ageImpact || 1.0;
       const bossDent = profile.damageStyle === "bossDent" ? bossDentMaskAt(u, v) : 0;
+      const gemSeat = rivetDetail ? gemSeatMaskAt(u, v, profile) : 0;
+      const gemSeatRing = rivetDetail ? gemSeatRingAt(u, v, profile) : 0;
       const seamish = Math.max(
         band(u, 0.08, 0.045),
         band(u, 0.92, 0.045),
@@ -923,7 +1079,8 @@ ul.task-list li input[type="checkbox"] {
         rimPatch * rimBreaks * age * 0.44 +
         seamish * age * 0.18
       );
-      const rust = clamp01((rustSeed * 0.20 + fullAgeRust * 0.46 + damageOxide * 0.58 + rimPatch * rimBreaks * 0.72 + seamish * 0.08) * rustColorAge * profile.rustScale);
+      const rust = clamp01((rustSeed * 0.20 + fullAgeRust * 0.46 + damageOxide * 0.58 + rimPatch * rimBreaks * 0.72 + seamish * 0.08) * rustColorAge * profile.rustScale) *
+        (1 - gemSeat * 0.96) * (rivetDetail ? 1.08 : 1.0);
       const polish = clamp01(profile.steelPolish + fine * 0.06 - age * 0.08 * ageImpact - rust * 0.50 - visibleOxide * 0.14 - damageOxide * 0.18);
 
       const steel = [165, 162, 154];
@@ -931,6 +1088,7 @@ ul.task-list li input[type="checkbox"] {
       const oxideSteel = [78, 80, 78];
       const rustColor = [112, 54, 28];
       const darkRust = [48, 29, 21];
+      const seatShadow = [92, 90, 84];
       let red = mix(steel[0], brightSteel[0], polish);
       let green = mix(steel[1], brightSteel[1], polish);
       let blue = mix(steel[2], brightSteel[2], polish);
@@ -943,6 +1101,9 @@ ul.task-list li input[type="checkbox"] {
       red = mix(red, darkRust[0], fullAgeRust * rustColorAge * profile.rustScale * 0.28);
       green = mix(green, darkRust[1], fullAgeRust * rustColorAge * profile.rustScale * 0.28);
       blue = mix(blue, darkRust[2], fullAgeRust * rustColorAge * profile.rustScale * 0.28);
+      red = mix(red, seatShadow[0], gemSeat * 0.42 + gemSeatRing * 0.58);
+      green = mix(green, seatShadow[1], gemSeat * 0.42 + gemSeatRing * 0.58);
+      blue = mix(blue, seatShadow[2], gemSeat * 0.42 + gemSeatRing * 0.58);
 
       const roughness = clamp01(
         profile.flatRoughness +
@@ -953,13 +1114,211 @@ ul.task-list li input[type="checkbox"] {
         damageOxide * 0.24 +
         seamish * age * (rimDetail ? 0.12 : 0.06) +
         rimPatch * rimBreaks * age * (rimDetail ? 0.24 : 0) +
-        (shieldDetail || rimDetail ? broad * 0.040 : 0)
+        (shieldDetail || rimDetail ? broad * 0.040 : 0) +
+        gemSeatRing * 0.10
       );
       const metallic = clamp01(1.0 - rust * 0.74 - visibleOxide * 0.26 - damageOxide * 0.24 - fullAgeRust * rustColorAge * profile.rustScale * 0.12 - rimPatch * rimBreaks * age * 0.40);
       const height = (shieldDetail || rimDetail)
         ? clamp01(0.50 + broad * 0.024 + noise * 0.018 + fine * 0.010 + visibleOxide * 0.024 + rust * 0.050 + fullAgeRust * 0.024 - seamish * age * (rimDetail ? 0.046 : 0.026))
-        : clamp01(0.52 + fine * 0.012 + visibleOxide * 0.020 + rust * 0.030 + speckle * 0.006 - seamish * age * 0.012 - bossDent * 0.030);
-      const ao = 1 - clamp01(bossDent * age * 0.22 + seamish * age * (rimDetail ? 0.48 : (shieldDetail ? 0.30 : 0.16)) + rimWear * age * 0.28);
+        : clamp01(
+          0.52 + fine * 0.012 + visibleOxide * 0.020 + rust * 0.030 + speckle * 0.006 -
+          seamish * age * 0.012 - bossDent * 0.030 - gemSeat * 0.038 - gemSeatRing * 0.016
+        );
+      const ao = 1 - clamp01(
+        bossDent * age * 0.22 +
+        seamish * age * (rimDetail ? 0.48 : (shieldDetail ? 0.30 : 0.16)) +
+        rimWear * age * 0.28 +
+        gemSeat * 0.34 +
+        gemSeatRing * 0.48
+      );
+      return { red, green, blue, roughness, metallic, height, ao };
+    }
+
+    function sampleBrass(u, v, age, profile) {
+      const seed = profile.seed || 0;
+      const noise = fbm(u * 1.5 + 0.2 + seed * 3.1, v * 1.7 - 0.3 - seed * 2.3);
+      const broad = fbm(u * 0.95 - 0.18 + seed * 1.7, v * 1.05 + 0.22 + seed * 1.3);
+      const fine = valueNoise(u + 7.4 + seed * 11.0, v - 2.1 - seed * 9.0, 56.0);
+      const speckle = valueNoise(u - 3.9 + seed * 13.0, v + 4.7 - seed * 7.0, 104.0);
+      const ageImpact = profile.ageImpact || 1.0;
+      const patinaScale = profile.patinaScale || 0.75;
+      const rimInlay = profile.surfaceDetail === "rimInlay";
+      const bossDent = profile.damageStyle === "bossDent" ? bossDentMaskAt(u, v) : 0;
+
+      if (rimInlay) {
+        const rimC = profile.rimCircumference || 5.81;
+        const rimW = profile.rimBandWidth || 0.074;
+        const rimAspect = rimC / rimW;
+        const pu = u * rimAspect + seed * 0.41;
+        const pv = v + seed * 0.29;
+
+        const largeNoise = fbm(pu, pv);
+        const mediumNoise = fbm(pu * 1.9 + 0.13 + seed * 1.1, pv * 1.55 - 0.21 - seed * 0.8);
+        const fineNoise = valueNoise(pu + 3.1 + seed * 2.0, pv - 1.7, 42.0);
+        const blobA = fbm(pu * 0.72 + 1.4 + seed * 2.3, pv * 0.68 - 0.9 - seed * 1.7);
+        const blobB = fbm(pu * 1.35 - 2.1 + seed, pv * 1.42 + 1.8 - seed * 0.6);
+
+        const patinaField = largeNoise * 0.42 + mediumNoise * 0.30 + blobA * 0.16 + blobB * 0.14 + fineNoise * 0.08;
+        const cleanIsland = smoothstep(0.56, 0.82, largeNoise + blobA * 0.24);
+        const polishIsland = smoothstep(0.60, 0.84, fbm(pu * 0.95 + seed, pv * 1.05 - seed) + largeNoise * 0.14);
+
+        const patinaAge = smoothstep(0.34, 0.90, age);
+        const deepPatinaAge = smoothstep(0.78, 1.0, age);
+
+        const sulfurPatch = clamp01(
+          smoothstep(0.36, 0.58, patinaField) *
+          patinaAge * (1.0 - cleanIsland * 0.68)
+        );
+        const heavySulfur = clamp01(
+          smoothstep(0.52, 0.74, patinaField + blobB * 0.20) *
+          deepPatinaAge * patinaAge * 0.72 * (1.0 - cleanIsland * 0.48) * (1.0 - polishIsland * 0.14)
+        );
+        const ochreWash = clamp01(
+          smoothstep(0.42, 0.64, blobA * 0.52 + mediumNoise * 0.32) *
+          patinaAge * 0.88
+        );
+        const veinMask = clamp01(
+          smoothstep(0.52, 0.74, mediumNoise + blobA * 0.28) *
+          deepPatinaAge * patinaAge * 0.50 * (1.0 - cleanIsland * 0.32)
+        );
+        const speckMask = clamp01(
+          smoothstep(0.88, 0.98, fineNoise) * deepPatinaAge * patinaAge * 0.14 * (1.0 - cleanIsland * 0.35)
+        );
+
+        const preserveShine = clamp01(
+          mix(1.0, cleanIsland * polishIsland * (1.0 - heavySulfur * 0.75), patinaAge)
+        );
+        const polish = clamp01(
+          profile.metalPolish * (0.20 + preserveShine * 0.80) - heavySulfur * 0.22 - ochreWash * 0.10
+        );
+
+        const warmGold = [226, 180, 66];
+        const shineGold = [255, 234, 126];
+        const paleGold = [240, 206, 94];
+        const ochreLight = [210, 152, 42];
+        const ochreDeep = [186, 118, 32];
+        const ochreBurnt = [148, 88, 26];
+        const soot = [34, 26, 14];
+        let red = mix(warmGold[0], shineGold[0], polish);
+        let green = mix(warmGold[1], shineGold[1], polish);
+        let blue = mix(warmGold[2], shineGold[2], polish);
+        red = mix(red, ochreLight[0], sulfurPatch * 0.82 + ochreWash * 0.36);
+        green = mix(green, ochreLight[1], sulfurPatch * 0.82 + ochreWash * 0.36);
+        blue = mix(blue, ochreLight[2], sulfurPatch * 0.82 + ochreWash * 0.36);
+        red = mix(red, ochreDeep[0], heavySulfur * 0.78 + ochreWash * 0.28);
+        green = mix(green, ochreDeep[1], heavySulfur * 0.78 + ochreWash * 0.28);
+        blue = mix(blue, ochreDeep[2], heavySulfur * 0.78 + ochreWash * 0.28);
+        red = mix(red, ochreBurnt[0], veinMask * 0.68);
+        green = mix(green, ochreBurnt[1], veinMask * 0.68);
+        blue = mix(blue, ochreBurnt[2], veinMask * 0.68);
+        red = mix(red, soot[0], speckMask * 0.38);
+        green = mix(green, soot[1], speckMask * 0.38);
+        blue = mix(blue, soot[2], speckMask * 0.38);
+        red = mix(red, mix(shineGold[0], paleGold[0], mediumNoise * 0.22), preserveShine * 0.68 * patinaAge);
+        green = mix(green, mix(shineGold[1], paleGold[1], mediumNoise * 0.22), preserveShine * 0.68 * patinaAge);
+        blue = mix(blue, mix(shineGold[2], paleGold[2], mediumNoise * 0.22), preserveShine * 0.68 * patinaAge);
+
+        const patinaRough = clamp01(
+          sulfurPatch * 0.24 +
+          heavySulfur * 0.28 +
+          ochreWash * 0.18 +
+          veinMask * 0.12 +
+          speckMask * 0.05
+        );
+        const roughness = clamp01(
+          profile.flatRoughness +
+          patinaRough * patinaAge * 0.48 -
+          preserveShine * (1.0 - patinaAge) * 0.04 -
+          preserveShine * patinaAge * 0.10
+        );
+        const metallic = clamp01(
+          1.0 - heavySulfur * 0.10 - ochreWash * 0.04 - speckMask * 0.08 - veinMask * 0.05
+        );
+        const height = clamp01(
+          0.50 + (largeNoise * 0.010 + mediumNoise * 0.008) * patinaAge -
+          sulfurPatch * 0.005 - heavySulfur * 0.003
+        );
+        const ao = 1 - clamp01(
+          (sulfurPatch * 0.28 + heavySulfur * 0.24 + ochreWash * 0.18 + veinMask * 0.16) * patinaAge
+        ) * 0.46;
+        return { red, green, blue, roughness, metallic, height, ao };
+      }
+
+      const rectSignal = 1.0;
+      const seamish = Math.max(
+        band(u, 0.08, 0.045),
+        band(u, 0.92, 0.045),
+        band(v, 0.08, 0.045),
+        band(v, 0.92, 0.045)
+      );
+      const patinaSeed = smoothstep(
+        0.58 - age * 0.22,
+        0.90 - age * 0.12,
+        noise + seamish * 0.18 + bossDent * 0.24
+      );
+      const fullAgePatina = smoothstep(0.62, 1.0, age) *
+        smoothstep(0.48, 0.86, noise + fine * 0.18 + seamish * 0.14 + bossDent * 0.30);
+      const damagePatina = smoothstep(0.12, 0.78, age) * bossDent;
+      const patinaColorAge = smoothstep(0.72, 1.0, age);
+      const visiblePatina = clamp01(
+        patinaSeed * smoothstep(0.18, 0.82, age) * 0.48 * ageImpact +
+        damagePatina * 0.92 +
+        seamish * age * 0.16 * ageImpact
+      );
+      const patina = clamp01(
+        (patinaSeed * 0.24 + fullAgePatina * 0.52 + damagePatina * 0.62 + seamish * 0.06) *
+        patinaColorAge * patinaScale
+      );
+      const polish = clamp01(
+        (profile.metalPolish + fine * 0.05 - age * 0.06 * ageImpact -
+        patina * 0.42 - visiblePatina * 0.18 - damagePatina * 0.14) * rectSignal
+      );
+
+      const brass = [198, 156, 68];
+      const brightBrass = [232, 196, 98];
+      const dullBrass = [142, 112, 52];
+      const lightPatina = [78, 142, 126];
+      const deepPatina = [52, 108, 96];
+      const darkPatina = [38, 72, 66];
+      let red = mix(brass[0], brightBrass[0], polish);
+      let green = mix(brass[1], brightBrass[1], polish);
+      let blue = mix(brass[2], brightBrass[2], polish);
+      red = mix(red, dullBrass[0], visiblePatina * 0.22);
+      green = mix(green, dullBrass[1], visiblePatina * 0.22);
+      blue = mix(blue, dullBrass[2], visiblePatina * 0.22);
+      const patinaTone = clamp01(broad * 0.52 + noise * 0.28 + fine * 0.12);
+      const patinaRed = mix(lightPatina[0], deepPatina[0], patinaTone);
+      const patinaGreen = mix(lightPatina[1], deepPatina[1], patinaTone);
+      const patinaBlue = mix(lightPatina[2], deepPatina[2], patinaTone);
+      const patinaShade = visiblePatina * (1 - patinaColorAge * 0.18);
+      red = mix(red, patinaRed, patinaShade * 0.82);
+      green = mix(green, patinaGreen, patinaShade * 0.82);
+      blue = mix(blue, patinaBlue, patinaShade * 0.82);
+      red = mix(red, patinaRed, patina * 0.88);
+      green = mix(green, patinaGreen, patina * 0.88);
+      blue = mix(blue, patinaBlue, patina * 0.88);
+      red = mix(red, darkPatina[0], fullAgePatina * patinaColorAge * patinaScale * 0.24);
+      green = mix(green, darkPatina[1], fullAgePatina * patinaColorAge * patinaScale * 0.24);
+      blue = mix(blue, darkPatina[2], fullAgePatina * patinaColorAge * patinaScale * 0.24);
+
+      const roughness = clamp01(
+        profile.flatRoughness +
+        age * 0.06 * ageImpact +
+        noise * 0.038 +
+        patina * 0.48 +
+        visiblePatina * 0.34 +
+        damagePatina * 0.22 +
+        seamish * age * 0.05
+      );
+      const metallic = clamp01(
+        1.0 - patina * 0.70 - visiblePatina * 0.30 - damagePatina * 0.26 -
+        fullAgePatina * patinaColorAge * patinaScale * 0.14
+      );
+      const height = clamp01(
+        0.52 + fine * 0.012 + visiblePatina * 0.018 + patina * 0.028 +
+        speckle * 0.006 - seamish * age * 0.010 - bossDent * 0.030
+      );
+      const ao = 1 - clamp01(bossDent * age * 0.22 + seamish * age * 0.14);
       return { red, green, blue, roughness, metallic, height, ao };
     }
 
@@ -1034,6 +1393,7 @@ ul.task-list li input[type="checkbox"] {
 
     function sampleSurface(profile, u, v, age) {
       if (profile.kind === "steel") return sampleSteel(u, v, age, profile);
+      if (profile.kind === "brass") return sampleBrass(u, v, age, profile);
       if (profile.kind === "leather") return sampleLeather(u, v, age);
       if (profile.kind === "back") return sampleBack(u, v, age);
       return sampleBody(u, v, age);
@@ -1260,18 +1620,22 @@ ul.task-list li input[type="checkbox"] {
         set.latestAlbedoData = maps.albedoData;
         set.latestAoData = maps.aoData;
         set.latestMrData = maps.mrData;
+        set.latestNormalData = maps.normalData;
         set.currentAge = age;
-
-        if (set === bodySet) {
-          drawPreview(previewContexts.albedo, maps.albedoData, "albedo");
-          drawPreview(previewContexts.metallic, maps.mrData, "metallic");
-          drawPreview(previewContexts.roughness, maps.mrData, "roughness");
-          drawPreview(previewContexts.normal, maps.normalData, "normal");
-          drawPreview(previewContexts.ao, maps.aoData, "ao");
-        }
       });
 
+      drawMapPreviews(getPreviewMaterialSet());
+
+      updateGemMaterials(age);
       applyMapSelection();
+    }
+
+    function updateGemMaterials(age) {
+      const dulling = age * 0.10;
+      emeraldGemMaterial.roughness = 0.045 + dulling;
+      rubyGemMaterial.roughness = 0.050 + dulling;
+      emeraldGemMaterial.environmentIntensity = 1.62 - age * 0.18;
+      rubyGemMaterial.environmentIntensity = 1.66 - age * 0.18;
     }
 
     function assignImportedMaterials(meshes) {
@@ -1289,6 +1653,12 @@ ul.task-list li input[type="checkbox"] {
           mesh.material = leatherSet.material;
         } else if (name.includes("boss")) {
           mesh.material = bossSet.material;
+        } else if (name.includes("emerald")) {
+          mesh.material = emeraldGemMaterial;
+        } else if (name.includes("ruby")) {
+          mesh.material = rubyGemMaterial;
+        } else if (name.includes("brassinlay") || name.includes("riminlay") || (name.includes("brass") && name.includes("rim"))) {
+          mesh.material = rimInlaySet.material;
         } else if (name.includes("rivet")) {
           const match = name.match(/rivet_(\d+)/);
           const rivetIndex = match ? Math.max(0, Number(match[1]) - 1) : 0;
@@ -1301,7 +1671,7 @@ ul.task-list li input[type="checkbox"] {
       });
     }
 
-    BABYLON.SceneLoader.ImportMeshAsync("", "../assets/", "pbr_aging_buckler_noring.glb", scene).then((result) => {
+    const assetReady = BABYLON.SceneLoader.ImportMeshAsync("", "../assets/", "pbr_aging_buckler_noring.glb", scene).then((result) => {
       assignImportedMaterials(result.meshes);
     });
 
@@ -1323,12 +1693,42 @@ ul.task-list li input[type="checkbox"] {
         applyMapSelection();
       });
     });
+    if (previewMaterialSelect) {
+      previewMaterialSelect.addEventListener("change", () => {
+        drawMapPreviews(getPreviewMaterialSet());
+      });
+    }
+
+    let captureMode = false;
 
     updateMaps();
     applyZoomFromSlider();
 
+    window.agingDemo = {
+      ready: assetReady,
+      setCaptureMode(on) {
+        captureMode = !!on;
+        if (captureMode) assetRoot.rotation.y = 0;
+      },
+      setAgePercent(percent) {
+        if (mapUpdateTimer) {
+          window.clearTimeout(mapUpdateTimer);
+          mapUpdateTimer = 0;
+        }
+        slider.value = String(Math.max(0, Math.min(100, percent)));
+        updateMaps();
+        scene.render();
+      }
+    };
+
+    if (new URLSearchParams(window.location.search).get("capture") === "1") {
+      window.agingDemo.setCaptureMode(true);
+    }
+
     engine.runRenderLoop(function () {
-      assetRoot.rotation.y = Math.sin(performance.now() * 0.00030) * 0.10;
+      if (!captureMode) {
+        assetRoot.rotation.y = Math.sin(performance.now() * 0.00030) * 0.10;
+      }
       scene.render();
     });
 
@@ -1347,13 +1747,16 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="interpretation-der-drei-alterungszustände" class="level2">
 <h2 class="anchored" data-anchor-id="interpretation-der-drei-alterungszustände">Interpretation der drei Alterungszustände</h2>
-<p>Bei <strong>0 % Alterung</strong> dominiert blankes Metall auf der Schildfläche. Außenkante, Nieten und Zentralbuckel bestehen ebenfalls aus Stahl, unterscheiden sich aber in ihrer Rauheit: Der Buckel reflektiert klarer, die Nieten wirken bereits leicht unruhiger. Das Leder auf der Rückseite ist dagegen nichtmetallisch und rau.</p>
-<p>Beim Preset <strong>Gealtert</strong> entstehen dunklere Oxidationsbereiche, ohne dass die Oberfläche schon deutlich rostbraun wird. Angelaufene Stellen sammeln sich zuerst an Nieträndern, am Zentralbuckel, in Dellen und an Geometrieübergängen. Die Roughness steigt lokal an, während polierte Kanten und erhabene Metallteile noch klarere Reflexionen zeigen.</p>
-<p>Bei <strong>100 % Alterung</strong> ist die Metallfläche deutlich heterogener. Rostbraune und dunkle Bereiche bedecken in der Albedo-Map ungefähr 60 % der Schildfläche und verdichten sich zusätzlich an Kanten, Dellen, Nieten und Geometrieübergängen. Diese Stellen werden rauer und verlieren lokal ihren metallischen Charakter. Gerade der Vergleich zwischen mattem Rost, blankem Metall und rauem Leder zeigt, warum PBR nicht nur über Farbe erklärt werden kann.</p>
+<p>Bei <strong>0 % Alterung</strong> dominiert blankes Metall auf der Schildfläche. Acht gravierte Radialrillen und eine vergoldete Randeinlage betonen den dekorativen Charakter. Außenkante und Nieten bestehen aus Stahl, der zentrale Buckel aus Messing (Kupfer-Zink-Legierung). In jeder Niete sitzt ein großer dreieckiger Trilliant: Smaragde und Rubine wechseln sich ab, ihre Spitzen zeigen gegenläufig nach unten bzw. oben. Der Messingbuckel reflektiert am klarsten, die Edelsteine wirken glasig und gesättigt farbig. Das Leder auf der Rückseite ist dagegen nichtmetallisch und rau.</p>
+<p>Beim Preset <strong>Gealtert</strong> entstehen dunklere Oxidationsbereiche, ohne dass die Oberfläche schon deutlich rostbraun wird. Angelaufene Stellen sammeln sich zuerst in den Gravurrillen, an Nieträndern, in Dellen und an Geometrieübergängen. Am Messingbuckel bildet sich türkisfarbene Patina statt Rost; die Gold-Randeinlage zeigt fleckige, überzeichnete Anlaufeffekte wie verwittertes Blattgold.</p>
+<p>Bei <strong>100 % Alterung</strong> ist die Metallfläche deutlich heterogener. Rostbraune Bereiche sammeln sich vor allem in den Gravurrillen, an Kanten, Dellen und Nieten, während die Fläche insgesamt etwas weniger homogen „überrostet“ wirkt. Die Messingbuckel und Randeinlage altern dabei sichtbar anders als der Stahlkörper: Der Buckel patiniert grünlich, die Gold-Einlage behält metallische Inseln, während Ocker-, Braun- und Rußflecken lokal die Reflexionen brechen. Gerade der Vergleich zwischen mattem Rost, blankem Metall und rauem Leder zeigt, warum PBR nicht nur über Farbe erklärt werden kann.</p>
 </section>
 <section id="was-an-der-demo-vereinfacht-ist" class="level2">
 <h2 class="anchored" data-anchor-id="was-an-der-demo-vereinfacht-ist">Was an der Demo vereinfacht ist</h2>
-<p>Die Demo ist kein chemisch exaktes Korrosionsmodell. Sie simuliert nicht, wie schnell Stahl unter bestimmten Umweltbedingungen oxidiert. Für die PBR-Erklärung ist die chemische Genauigkeit aber nicht der entscheidende Punkt. Wichtig ist die Kopplung der Materialinformationen:</p>
+<p>Die Demo ist kein chemisch exaktes Korrosionsmodell. Sie simuliert nicht, wie schnell Stahl unter bestimmten Umweltbedingungen oxidiert. Für die PBR-Erklärung ist die chemische Genauigkeit aber nicht der entscheidende Punkt.</p>
+<p><strong>Warum Buckel und Randeinlage unterschiedlich altern:</strong> Beide starten blank und poliert, oxidieren aber nicht gleich. Der Buckel ist massives Messing mit hohem Kupferanteil — feuchte Luft und Fingerkontakt begünstigen <strong>Verdigris</strong> (türkisfarbene Carbonat-/Sulfatpatina auf Kupferlegierungen). Die Randeinlage ist als <strong>Blattgold</strong> aufgebracht: Gold selbst oxidiert kaum, aber Schmutz, Schwefelverbindungen aus der Luft und durchscheinende Kupfer-/Silberanteile in der Vergoldung erzeugen <strong>ocker- und braunfleckige Anläufe</strong> statt Grün. Zusätzlich sammelt sich in den Zahnzwischenräumen mehr Schmutz als auf der gewölbten Buckeloberfläche. Das ist vereinfacht, aber materialplausibel — kein Widerspruch, sondern unterschiedliche Werkstoffe und Mikroexposition.</p>
+<p>Die 2D-Map-Vorschau unten kann per Dropdown zwischen den wichtigsten Materialien umgeschaltet werden (Schildfläche, Buckel, Goldrand, Niete, Leder). Im 3D-Modell tragen alle Teile eigene prozedurale Maps.</p>
+<p>Wichtig ist die Kopplung der Materialinformationen:</p>
 <ul>
 <li>In der <strong>Albedo-Map</strong> entstehen dunkle und rostbraune Bereiche.</li>
 <li>In der <strong>Roughness-Map</strong> werden diese Bereiche matter.</li>
