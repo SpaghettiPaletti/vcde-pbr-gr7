@@ -258,9 +258,9 @@ f_s = \frac{D \cdot F \cdot G}{4 \, (\mathbf{n} \cdot \mathbf{l}) \, (\mathbf{n}
 <section id="interaktive-demo-globale-parameter-vs.-texture-maps" class="level2">
 <h2 class="anchored" data-anchor-id="interaktive-demo-globale-parameter-vs.-texture-maps">2. Interaktive Demo: Globale Parameter vs.&nbsp;Texture Maps</h2>
 <p>Die folgende Szene zeigt diese Babylon.js-Parameter in einer bewusst einfachen Beleuchtungssituation. Auf Umgebungskartierung (IBL) wird zunächst verzichtet; stattdessen werden kontrollierte Testlichter verwendet. So kann der Unterschied zwischen globalen Materialwerten und Texture Maps isoliert betrachtet werden. Rauheit beeinflusst die Mikrofacettenverteilung, Metallizität verändert die Aufteilung zwischen diffusem und spekularem Verhalten, und die Base Color liefert die farbliche Materialinformation.</p>
-<p>Um diese Steuerung zu demonstrieren, wird ein klassisches Beispiel der Computergrafik verwendet: ein <strong>Holzfass</strong>. Ein solches Fass weckt klare Erwartungen – das Holz sollte eher rau und farbig (Dielektrikum) sein, während die Eisenbänder als metallisch und spiegelnd wahrgenommen werden sollten.</p>
+<p>Um diese Steuerung zu demonstrieren, wird ein klassisches Beispiel der Computergrafik verwendet: ein <strong>Holzfass</strong>. Das Modell wurde in Blender nachgebaut: bauchige konvexe Form, zwei flache Eisenbänder, eingesenkter Deckel mit geschlossenem Daubenüberstand und stehendem Metallgriff. Ein solches Fass weckt klare Erwartungen – das Holz sollte eher rau und farbig (Dielektrikum) sein, während die Eisenbänder als metallisch und spiegelnd wahrgenommen werden sollten.</p>
 <p><strong>(A) Globale Werte:</strong> Im einfachsten Fall werden konstante Werte für das gesamte Objekt gesetzt: eine einheitliche <code>baseColor</code>, ein <code>metallic</code>-Wert und ein <code>roughness</code>-Wert. In der Demo wird die Base Color über ein Farbfeld gewählt, während Metallic und Roughness per Slider verändert werden.</p>
-<p><strong>(B) Texture Maps:</strong> Für ein mehrteiliges Objekt reichen globale Werte nicht aus. Bei Klick auf <strong>“Aktivieren (Maps laden)”</strong> werden die globalen Eingaben deaktiviert und stattdessen Texturen verwendet. Die <code>baseTexture</code> legt die lokale Grundfarbe von Holz und Eisen fest. Die <code>metallicRoughnessTexture</code> steuert zusätzlich pro Texel, welche Bereiche metallisch sind und wie scharf oder diffus sie Licht reflektieren. Dadurch erhält jeder Bildpunkt eigene Materialparameter, z.B. “Holz: nichtmetallisch und rau” oder “Eisenring: metallisch und glatter”.</p>
+<p><strong>(B) Texture Maps:</strong> Für ein mehrteiliges Objekt reichen globale Werte nicht aus. Bei Klick auf <strong>“Aktivieren (Maps laden)”</strong> werden die globalen Eingaben deaktiviert und stattdessen Texturen verwendet. Die <code>baseTexture</code> legt die lokale Grundfarbe von Holz und Eisen fest. Die <code>metallicRoughnessTexture</code> steuert zusätzlich pro Texel, welche Bereiche metallisch sind und wie scharf oder diffus sie Licht reflektieren. Da das Fass aus separaten Meshes für Dauben, Reifen und Griff besteht, nutzen die Maps einen kleinen Texturatlas: Holzmaserung vertikal an den Seiten, horizontal auf Deckel und Boden, Metallwerte nur auf den Eisenbändern und dem Griff.</p>
 <p>Die Demonstration wird mit Babylon.js umgesetzt. Die Begriffe bleiben deshalb bewusst bei der Babylon.js-Metal-Roughness-Konvention. Für den Rückbezug zur Theorie ist entscheidend:</p>
 <table class="caption-top table">
 <colgroup>
@@ -294,6 +294,18 @@ f_s = \frac{D \cdot F \cdot G}{4 \, (\mathbf{n} \cdot \mathbf{l}) \, (\mathbf{n}
 </tbody>
 </table>
 <p>Die Presets in der Demo setzen gezielt Grenzfälle mit gleicher Base Color. Dadurch wird sichtbar, dass die Farbe je nach <code>metallic</code>-Wert entweder als diffuse Körperfarbe oder als farbige spekulare Reflexion ausgewertet wird.</p>
+<style>
+  #sliderControls .has-tip { cursor: help; border-bottom: 1px dotted #999; }
+  #sliderControls .tip-wrap { position: relative; display: inline-block; }
+  #sliderControls .tip-wrap .tip-box {
+    display: none; position: absolute; left: 0; top: calc(100% + 6px); z-index: 20;
+    max-width: 280px; padding: 8px 10px; background: #222; color: #f5f5f5;
+    font-size: 12px; line-height: 1.35; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,.25);
+    font-weight: normal;
+  }
+  #sliderControls .tip-wrap:hover .tip-box,
+  #sliderControls .tip-wrap:focus-within .tip-box { display: block; }
+</style>
 <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
   <div style="margin-bottom: 15px;">
     <strong>Steuerung:</strong><br>
@@ -309,14 +321,23 @@ f_s = \frac{D \cdot F \cdot G}{4 \, (\mathbf{n} \cdot \mathbf{l}) \, (\mathbf{n}
   </div>
   
   <div id="sliderControls" style="margin-bottom: 15px; transition: opacity 0.3s;">
-    <label style="display:inline-block; width: 140px;">Globale Base Color:</label>
+    <span class="tip-wrap" style="display:inline-block; width: 140px;">
+      <label class="has-tip" for="baseColorPicker">Globale Base Color:</label>
+      <span class="tip-box">Grundfarbe ohne Beleuchtung. Bei Dielektrika (Metallic ≈ 0) wirkt sie als diffuse Körperfarbe; bei Metallen bestimmt sie die Farbe der Spiegelung.</span>
+    </span>
     <input type="color" id="baseColorPicker" value="#808080" style="vertical-align: middle;">
     <br>
-    <label style="display:inline-block; width: 140px;">Globale Metallic:</label>
+    <span class="tip-wrap" style="display:inline-block; width: 140px;">
+      <label class="has-tip" for="metallicSlider">Globale Metallic:</label>
+      <span class="tip-box">0 = Dielektrikum (Holz: matt, farbig, diffuser Anteil). 1 = Metall (stark spiegelnd, kaum diffuse Körperfarbe).</span>
+    </span>
     <input type="range" id="metallicSlider" min="0" max="1" step="0.01" value="0.0" style="vertical-align: middle;">
     <span id="metVal" style="display:inline-block; width: 40px; text-align:right;">0.00</span>
     <br>
-    <label style="display:inline-block; width: 140px;">Globale Roughness:</label>
+    <span class="tip-wrap" style="display:inline-block; width: 140px;">
+      <label class="has-tip" for="roughnessSlider">Globale Roughness:</label>
+      <span class="tip-box">0 = glatt (scharfe, kleine Glanzlichter). 1 = rau (breite, weiche Reflexionen, matter Eindruck).</span>
+    </span>
     <input type="range" id="roughnessSlider" min="0" max="1" step="0.01" value="0.4" style="vertical-align: middle;">
     <span id="rogVal" style="display:inline-block; width: 40px; text-align:right;">0.40</span>
   </div>
@@ -327,6 +348,7 @@ f_s = \frac{D \cdot F \cdot G}{4 \, (\mathbf{n} \cdot \mathbf{l}) \, (\mathbf{n}
 </div>
 
 <script src="https://cdn.babylonjs.com/babylon.js"></script>
+<script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
 <script>
 window.addEventListener('DOMContentLoaded', function() {
     const canvas = document.getElementById("basisCanvas");
@@ -335,18 +357,17 @@ window.addEventListener('DOMContentLoaded', function() {
 
     const createScene = function () {
         const scene = new BABYLON.Scene(engine);
-        scene.clearColor = new BABYLON.Color4(0.20, 0.20, 0.20, 1); // Dunkle Szene ohne IBL
+        scene.clearColor = new BABYLON.Color4(0.20, 0.20, 0.20, 1);
 
-        const camera = new BABYLON.ArcRotateCamera("camera", Math.PI * 0.58, Math.PI/2.35, 3.2, BABYLON.Vector3.Zero(), scene);
-        camera.lowerRadiusLimit = 3.2;
-        camera.upperRadiusLimit = 3.2;
-        camera.lowerBetaLimit = 0.4;
-        camera.upperBetaLimit = Math.PI - 0.4;
+        const camera = new BABYLON.ArcRotateCamera("camera", Math.PI * 0.58, Math.PI/2.35, 3.1, BABYLON.Vector3.Zero(), scene);
+        camera.lowerRadiusLimit = 3.1;
+        camera.upperRadiusLimit = 3.1;
+        camera.lowerBetaLimit = 0.35;
+        camera.upperBetaLimit = Math.PI - 0.35;
         camera.panningSensibility = 0;
         camera.inputs.removeByType("ArcRotateCameraMouseWheelInput");
         camera.attachControl(canvas, true);
         
-        // Lokale Testbeleuchtung ohne Umgebungskarte
         const keyLight = new BABYLON.PointLight("keyLight", new BABYLON.Vector3(-3, 4, -3), scene);
         keyLight.intensity = 5.0;
         const fillLight = new BABYLON.PointLight("fillLight", new BABYLON.Vector3(4, 2.5, 3), scene);
@@ -357,8 +378,7 @@ window.addEventListener('DOMContentLoaded', function() {
         const softFill = new BABYLON.HemisphericLight("softFill", new BABYLON.Vector3(0, 1, 0), scene);
         softFill.intensity = 0.25;
 
-        // Unser "Fass" aus einem Zylinder generiert
-        const barrel = BABYLON.MeshBuilder.CreateCylinder("barrel", {height: 2, diameter: 1.2, tessellation: 64}, scene);
+        const assetRoot = new BABYLON.TransformNode("barrelRoot", scene);
         
         const colorFromHex = (hex) => {
             const value = parseInt(hex.slice(1), 16);
@@ -370,13 +390,11 @@ window.addEventListener('DOMContentLoaded', function() {
         };
 
         const pbrMat = new BABYLON.PBRMetallicRoughnessMaterial("barrelMat", scene);
-        pbrMat.environmentIntensity = 0.0; // Isolierte Szene ohne IBL
+        pbrMat.environmentIntensity = 0.0;
         
-        // Startwerte
         pbrMat.baseColor = colorFromHex(document.getElementById("baseColorPicker").value);
         pbrMat.metallic = parseFloat(document.getElementById("metallicSlider").value);
         pbrMat.roughness = parseFloat(document.getElementById("roughnessSlider").value);
-        barrel.material = pbrMat;
 
         let mapsActive = false;
         const applyGlobalMaterial = (color, metallic, roughness) => {
@@ -391,37 +409,77 @@ window.addEventListener('DOMContentLoaded', function() {
             pbrMat.roughness = Number(roughness);
         };
 
-        // --- Programmatische Maps für Holzfass & Eisenringe ---
         const texSize = 512;
-        
-        // 1. Base Color Map
+        const STAVE_COUNT = 20;
+        const ATLAS_BODY = { u0: 0.0, v0: 0.0, u1: 0.62, v1: 1.0 };
+        const ATLAS_PLANK = { u0: 0.66, v0: 0.08, u1: 0.96, v1: 0.44 };
+        const ATLAS_METAL = { u0: 0.66, v0: 0.52, u1: 0.96, v1: 0.78 };
+
+        const rectPx = (region) => ({
+            x: region.u0 * texSize,
+            y: region.v0 * texSize,
+            w: (region.u1 - region.u0) * texSize,
+            h: (region.v1 - region.v0) * texSize,
+        });
+
+        const drawWoodBody = (ctx) => {
+            const r = rectPx(ATLAS_BODY);
+            ctx.fillStyle = "#6B4423";
+            ctx.fillRect(r.x, r.y, r.w, r.h);
+            ctx.fillStyle = "#3e2714";
+            for (let s = 0; s <= STAVE_COUNT; s++) {
+                const x = r.x + (s / STAVE_COUNT) * r.w;
+                ctx.fillRect(x - 1, r.y, 3, r.h);
+            }
+        };
+
+        const drawWoodPlank = (ctx) => {
+            const r = rectPx(ATLAS_PLANK);
+            ctx.fillStyle = "#6B4423";
+            ctx.fillRect(r.x, r.y, r.w, r.h);
+            ctx.fillStyle = "#3e2714";
+            for (let i = 0; i <= r.h; i += 16) ctx.fillRect(r.x, r.y + i, r.w, 3);
+        };
+
+        const drawMetal = (ctx, color) => {
+            const r = rectPx(ATLAS_METAL);
+            ctx.fillStyle = color;
+            ctx.fillRect(r.x, r.y, r.w, r.h);
+        };
+
         const baseTex = new BABYLON.DynamicTexture("baseTex", texSize, scene, true);
         const ctxA = baseTex.getContext();
-        // Grundfläche Holz
-        ctxA.fillStyle = "#6B4423"; 
+        ctxA.fillStyle = "#5a3a22";
         ctxA.fillRect(0, 0, texSize, texSize);
-        // Holzmaserung andeuten (vertikale Streifen)
-        ctxA.fillStyle = "#3e2714"; 
-        for(let i=0; i<=texSize; i+=32) { ctxA.fillRect(i, 0, 4, texSize); }
-        // Zwei eiserne Fassringe (horizontale Bänder)
-        ctxA.fillStyle = "#7F8C8D"; 
-        ctxA.fillRect(0, texSize * 0.2, texSize, texSize * 0.15); // Oberer Ring
-        ctxA.fillRect(0, texSize * 0.65, texSize, texSize * 0.15); // Unterer Ring
+        drawWoodBody(ctxA);
+        drawWoodPlank(ctxA);
+        drawMetal(ctxA, "#8A9094");
         baseTex.update();
 
-        // 2. Metalness-Roughness Map
-        // Babylon-Kanalbelegung: Grün = Roughness, Blau = Metallic/Metalness
         const mrTex = new BABYLON.DynamicTexture("mrTex", texSize, scene, true);
         const ctxMR = mrTex.getContext();
-        // Holz-Definition: Nicht-metallisch (Blau=0), sehr rau (Grün=220) -> rgb(0, 220, 0)
-        ctxMR.fillStyle = "rgb(0, 220, 0)"; 
+        ctxMR.fillStyle = "rgb(0, 220, 0)";
         ctxMR.fillRect(0, 0, texSize, texSize);
-        // Eisenring-Definition: Metallisch (Blau=255), glatter (Grün=120) -> rgb(0, 120, 255)
-        ctxMR.fillStyle = "rgb(0, 120, 255)";
-        ctxMR.fillRect(0, texSize * 0.2, texSize, texSize * 0.15); 
-        ctxMR.fillRect(0, texSize * 0.65, texSize, texSize * 0.15); 
+        const woodR = rectPx(ATLAS_BODY);
+        ctxMR.fillStyle = "rgb(0, 220, 0)";
+        ctxMR.fillRect(woodR.x, woodR.y, woodR.w, woodR.h);
+        const plankR = rectPx(ATLAS_PLANK);
+        ctxMR.fillRect(plankR.x, plankR.y, plankR.w, plankR.h);
+        drawMetal(ctxMR, "rgb(0, 120, 255)");
         mrTex.update();
-        // -------------------------------------------------------------
+
+        const assignBarrelMeshes = (meshes) => {
+            meshes.forEach((mesh) => {
+                if (!mesh || mesh.name === "__root__") return;
+                mesh.material = pbrMat;
+                mesh.parent = assetRoot;
+                mesh.sideOrientation = BABYLON.Mesh.FRONTSIDE;
+            });
+        };
+
+        BABYLON.SceneLoader.ImportMeshAsync("", "../assets/", "materialmodell_barrel.glb", scene).then((result) => {
+            assignBarrelMeshes(result.meshes);
+        });
 
         document.getElementById("baseColorPicker").addEventListener("input", e => {
             if(!mapsActive) pbrMat.baseColor = colorFromHex(e.target.value);
