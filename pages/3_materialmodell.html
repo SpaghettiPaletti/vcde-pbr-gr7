@@ -335,7 +335,7 @@ window.addEventListener('DOMContentLoaded', function() {
 
     const createScene = function () {
         const scene = new BABYLON.Scene(engine);
-        scene.clearColor = new BABYLON.Color4(0.11, 0.11, 0.11, 1); // Dunkle Szene ohne IBL
+        scene.clearColor = new BABYLON.Color4(0.20, 0.20, 0.20, 1); // Dunkle Szene ohne IBL
 
         const camera = new BABYLON.ArcRotateCamera("camera", Math.PI * 0.58, Math.PI/2.35, 3.2, BABYLON.Vector3.Zero(), scene);
         camera.lowerRadiusLimit = 3.2;
