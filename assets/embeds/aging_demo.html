@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Buckler Alterung</title>
+  <style>
+    html, body { margin: 0; padding: 6px 8px; background: #f8f9fa; font-family: system-ui, sans-serif; overflow: hidden; }
+    #agingDemoGrid { display: grid; gap: 8px; }
+    .agingControlGrid {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr 1fr;
+      gap: 10px;
+      align-items: start;
+      font-size: 0.82em;
+    }
+    .agingControlStack { display: flex; flex-direction: column; gap: 8px; }
+    .agingButtonRow { display: flex; flex-wrap: wrap; gap: 6px; }
+    .agingMapBtn, .agingPresetBtn {
+      padding: 4px 8px; border: 1px solid #888; border-radius: 4px; cursor: pointer; font-size: 0.9em;
+    }
+    .agingMapBtn { background: #212529; color: #fff; }
+    .agingPresetBtn { background: #fff; color: #212529; }
+    .agingCanvasWrap { width: 100%; height: 400px; margin: 0 auto; }
+    #agingCanvas { display: block; width: 100%; height: 100%; border-radius: 6px; background: #111; touch-action: none; }
+    #agingModeTitle, #agingModeText { font-size: 0.85em; color: #555; }
+    .agingMapPreviewSection { display: none !important; }
+    #zoomSlider, label[for="zoomSlider"], #zoomValue { display: none !important; }
+    select#agingEnvSwitch { width: 100%; padding: 4px; font-size: 0.9em; }
+    @media (max-width: 900px) { .agingControlGrid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <div id="agingDemoGrid">
+    <div class="agingControlGrid">
+      <div class="agingControlStack">
+        <div>
+          <label for="agingEnvSwitch" style="font-weight:600;">Umgebung</label>
+          <select id="agingEnvSwitch">
+            <option value="https://playground.babylonjs.com/textures/environment.env">Stadt (neutral)</option>
+            <option value="https://playground.babylonjs.com/textures/country.env">Landlandschaft</option>
+            <option value="https://playground.babylonjs.com/textures/forest.env">Wald</option>
+            <option value="https://playground.babylonjs.com/textures/night.env">Nacht</option>
+            <option value="https://playground.babylonjs.com/textures/room.env">Innenraum</option>
+          </select>
+        </div>
+        <div>
+          <div style="font-weight:600; margin-bottom:4px;">Presets</div>
+          <div class="agingButtonRow">
+            <button class="agingPresetBtn" data-age="0">Neu</button>
+            <button class="agingPresetBtn" data-age="76">Gealtert</button>
+            <button class="agingPresetBtn" data-age="100">Rost</button>
+          </div>
+        </div>
+      </div>
+      <div class="agingControlStack">
+        <label for="agingSlider" style="display:flex; justify-content:space-between; font-weight:600;">
+          <span>Alterung</span><span id="agingValue">0%</span>
+        </label>
+        <input id="agingSlider" type="range" min="0" max="100" step="1" value="0" style="width:100%;">
+        <label for="zoomSlider" style="display:flex; justify-content:space-between; font-weight:600;">
+          <span>Zoom</span><span id="zoomValue">3.35</span>
+        </label>
+        <input id="zoomSlider" type="range" min="2.45" max="4.80" step="0.01" value="3.35" style="width:100%;">
+      </div>
+      <div class="agingControlStack">
+        <div style="font-weight:600; margin-bottom:4px;">Aktive Maps</div>
+        <div class="agingButtonRow">
+          <button class="agingMapBtn" data-map="albedo">Base Color</button>
+          <button class="agingMapBtn" data-map="roughness">Roughness</button>
+          <button class="agingMapBtn" data-map="metallic">Metallic</button>
+          <button class="agingMapBtn" data-map="normal">Normal</button>
+          <button class="agingMapBtn" data-map="ao">AO/Cavity</button>
+        </div>
+      </div>
+    </div>
+    <div class="agingCanvasWrap"><canvas id="agingCanvas"></canvas></div>
+    <div><strong id="agingModeTitle">Aktiv:</strong> <span id="agingModeText">Alle Maps aktiv.</span></div>
+    <div class="agingMapPreviewSection">
+      <select id="mapPreviewMaterial"><option value="body">body</option></select>
+      <canvas id="albedoPreview" width="64" height="64"></canvas>
+      <canvas id="metallicPreview" width="64" height="64"></canvas>
+      <canvas id="roughnessPreview" width="64" height="64"></canvas>
+      <canvas id="normalPreview" width="64" height="64"></canvas>
+      <canvas id="aoPreview" width="64" height="64"></canvas>
+    </div>
+  </div>
+  <script src="https://cdn.babylonjs.com/babylon.js"></script>
+  <script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
+  <script src="aging_demo.js"></script>
+</body>
+</html>
