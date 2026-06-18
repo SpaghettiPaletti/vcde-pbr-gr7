@@ -188,7 +188,11 @@ window.Quarto = {
   <ul class="collapse">
   <li><a href="#base-color-und-albedo-maps" id="toc-base-color-und-albedo-maps" class="nav-link" data-scroll-target="#base-color-und-albedo-maps">Base Color und Albedo-Maps</a></li>
   </ul></li>
-  <li><a href="#interaktive-demo-globale-parameter-vs.-texture-maps" id="toc-interaktive-demo-globale-parameter-vs.-texture-maps" class="nav-link" data-scroll-target="#interaktive-demo-globale-parameter-vs.-texture-maps">2. Interaktive Demo: Globale Parameter vs.&nbsp;Texture Maps</a></li>
+  <li><a href="#interaktive-demo-globale-parameter-vs.-texture-maps" id="toc-interaktive-demo-globale-parameter-vs.-texture-maps" class="nav-link" data-scroll-target="#interaktive-demo-globale-parameter-vs.-texture-maps">2. Interaktive Demo: Globale Parameter vs.&nbsp;Texture Maps</a>
+  <ul class="collapse">
+  <li><a href="#zuerst-isoliert-gleiche-base-color-anderes-material" id="toc-zuerst-isoliert-gleiche-base-color-anderes-material" class="nav-link" data-scroll-target="#zuerst-isoliert-gleiche-base-color-anderes-material">Zuerst isoliert: gleiche Base Color, anderes Material</a></li>
+  <li><a href="#dann-am-fass-globale-werte-vs.-texture-maps" id="toc-dann-am-fass-globale-werte-vs.-texture-maps" class="nav-link" data-scroll-target="#dann-am-fass-globale-werte-vs.-texture-maps">Dann am Fass: globale Werte vs.&nbsp;Texture Maps</a></li>
+  </ul></li>
   <li><a href="#exkurs-openpbr-und-materialx" id="toc-exkurs-openpbr-und-materialx" class="nav-link" data-scroll-target="#exkurs-openpbr-und-materialx">3. Exkurs: OpenPBR und MaterialX</a></li>
   <li><a href="#die-grenzen-der-isolierten-beleuchtung-der-übergang-zu-ibl" id="toc-die-grenzen-der-isolierten-beleuchtung-der-übergang-zu-ibl" class="nav-link" data-scroll-target="#die-grenzen-der-isolierten-beleuchtung-der-übergang-zu-ibl">4. Die Grenzen der isolierten Beleuchtung: Der Übergang zu IBL</a></li>
   </ul>
@@ -293,7 +297,14 @@ f_s = \frac{D \cdot F \cdot G}{4 \, (\mathbf{n} \cdot \mathbf{l}) \, (\mathbf{n}
 </tr>
 </tbody>
 </table>
-<p>Die Presets in der Demo setzen gezielt Grenzfälle mit gleicher Base Color. Dadurch wird sichtbar, dass die Farbe je nach <code>metallic</code>-Wert entweder als diffuse Körperfarbe oder als farbige spekulare Reflexion ausgewertet wird.</p>
+<section id="zuerst-isoliert-gleiche-base-color-anderes-material" class="level3">
+<h3 class="anchored" data-anchor-id="zuerst-isoliert-gleiche-base-color-anderes-material">Zuerst isoliert: gleiche Base Color, anderes Material</h3>
+<p>Bevor ein Objekt <strong>gleichzeitig</strong> Holz und Metall zeigt, lohnt sich ein Grenzfall an einer einfachen Geometrie. Die folgende Kugel ist in zwei Hälften geteilt – links ein Dielektrikum, rechts ein Metall, beide mit <strong>derselben Base Color</strong> und <strong>ohne IBL</strong> (nur Testlichter). Das Vorbild ähnelt der <a href="https://doc.babylonjs.com/features/featuresDeepDive/materials/using/introToPBR">Babylon.js Intro-to-PBR</a>-Darstellung; dort wirkt die metallische Hälfte durch Umgebungsreflexionen deutlich überzeugender – genau deshalb folgt in Kapitel 4 IBL.</p>
+<iframe src="../assets/embeds/pbr_split_sphere.html" title="PBR Split Sphere" style="width:100%; max-width:720px; height:320px; border:0; border-radius:8px; background:#1a1520; margin:12px 0;"></iframe>
+</section>
+<section id="dann-am-fass-globale-werte-vs.-texture-maps" class="level3">
+<h3 class="anchored" data-anchor-id="dann-am-fass-globale-werte-vs.-texture-maps">Dann am Fass: globale Werte vs.&nbsp;Texture Maps</h3>
+<p>Das <strong>Holzfass</strong> baut darauf auf: Ein zusammengesetztes Objekt braucht pro Bereich eigene Materialwerte – entweder separate Meshes mit Maps oder eine <code>metallicRoughnessTexture</code>, die pro Texel steuert, was Holz und was Eisen ist. Die Presets am Fass wiederholen denselben Grenzfall mit <strong>globalen</strong> Werten auf dem gesamten Objekt – erst die Maps trennen Holz und Metall sichtbar.</p>
 <style>
   #sliderControls .has-tip { cursor: help; border-bottom: 1px dotted #999; }
   #sliderControls .tip-wrap { position: relative; display: inline-block; }
@@ -562,6 +573,7 @@ window.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 <hr>
+</section>
 </section>
 <section id="exkurs-openpbr-und-materialx" class="level2">
 <h2 class="anchored" data-anchor-id="exkurs-openpbr-und-materialx">3. Exkurs: OpenPBR und MaterialX</h2>
