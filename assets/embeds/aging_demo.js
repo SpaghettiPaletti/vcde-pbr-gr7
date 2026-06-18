@@ -1,0 +1,1294 @@
+﻿(function () {
+  function initAgingDemo() {
+    const canvas = document.getElementById("agingCanvas");
+    if (!canvas || typeof BABYLON === "undefined") return;
+
+    const slider = document.getElementById("agingSlider");
+    const agingValue = document.getElementById("agingValue");
+    const zoomSlider = document.getElementById("zoomSlider");
+    const zoomValue = document.getElementById("zoomValue");
+    const envSwitch = document.getElementById("agingEnvSwitch");
+    const modeTitle = document.getElementById("agingModeTitle");
+    const modeText = document.getElementById("agingModeText");
+    const mapButtons = Array.from(document.querySelectorAll(".agingMapBtn"));
+    const presetButtons = Array.from(document.querySelectorAll(".agingPresetBtn"));
+    const previewMaterialSelect = document.getElementById("mapPreviewMaterial");
+
+    const previewContexts = {
+      albedo: document.getElementById("albedoPreview").getContext("2d"),
+      metallic: document.getElementById("metallicPreview").getContext("2d"),
+      roughness: document.getElementById("roughnessPreview").getContext("2d"),
+      normal: document.getElementById("normalPreview").getContext("2d"),
+      ao: document.getElementById("aoPreview").getContext("2d")
+    };
+
+    const engine = new BABYLON.Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true, antialias: true });
+    engine.setHardwareScalingLevel(Math.min(1, 1 / Math.max(1, window.devicePixelRatio || 1)));
+
+    const scene = new BABYLON.Scene(engine);
+    scene.clearColor = new BABYLON.Color4(0.07, 0.075, 0.08, 1);
+    scene.environmentIntensity = 1.08;
+    scene.imageProcessingConfiguration.toneMappingEnabled = true;
+    scene.imageProcessingConfiguration.toneMappingType = BABYLON.ImageProcessingConfiguration.TONEMAPPING_ACES;
+    scene.imageProcessingConfiguration.exposure = 1.04;
+    scene.imageProcessingConfiguration.contrast = 1.22;
+
+    const camera = new BABYLON.ArcRotateCamera(
+      "agingCamera",
+      -Math.PI / 2,
+      Math.PI / 2.18,
+      3.35,
+      new BABYLON.Vector3(0, 0, 0),
+      scene
+    );
+    camera.attachControl(canvas, true);
+    camera.lowerRadiusLimit = 2.45;
+    camera.upperRadiusLimit = 4.8;
+    camera.lowerBetaLimit = Math.PI / 3.4;
+    camera.upperBetaLimit = Math.PI / 1.68;
+    camera.wheelPrecision = 70;
+    camera.panningSensibility = 0;
+
+    function applyZoomFromSlider() {
+      const radius = Number(zoomSlider.value);
+      camera.radius = radius;
+      zoomValue.textContent = radius.toFixed(2);
+    }
+
+    let currentSkybox = null;
+    function loadEnvironment(url) {
+      const envTexture = BABYLON.CubeTexture.CreateFromPrefilteredData(url, scene);
+      scene.environmentTexture = envTexture;
+      if (currentSkybox) currentSkybox.dispose();
+      currentSkybox = scene.createDefaultSkybox(envTexture, true, 90, 0.18);
+    }
+
+    loadEnvironment(envSwitch.value);
+    envSwitch.addEventListener("change", (event) => {
+      loadEnvironment(event.target.value);
+    });
+
+    const keyLight = new BABYLON.DirectionalLight("agingKeyLight", new BABYLON.Vector3(-0.5, -0.85, 0.55), scene);
+    keyLight.intensity = 0.34;
+    const rimLight = new BABYLON.DirectionalLight("agingRimLight", new BABYLON.Vector3(0.55, -0.25, -0.9), scene);
+    rimLight.intensity = 0.20;
+    const fillLight = new BABYLON.HemisphericLight("agingFillLight", new BABYLON.Vector3(0, 1, 0), scene);
+    fillLight.intensity = 0.07;
+
+    const assetRoot = new BABYLON.TransformNode("agingBucklerRoot", scene);
+    assetRoot.scaling.setAll(1.0);
+
+    const activeMaps = {
+      albedo: true,
+      roughness: true,
+      metallic: true,
+      normal: true,
+      ao: true
+    };
+
+    const bodySize = 1024;
+    const accessorySize = 512;
+    const rivetSize = 384;
+
+    function clamp01(value) {
+      return Math.max(0, Math.min(1, value));
+    }
+
+    function smoothstep(edge0, edge1, value) {
+      const x = clamp01((value - edge0) / (edge1 - edge0));
+      return x * x * (3 - 2 * x);
+    }
+
+    function mix(a, b, t) {
+      return a * (1 - t) + b * t;
+    }
+
+    function fade(t) {
+      return t * t * (3 - 2 * t);
+    }
+
+    function hash2(ix, iy) {
+      const value = Math.sin(ix * 127.1 + iy * 311.7) * 43758.5453123;
+      return value - Math.floor(value);
+    }
+
+    function valueNoise(u, v, scale) {
+      const x = u * scale;
+      const y = v * scale;
+      const x0 = Math.floor(x);
+      const y0 = Math.floor(y);
+      const tx = fade(x - x0);
+      const ty = fade(y - y0);
+      const a = hash2(x0, y0);
+      const b = hash2(x0 + 1, y0);
+      const c = hash2(x0, y0 + 1);
+      const d = hash2(x0 + 1, y0 + 1);
+      return mix(mix(a, b, tx), mix(c, d, tx), ty);
+    }
+
+    function fbm(u, v) {
+      return (
+        valueNoise(u, v, 2.0) * 0.40 +
+        valueNoise(u + 19.1, v - 7.4, 5.4) * 0.28 +
+        valueNoise(u - 3.7, v + 11.8, 12.0) * 0.20 +
+        valueNoise(u + 5.2, v + 2.6, 33.0) * 0.12
+      );
+    }
+
+    function createDataTexture(name, size, colorSpace) {
+      const tex = new BABYLON.DynamicTexture(name, size, scene, false);
+      tex.wrapU = BABYLON.Texture.CLAMP_ADDRESSMODE;
+      tex.wrapV = BABYLON.Texture.CLAMP_ADDRESSMODE;
+      tex.gammaSpace = colorSpace === "color";
+      tex.updateSamplingMode(BABYLON.Texture.TRILINEAR_SAMPLINGMODE);
+      return tex;
+    }
+
+    function createMaterialSet(name, profile) {
+      const material = new BABYLON.PBRMaterial(name, scene);
+      material.albedoColor = profile.flatColor;
+      material.metallic = profile.flatMetallic;
+      material.roughness = profile.flatRoughness;
+      material.environmentIntensity = profile.environmentIntensity;
+      material.useMetallnessFromMetallicTextureBlue = true;
+      material.useRoughnessFromMetallicTextureGreen = true;
+      material.useRoughnessFromMetallicTextureAlpha = false;
+      material.useAmbientInGrayScale = true;
+      material.ambientTextureStrength = profile.aoStrength;
+      material.invertNormalMapY = true;
+
+      return {
+        profile,
+        material,
+        albedoTex: createDataTexture(name + "_albedo", profile.size, "color"),
+        mrActiveTex: createDataTexture(name + "_mr_active", profile.size, "data"),
+        normalTex: createDataTexture(name + "_normal", profile.size, "data"),
+        aoTex: createDataTexture(name + "_ao", profile.size, "data"),
+        latestAlbedoData: null,
+        latestAoData: null,
+        latestMrData: null,
+        latestNormalData: null
+      };
+    }
+
+    const bodySet = createMaterialSet("bucklerIronBody", {
+      kind: "body",
+      size: bodySize,
+      flatColor: new BABYLON.Color3(0.62, 0.61, 0.57),
+      flatMetallic: 1.0,
+      flatRoughness: 0.27,
+      environmentIntensity: 1.10,
+      normalStrength: 32,
+      normalLevel: 0.98,
+      aoStrength: 1.05
+    });
+
+    const bossSet = createMaterialSet("bucklerMirrorBoss", {
+      kind: "brass",
+      size: accessorySize,
+      flatColor: new BABYLON.Color3(0.78, 0.62, 0.28),
+      flatMetallic: 1.0,
+      flatRoughness: 0.12,
+      environmentIntensity: 1.20,
+      normalStrength: 10,
+      normalLevel: 0.22,
+      aoStrength: 0.72,
+      metalPolish: 0.82,
+      patinaScale: 0.78,
+      damageStyle: "bossDent"
+    });
+
+    const rimInlaySet = createMaterialSet("bucklerBrassRimInlay", {
+      kind: "brass",
+      surfaceDetail: "rimInlay",
+      size: accessorySize,
+      flatColor: new BABYLON.Color3(0.90, 0.74, 0.22),
+      flatMetallic: 1.0,
+      flatRoughness: 0.08,
+      environmentIntensity: 1.38,
+      normalStrength: 12,
+      normalLevel: 0.26,
+      aoStrength: 0.62,
+      metalPolish: 0.96,
+      patinaScale: 0.95,
+      ageImpact: 1.05,
+      seed: 0.37,
+      rimCircumference: 5.81,
+      rimBandWidth: 0.074
+    });
+
+    function createRivetSet(index) {
+      const seed = index * 0.137 + 0.11;
+      return createMaterialSet("bucklerRoughRivet_" + (index + 1), {
+        kind: "steel",
+        surfaceDetail: "rivet",
+        gemSeatUv: [0.454, 0.481],
+        size: rivetSize,
+        flatColor: new BABYLON.Color3(0.64, 0.63, 0.60),
+        flatMetallic: 1.0,
+        flatRoughness: 0.26,
+        environmentIntensity: 1.08,
+        normalStrength: 20 + (index % 3) * 2,
+        normalLevel: 0.58,
+        aoStrength: 0.90,
+        steelPolish: 0.38 + (index % 4) * 0.035,
+        rustScale: 0.80 + (index % 5) * 0.055,
+        ageImpact: 1.48 + (index % 4) * 0.10,
+        seed
+      });
+    }
+
+    function createGemMaterial(name, color, ior, envIntensity) {
+      const material = new BABYLON.PBRMaterial(name, scene);
+      material.albedoColor = color;
+      material.metallic = 0.0;
+      material.roughness = 0.045;
+      material.environmentIntensity = envIntensity;
+      material.indexOfRefraction = ior;
+      material.specularIntensity = 1.0;
+      material.usePhysicalLightFalloff = true;
+      return material;
+    }
+
+    const rivetSets = Array.from({ length: 10 }, (_, index) => createRivetSet(index));
+
+    const emeraldGemMaterial = createGemMaterial(
+      "bucklerEmeraldGem",
+      new BABYLON.Color3(0.05, 0.62, 0.32),
+      1.58,
+      1.62
+    );
+    const rubyGemMaterial = createGemMaterial(
+      "bucklerRubyGem",
+      new BABYLON.Color3(0.82, 0.06, 0.14),
+      1.76,
+      1.66
+    );
+
+    const leatherSet = createMaterialSet("bucklerLeatherBack", {
+      kind: "leather",
+      size: accessorySize,
+      flatColor: new BABYLON.Color3(0.55, 0.32, 0.17),
+      flatMetallic: 0.0,
+      flatRoughness: 0.68,
+      environmentIntensity: 0.46,
+      normalStrength: 11,
+      normalLevel: 0.34,
+      aoStrength: 0.70
+    });
+
+    const backSet = createMaterialSet("bucklerBackBody", {
+      kind: "back",
+      size: accessorySize,
+      flatColor: new BABYLON.Color3(0.55, 0.54, 0.50),
+      flatMetallic: 1.0,
+      flatRoughness: 0.34,
+      environmentIntensity: 0.78,
+      normalStrength: 19,
+      normalLevel: 0.46,
+      aoStrength: 0.74
+    });
+
+    const materialSets = [bodySet, bossSet, rimInlaySet, ...rivetSets, leatherSet, backSet];
+
+    const previewMaterialSets = {
+      body: bodySet,
+      boss: bossSet,
+      rim: rimInlaySet,
+      rivet: rivetSets[0],
+      leather: leatherSet,
+      back: backSet
+    };
+
+    function getPreviewMaterialSet() {
+      if (!previewMaterialSelect) return bodySet;
+      return previewMaterialSets[previewMaterialSelect.value] || bodySet;
+    }
+
+    function drawMapPreviews(set) {
+      if (!set || !set.latestAlbedoData || !set.latestMrData || !set.latestNormalData) return;
+      drawPreview(previewContexts.albedo, set.latestAlbedoData, "albedo");
+      drawPreview(previewContexts.metallic, set.latestMrData, "metallic");
+      drawPreview(previewContexts.roughness, set.latestMrData, "roughness");
+      drawPreview(previewContexts.normal, set.latestNormalData, "normal");
+      drawPreview(previewContexts.ao, set.latestAoData, "ao");
+    }
+
+    const rivetUv = [];
+    for (let i = 0; i < 8; i++) {
+      const theta = Math.PI * 2 * i / 8 + Math.PI / 8;
+      const x = Math.cos(theta) * 0.68;
+      const z = Math.sin(theta) * 0.68;
+      rivetUv.push([x * 0.5 + 0.5, 0.5 - z * 0.5]);
+    }
+    rivetUv.push([0.39, 0.5], [0.61, 0.5]);
+
+    function band(value, center, width) {
+      return Math.exp(-Math.pow((value - center) / width, 2));
+    }
+
+    function rivetHaloAt(u, v) {
+      let halo = 0;
+      rivetUv.forEach((point) => {
+        const dx = (u - point[0]) * 1.05;
+        const dy = v - point[1];
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        halo = Math.max(halo, smoothstep(0.105, 0.018, distance));
+      });
+      return halo;
+    }
+
+    function gemSeatMaskAt(u, v, profile) {
+      const seat = profile.gemSeatUv || [0.454, 0.481];
+      const dx = (u - seat[0]) * 1.05;
+      const dy = v - seat[1];
+      const distance = Math.sqrt(dx * dx + dy * dy);
+      return smoothstep(0.20, 0.055, distance);
+    }
+
+    function gemSeatRingAt(u, v, profile) {
+      const seat = profile.gemSeatUv || [0.454, 0.481];
+      const dx = (u - seat[0]) * 1.05;
+      const dy = v - seat[1];
+      const distance = Math.sqrt(dx * dx + dy * dy);
+      return smoothstep(0.058, 0.078, distance) * (1 - smoothstep(0.118, 0.155, distance));
+    }
+
+    function radialGrooveAt(x, z) {
+      const r = Math.sqrt(x * x + z * z);
+      if (r < 0.30 || r > 0.94) return 0;
+      const ang = Math.atan2(z, x);
+      const period = Math.PI / 4;
+      let rel = (ang + Math.PI) % period;
+      rel = Math.min(rel, period - rel);
+      const angFade = 1 - rel / 0.028;
+      if (angFade <= 0) return 0;
+      const edgeFade = smoothstep(0.30, 0.40, r) * (1 - smoothstep(0.86, 0.94, r));
+      return clamp01(angFade * edgeFade);
+    }
+
+    function dentMaskAt(x, z) {
+      const dents = [
+        [-0.30, 0.26, 0.20, 1.0],
+        [0.34, -0.12, 0.17, 0.76],
+        [0.02, -0.42, 0.15, 0.54]
+      ];
+      let mask = 0;
+      dents.forEach((dent) => {
+        const dx = x - dent[0];
+        const dz = z - dent[1];
+        const d2 = dx * dx + dz * dz;
+        mask = Math.max(mask, Math.exp(-d2 / (dent[2] * dent[2])) * dent[3]);
+      });
+      return clamp01(mask);
+    }
+
+    function bossDentMaskAt(u, v) {
+      const centerU = 0.605;
+      const centerV = 0.550;
+      const angle = -0.20;
+      const du = u - centerU;
+      const dv = v - centerV;
+      const ca = Math.cos(angle);
+      const sa = Math.sin(angle);
+      const x = ca * du + sa * dv;
+      const y = -sa * du + ca * dv;
+      const height = 0.28;
+      const t = clamp01((y / height) + 0.5);
+      const halfWidth = mix(0.070, 0.130, t);
+      const edgeX = 1 - Math.abs(x) / halfWidth;
+      const edgeY = 1 - Math.abs(y) / (height * 0.58);
+      return smoothstep(-0.18, 0.50, Math.min(edgeX, edgeY));
+    }
+
+    function hammerMarkAt(u, v) {
+      const scale = 8.0;
+      const gx = Math.floor(u * scale);
+      const gy = Math.floor(v * scale);
+      let mark = 0;
+
+      for (let oy = -1; oy <= 1; oy++) {
+        for (let ox = -1; ox <= 1; ox++) {
+          const cx = (gx + ox + 0.18 + hash2(gx + ox, gy + oy) * 0.64) / scale;
+          const cy = (gy + oy + 0.18 + hash2(gx + ox + 17, gy + oy - 11) * 0.64) / scale;
+          const rx = 0.042 + hash2(gx + ox - 5, gy + oy + 3) * 0.026;
+          const ry = 0.034 + hash2(gx + ox + 9, gy + oy - 7) * 0.022;
+          const angle = hash2(gx + ox + 23, gy + oy + 31) * Math.PI;
+          const ca = Math.cos(angle);
+          const sa = Math.sin(angle);
+          const dx = u - cx;
+          const dy = v - cy;
+          const lx = ca * dx + sa * dy;
+          const ly = -sa * dx + ca * dy;
+          const q = (lx / rx) * (lx / rx) + (ly / ry) * (ly / ry);
+          const bowl = Math.exp(-q * 1.35);
+          const lip = Math.exp(-Math.pow((Math.sqrt(Math.max(q, 0)) - 1.0) / 0.36, 2)) * 0.36;
+          mark = Math.max(mark, bowl - lip * 0.45);
+        }
+      }
+
+      return clamp01(mark);
+    }
+
+    function sampleBody(u, v, age) {
+      const x = (u - 0.5) * 2;
+      const z = (0.5 - v) * 2;
+      const r = Math.sqrt(x * x + z * z);
+
+      const largeNoise = fbm(u, v);
+      const mediumNoise = fbm(u * 1.9 + 0.13, v * 1.55 - 0.21);
+      const fineNoise = valueNoise(u + 3.1, v - 1.7, 42.0);
+      const speckle = valueNoise(u - 5.1, v + 2.4, 96.0);
+      const edgeWear = smoothstep(0.95, 1.0, r);
+      const edgeCavity = band(r, 0.990, 0.012);
+      const bossContact = band(r, 0.285, 0.018);
+      const rivetHalo = rivetHaloAt(u, v);
+      const radialGroove = radialGrooveAt(x, z);
+      const dent = dentMaskAt(x, z);
+      const hammer = hammerMarkAt(u, v) * (1 - smoothstep(0.76, 0.92, r)) * (1 - bossContact * 0.60);
+      const bottomMoisture = smoothstep(0.60, 0.98, v);
+      const cavity = clamp01(
+        rivetHalo * 0.72 +
+        bossContact * 0.22 +
+        dent * 1.18 +
+        edgeCavity * 0.70 +
+        radialGroove * 0.58 +
+        edgeWear * 0.08
+      );
+
+      const rustPotential = clamp01(
+        largeNoise * 0.14 +
+        mediumNoise * 0.10 +
+        cavity * 0.52 +
+        radialGroove * 0.22 +
+        bottomMoisture * 0.12 -
+        edgeWear * 0.04 +
+        speckle * 0.04
+      );
+
+      const earlyRust = smoothstep(0.62 - age * 0.14, 0.94 - age * 0.14, rustPotential) *
+        smoothstep(0.18, 0.78, age);
+      const fullRust = smoothstep(0.68, 1.0, age) *
+        smoothstep(0.60, 0.94, rustPotential + cavity * 0.12);
+      const rustField = largeNoise * 0.46 + mediumNoise * 0.31 + fineNoise * 0.10 + speckle * 0.07 + bottomMoisture * 0.06;
+      const cloudWear = smoothstep(0.34, 0.68, rustField);
+      const surfaceWear = cloudWear * (1 - smoothstep(0.94, 1.0, r) * 0.12);
+      const fieldRust = smoothstep(
+        0.33,
+        0.61,
+        rustField
+      ) * (1 - smoothstep(0.98, 1.0, r) * 0.06);
+      const dentDamage = clamp01(dent * 0.92 + rivetHalo * 0.38 + bossContact * 0.10 + edgeCavity * 0.18);
+      const damageOxide = smoothstep(0.14, 0.78, age) *
+        smoothstep(0.16, 0.92, dentDamage + mediumNoise * 0.08);
+      const rustColorAge = smoothstep(0.76, 1.0, age);
+      const visibleOxide = clamp01(earlyRust * 0.30 + damageOxide * 0.64 + surfaceWear * age * 0.48 + fieldRust * age * 0.24 + fullRust * 0.20);
+      const grooveRust = radialGroove * smoothstep(0.42, 1.0, age) *
+        clamp01(rustPotential * 0.72 + cavity * 0.18 + mediumNoise * 0.10);
+      const rust = clamp01(
+        (fullRust * 0.18 + damageOxide * 0.18 + surfaceWear * 0.34 + fieldRust * age * 0.42 +
+        grooveRust * 0.72 + edgeCavity * 0.08) * rustColorAge
+      );
+      const darkOxide = clamp01(age * (0.18 + largeNoise * 0.22) + cavity * age * 0.16 + mediumNoise * age * 0.10 + surfaceWear * age * 0.10 + visibleOxide * 0.18);
+      const rubbedEdge = edgeWear * smoothstep(0.16, 0.86, age) * (1 - rust * 0.82);
+
+      const cleanSteel = [177, 175, 166];
+      const dullSteel = [118, 115, 108];
+      const darkSteel = [73, 69, 63];
+      const blueOxide = [84, 88, 89];
+      const blackOxide = [57, 55, 51];
+      const polishedSteel = [220, 216, 202];
+      const orangeRust = [164, 78, 34];
+      const brownRust = [98, 49, 28];
+      const blackRust = [48, 28, 20];
+
+      let red = mix(cleanSteel[0], dullSteel[0], darkOxide);
+      let green = mix(cleanSteel[1], dullSteel[1], darkOxide);
+      let blue = mix(cleanSteel[2], dullSteel[2], darkOxide);
+
+      red += (mediumNoise - 0.5) * 18 + (speckle - 0.5) * 7;
+      green += (mediumNoise - 0.5) * 15 + (speckle - 0.5) * 6;
+      blue += (mediumNoise - 0.5) * 12 + (speckle - 0.5) * 5;
+
+      const oxideTone = clamp01(mediumNoise * 0.60 + dentDamage * 0.24);
+      const oxideRed = mix(blueOxide[0], blackOxide[0], oxideTone);
+      const oxideGreen = mix(blueOxide[1], blackOxide[1], oxideTone);
+      const oxideBlue = mix(blueOxide[2], blackOxide[2], oxideTone);
+      const oxideShade = visibleOxide * (1 - rustColorAge * 0.58);
+      red = mix(red, oxideRed, oxideShade * 0.76);
+      green = mix(green, oxideGreen, oxideShade * 0.76);
+      blue = mix(blue, oxideBlue, oxideShade * 0.76);
+
+      const rustTone = clamp01(mediumNoise * 0.55 + bottomMoisture * 0.22);
+      const rustRed = mix(orangeRust[0], brownRust[0], rustTone);
+      const rustGreen = mix(orangeRust[1], brownRust[1], rustTone);
+      const rustBlue = mix(orangeRust[2], brownRust[2], rustTone);
+
+      red = mix(red, rustRed, rust);
+      green = mix(green, rustGreen, rust);
+      blue = mix(blue, rustBlue, rust);
+
+      const deepRust = fullRust * rustColorAge * clamp01(cavity * 0.78 + radialGroove * 0.46 + bottomMoisture * 0.18 + speckle * 0.14);
+      red = mix(red, blackRust[0], deepRust * 0.72);
+      green = mix(green, blackRust[1], deepRust * 0.72);
+      blue = mix(blue, blackRust[2], deepRust * 0.72);
+
+      red = mix(red, polishedSteel[0], rubbedEdge * 0.42);
+      green = mix(green, polishedSteel[1], rubbedEdge * 0.42);
+      blue = mix(blue, polishedSteel[2], rubbedEdge * 0.42);
+
+      red = mix(red, darkSteel[0], cavity * age * 0.10 + radialGroove * 0.14);
+      green = mix(green, darkSteel[1], cavity * age * 0.10 + radialGroove * 0.14);
+      blue = mix(blue, darkSteel[2], cavity * age * 0.10 + radialGroove * 0.14);
+
+      const roughness = clamp01(
+        0.24 +
+        age * 0.13 +
+        largeNoise * 0.075 +
+        fineNoise * 0.020 +
+        hammer * 0.072 +
+        rust * 0.46 +
+        visibleOxide * 0.24 +
+        damageOxide * 0.20 +
+        fullRust * 0.12 +
+        cavity * 0.18 +
+        radialGroove * (0.10 + age * 0.14) +
+        rubbedEdge * 0.12
+      );
+      const metallic = clamp01(1.0 - rust * 0.78 - visibleOxide * 0.26 - damageOxide * 0.22 - fullRust * 0.18 - darkOxide * 0.04 + rubbedEdge * 0.03);
+      const height = clamp01(
+        0.50 +
+        largeNoise * 0.017 +
+        mediumNoise * 0.014 +
+        fineNoise * 0.006 +
+        hammer * -0.048 +
+        visibleOxide * 0.030 +
+        damageOxide * 0.036 +
+        rust * 0.060 +
+        fullRust * 0.040 +
+        rivetHalo * 0.052 -
+        radialGroove * 0.030 -
+        dent * (0.045 + age * 0.014) -
+        edgeCavity * 0.032 -
+        bossContact * 0.018 +
+        edgeWear * 0.008
+      );
+      const ao = 1 - clamp01(
+        cavity * 0.72 +
+        dent * (0.22 + age * 0.18) +
+        edgeCavity * 0.34 +
+        bossContact * 0.08 +
+        radialGroove * (0.52 + age * 0.22)
+      ) * 0.68;
+
+      return { red, green, blue, roughness, metallic, height, ao };
+    }
+
+    function sampleSteel(u, v, age, profile) {
+      const seed = profile.seed || 0;
+      const noise = fbm(u * 1.5 + 0.2 + seed * 3.1, v * 1.7 - 0.3 - seed * 2.3);
+      const broad = fbm(u * 0.95 - 0.18 + seed * 1.7, v * 1.05 + 0.22 + seed * 1.3);
+      const fine = valueNoise(u + 7.4 + seed * 11.0, v - 2.1 - seed * 9.0, 56.0);
+      const speckle = valueNoise(u - 3.9 + seed * 13.0, v + 4.7 - seed * 7.0, 104.0);
+      const shieldDetail = profile.surfaceDetail === "shield";
+      const rimDetail = profile.surfaceDetail === "rim";
+      const rivetDetail = profile.surfaceDetail === "rivet";
+      const ageImpact = profile.ageImpact || 1.0;
+      const bossDent = profile.damageStyle === "bossDent" ? bossDentMaskAt(u, v) : 0;
+      const gemSeat = rivetDetail ? gemSeatMaskAt(u, v, profile) : 0;
+      const gemSeatRing = rivetDetail ? gemSeatRingAt(u, v, profile) : 0;
+      const seamish = Math.max(
+        band(u, 0.08, 0.045),
+        band(u, 0.92, 0.045),
+        band(v, 0.08, 0.045),
+        band(v, 0.92, 0.045)
+      );
+      const rimPatch = rimDetail
+        ? smoothstep(0.54, 0.86, broad * 0.48 + noise * 0.28 + fine * 0.16 + speckle * 0.08)
+        : 0;
+      const segmentIndex = Math.floor(u * 96);
+      const segmentValue = hash2(segmentIndex, Math.floor(v * 5) + 19);
+      const shortSegment = smoothstep(0.58, 0.88, segmentValue);
+      const longSegment = smoothstep(0.40, 0.72, valueNoise(u + seed * 0.37, 0.23, 9.0));
+      const rimBreaks = rimDetail ? clamp01(shortSegment * longSegment) : 0;
+      const rimWear = rimDetail ? clamp01(seamish * 0.22 + rimPatch * rimBreaks * 0.88 + speckle * rimBreaks * 0.10) : 0;
+      const rustSeed = smoothstep(
+        0.66 - age * 0.26 - (rimDetail ? age * 0.12 : 0),
+        0.93 - age * 0.16,
+        noise + seamish * 0.20 + rimWear * 0.42
+      );
+      const fullAgeRust = smoothstep(0.68, 1.0, age) *
+        smoothstep(rimDetail ? 0.42 : 0.56, rimDetail ? 0.82 : 0.92, noise + fine * 0.20 + seamish * 0.18 + rimWear * 0.36);
+      const damageOxide = smoothstep(0.16, 0.82, age) * bossDent;
+      const rustColorAge = smoothstep(0.80, 1.0, age);
+      const visibleOxide = clamp01(
+        rustSeed * smoothstep(0.22, 0.82, age) * 0.42 * ageImpact +
+        damageOxide * 0.90 +
+        seamish * age * 0.20 * ageImpact +
+        rimPatch * rimBreaks * age * 0.44 +
+        seamish * age * 0.18
+      );
+      const rust = clamp01((rustSeed * 0.20 + fullAgeRust * 0.46 + damageOxide * 0.58 + rimPatch * rimBreaks * 0.72 + seamish * 0.08) * rustColorAge * profile.rustScale) *
+        (1 - gemSeat * 0.96) * (rivetDetail ? 1.08 : 1.0);
+      const polish = clamp01(profile.steelPolish + fine * 0.06 - age * 0.08 * ageImpact - rust * 0.50 - visibleOxide * 0.14 - damageOxide * 0.18);
+
+      const steel = [165, 162, 154];
+      const brightSteel = [225, 222, 210];
+      const oxideSteel = [78, 80, 78];
+      const rustColor = [112, 54, 28];
+      const darkRust = [48, 29, 21];
+      const seatShadow = [92, 90, 84];
+      let red = mix(steel[0], brightSteel[0], polish);
+      let green = mix(steel[1], brightSteel[1], polish);
+      let blue = mix(steel[2], brightSteel[2], polish);
+      red = mix(red, oxideSteel[0], visibleOxide * (1 - rustColorAge * 0.55));
+      green = mix(green, oxideSteel[1], visibleOxide * (1 - rustColorAge * 0.55));
+      blue = mix(blue, oxideSteel[2], visibleOxide * (1 - rustColorAge * 0.55));
+      red = mix(red, rustColor[0], rust);
+      green = mix(green, rustColor[1], rust);
+      blue = mix(blue, rustColor[2], rust);
+      red = mix(red, darkRust[0], fullAgeRust * rustColorAge * profile.rustScale * 0.28);
+      green = mix(green, darkRust[1], fullAgeRust * rustColorAge * profile.rustScale * 0.28);
+      blue = mix(blue, darkRust[2], fullAgeRust * rustColorAge * profile.rustScale * 0.28);
+      red = mix(red, seatShadow[0], gemSeat * 0.42 + gemSeatRing * 0.58);
+      green = mix(green, seatShadow[1], gemSeat * 0.42 + gemSeatRing * 0.58);
+      blue = mix(blue, seatShadow[2], gemSeat * 0.42 + gemSeatRing * 0.58);
+
+      const roughness = clamp01(
+        profile.flatRoughness +
+        age * 0.07 * ageImpact +
+        noise * 0.045 +
+        rust * 0.54 +
+        visibleOxide * 0.30 +
+        damageOxide * 0.24 +
+        seamish * age * (rimDetail ? 0.12 : 0.06) +
+        rimPatch * rimBreaks * age * (rimDetail ? 0.24 : 0) +
+        (shieldDetail || rimDetail ? broad * 0.040 : 0) +
+        gemSeatRing * 0.10
+      );
+      const metallic = clamp01(1.0 - rust * 0.74 - visibleOxide * 0.26 - damageOxide * 0.24 - fullAgeRust * rustColorAge * profile.rustScale * 0.12 - rimPatch * rimBreaks * age * 0.40);
+      const height = (shieldDetail || rimDetail)
+        ? clamp01(0.50 + broad * 0.024 + noise * 0.018 + fine * 0.010 + visibleOxide * 0.024 + rust * 0.050 + fullAgeRust * 0.024 - seamish * age * (rimDetail ? 0.046 : 0.026))
+        : clamp01(
+          0.52 + fine * 0.012 + visibleOxide * 0.020 + rust * 0.030 + speckle * 0.006 -
+          seamish * age * 0.012 - bossDent * 0.030 - gemSeat * 0.038 - gemSeatRing * 0.016
+        );
+      const ao = 1 - clamp01(
+        bossDent * age * 0.22 +
+        seamish * age * (rimDetail ? 0.48 : (shieldDetail ? 0.30 : 0.16)) +
+        rimWear * age * 0.28 +
+        gemSeat * 0.34 +
+        gemSeatRing * 0.48
+      );
+      return { red, green, blue, roughness, metallic, height, ao };
+    }
+
+    function sampleBrass(u, v, age, profile) {
+      const seed = profile.seed || 0;
+      const noise = fbm(u * 1.5 + 0.2 + seed * 3.1, v * 1.7 - 0.3 - seed * 2.3);
+      const broad = fbm(u * 0.95 - 0.18 + seed * 1.7, v * 1.05 + 0.22 + seed * 1.3);
+      const fine = valueNoise(u + 7.4 + seed * 11.0, v - 2.1 - seed * 9.0, 56.0);
+      const speckle = valueNoise(u - 3.9 + seed * 13.0, v + 4.7 - seed * 7.0, 104.0);
+      const ageImpact = profile.ageImpact || 1.0;
+      const patinaScale = profile.patinaScale || 0.75;
+      const rimInlay = profile.surfaceDetail === "rimInlay";
+      const bossDent = profile.damageStyle === "bossDent" ? bossDentMaskAt(u, v) : 0;
+
+      if (rimInlay) {
+        const rimC = profile.rimCircumference || 5.81;
+        const rimW = profile.rimBandWidth || 0.074;
+        const rimAspect = rimC / rimW;
+        const pu = u * rimAspect + seed * 0.41;
+        const pv = v + seed * 0.29;
+
+        const largeNoise = fbm(pu, pv);
+        const mediumNoise = fbm(pu * 1.9 + 0.13 + seed * 1.1, pv * 1.55 - 0.21 - seed * 0.8);
+        const fineNoise = valueNoise(pu + 3.1 + seed * 2.0, pv - 1.7, 42.0);
+        const blobA = fbm(pu * 0.72 + 1.4 + seed * 2.3, pv * 0.68 - 0.9 - seed * 1.7);
+        const blobB = fbm(pu * 1.35 - 2.1 + seed, pv * 1.42 + 1.8 - seed * 0.6);
+
+        const patinaField = largeNoise * 0.42 + mediumNoise * 0.30 + blobA * 0.16 + blobB * 0.14 + fineNoise * 0.08;
+        const cleanIsland = smoothstep(0.56, 0.82, largeNoise + blobA * 0.24);
+        const polishIsland = smoothstep(0.60, 0.84, fbm(pu * 0.95 + seed, pv * 1.05 - seed) + largeNoise * 0.14);
+
+        const patinaAge = smoothstep(0.34, 0.90, age);
+        const deepPatinaAge = smoothstep(0.78, 1.0, age);
+
+        const sulfurPatch = clamp01(
+          smoothstep(0.36, 0.58, patinaField) *
+          patinaAge * (1.0 - cleanIsland * 0.68)
+        );
+        const heavySulfur = clamp01(
+          smoothstep(0.52, 0.74, patinaField + blobB * 0.20) *
+          deepPatinaAge * patinaAge * 0.72 * (1.0 - cleanIsland * 0.48) * (1.0 - polishIsland * 0.14)
+        );
+        const ochreWash = clamp01(
+          smoothstep(0.42, 0.64, blobA * 0.52 + mediumNoise * 0.32) *
+          patinaAge * 0.88
+        );
+        const veinMask = clamp01(
+          smoothstep(0.52, 0.74, mediumNoise + blobA * 0.28) *
+          deepPatinaAge * patinaAge * 0.50 * (1.0 - cleanIsland * 0.32)
+        );
+        const speckMask = clamp01(
+          smoothstep(0.88, 0.98, fineNoise) * deepPatinaAge * patinaAge * 0.14 * (1.0 - cleanIsland * 0.35)
+        );
+
+        const preserveShine = clamp01(
+          mix(1.0, cleanIsland * polishIsland * (1.0 - heavySulfur * 0.75), patinaAge)
+        );
+        const polish = clamp01(
+          profile.metalPolish * (0.20 + preserveShine * 0.80) - heavySulfur * 0.22 - ochreWash * 0.10
+        );
+
+        const warmGold = [226, 180, 66];
+        const shineGold = [255, 234, 126];
+        const paleGold = [240, 206, 94];
+        const ochreLight = [210, 152, 42];
+        const ochreDeep = [186, 118, 32];
+        const ochreBurnt = [148, 88, 26];
+        const soot = [34, 26, 14];
+        let red = mix(warmGold[0], shineGold[0], polish);
+        let green = mix(warmGold[1], shineGold[1], polish);
+        let blue = mix(warmGold[2], shineGold[2], polish);
+        red = mix(red, ochreLight[0], sulfurPatch * 0.82 + ochreWash * 0.36);
+        green = mix(green, ochreLight[1], sulfurPatch * 0.82 + ochreWash * 0.36);
+        blue = mix(blue, ochreLight[2], sulfurPatch * 0.82 + ochreWash * 0.36);
+        red = mix(red, ochreDeep[0], heavySulfur * 0.78 + ochreWash * 0.28);
+        green = mix(green, ochreDeep[1], heavySulfur * 0.78 + ochreWash * 0.28);
+        blue = mix(blue, ochreDeep[2], heavySulfur * 0.78 + ochreWash * 0.28);
+        red = mix(red, ochreBurnt[0], veinMask * 0.68);
+        green = mix(green, ochreBurnt[1], veinMask * 0.68);
+        blue = mix(blue, ochreBurnt[2], veinMask * 0.68);
+        red = mix(red, soot[0], speckMask * 0.38);
+        green = mix(green, soot[1], speckMask * 0.38);
+        blue = mix(blue, soot[2], speckMask * 0.38);
+        red = mix(red, mix(shineGold[0], paleGold[0], mediumNoise * 0.22), preserveShine * 0.68 * patinaAge);
+        green = mix(green, mix(shineGold[1], paleGold[1], mediumNoise * 0.22), preserveShine * 0.68 * patinaAge);
+        blue = mix(blue, mix(shineGold[2], paleGold[2], mediumNoise * 0.22), preserveShine * 0.68 * patinaAge);
+
+        const patinaRough = clamp01(
+          sulfurPatch * 0.24 +
+          heavySulfur * 0.28 +
+          ochreWash * 0.18 +
+          veinMask * 0.12 +
+          speckMask * 0.05
+        );
+        const roughness = clamp01(
+          profile.flatRoughness +
+          patinaRough * patinaAge * 0.48 -
+          preserveShine * (1.0 - patinaAge) * 0.04 -
+          preserveShine * patinaAge * 0.10
+        );
+        const metallic = clamp01(
+          1.0 - heavySulfur * 0.10 - ochreWash * 0.04 - speckMask * 0.08 - veinMask * 0.05
+        );
+        const height = clamp01(
+          0.50 + (largeNoise * 0.010 + mediumNoise * 0.008) * patinaAge -
+          sulfurPatch * 0.005 - heavySulfur * 0.003
+        );
+        const ao = 1 - clamp01(
+          (sulfurPatch * 0.28 + heavySulfur * 0.24 + ochreWash * 0.18 + veinMask * 0.16) * patinaAge
+        ) * 0.46;
+        return { red, green, blue, roughness, metallic, height, ao };
+      }
+
+      const rectSignal = 1.0;
+      const seamish = Math.max(
+        band(u, 0.08, 0.045),
+        band(u, 0.92, 0.045),
+        band(v, 0.08, 0.045),
+        band(v, 0.92, 0.045)
+      );
+      const patinaSeed = smoothstep(
+        0.58 - age * 0.22,
+        0.90 - age * 0.12,
+        noise + seamish * 0.18 + bossDent * 0.24
+      );
+      const fullAgePatina = smoothstep(0.62, 1.0, age) *
+        smoothstep(0.48, 0.86, noise + fine * 0.18 + seamish * 0.14 + bossDent * 0.30);
+      const damagePatina = smoothstep(0.12, 0.78, age) * bossDent;
+      const patinaColorAge = smoothstep(0.72, 1.0, age);
+      const visiblePatina = clamp01(
+        patinaSeed * smoothstep(0.18, 0.82, age) * 0.48 * ageImpact +
+        damagePatina * 0.92 +
+        seamish * age * 0.16 * ageImpact
+      );
+      const patina = clamp01(
+        (patinaSeed * 0.24 + fullAgePatina * 0.52 + damagePatina * 0.62 + seamish * 0.06) *
+        patinaColorAge * patinaScale
+      );
+      const polish = clamp01(
+        (profile.metalPolish + fine * 0.05 - age * 0.06 * ageImpact -
+        patina * 0.42 - visiblePatina * 0.18 - damagePatina * 0.14) * rectSignal
+      );
+
+      const brass = [198, 156, 68];
+      const brightBrass = [232, 196, 98];
+      const dullBrass = [142, 112, 52];
+      const lightPatina = [78, 142, 126];
+      const deepPatina = [52, 108, 96];
+      const darkPatina = [38, 72, 66];
+      let red = mix(brass[0], brightBrass[0], polish);
+      let green = mix(brass[1], brightBrass[1], polish);
+      let blue = mix(brass[2], brightBrass[2], polish);
+      red = mix(red, dullBrass[0], visiblePatina * 0.22);
+      green = mix(green, dullBrass[1], visiblePatina * 0.22);
+      blue = mix(blue, dullBrass[2], visiblePatina * 0.22);
+      const patinaTone = clamp01(broad * 0.52 + noise * 0.28 + fine * 0.12);
+      const patinaRed = mix(lightPatina[0], deepPatina[0], patinaTone);
+      const patinaGreen = mix(lightPatina[1], deepPatina[1], patinaTone);
+      const patinaBlue = mix(lightPatina[2], deepPatina[2], patinaTone);
+      const patinaShade = visiblePatina * (1 - patinaColorAge * 0.18);
+      red = mix(red, patinaRed, patinaShade * 0.82);
+      green = mix(green, patinaGreen, patinaShade * 0.82);
+      blue = mix(blue, patinaBlue, patinaShade * 0.82);
+      red = mix(red, patinaRed, patina * 0.88);
+      green = mix(green, patinaGreen, patina * 0.88);
+      blue = mix(blue, patinaBlue, patina * 0.88);
+      red = mix(red, darkPatina[0], fullAgePatina * patinaColorAge * patinaScale * 0.24);
+      green = mix(green, darkPatina[1], fullAgePatina * patinaColorAge * patinaScale * 0.24);
+      blue = mix(blue, darkPatina[2], fullAgePatina * patinaColorAge * patinaScale * 0.24);
+
+      const roughness = clamp01(
+        profile.flatRoughness +
+        age * 0.06 * ageImpact +
+        noise * 0.038 +
+        patina * 0.48 +
+        visiblePatina * 0.34 +
+        damagePatina * 0.22 +
+        seamish * age * 0.05
+      );
+      const metallic = clamp01(
+        1.0 - patina * 0.70 - visiblePatina * 0.30 - damagePatina * 0.26 -
+        fullAgePatina * patinaColorAge * patinaScale * 0.14
+      );
+      const height = clamp01(
+        0.52 + fine * 0.012 + visiblePatina * 0.018 + patina * 0.028 +
+        speckle * 0.006 - seamish * age * 0.010 - bossDent * 0.030
+      );
+      const ao = 1 - clamp01(bossDent * age * 0.22 + seamish * age * 0.14);
+      return { red, green, blue, roughness, metallic, height, ao };
+    }
+
+    function sampleBack(u, v, age) {
+      const x = (u - 0.5) * 2;
+      const z = (0.5 - v) * 2;
+      const r = Math.sqrt(x * x + z * z);
+      const grain = fbm(u * 1.45 + 0.2, v * 1.5 - 0.3);
+      const patch = fbm(u * 2.1 - 0.5, v * 1.9 + 0.4);
+      const fine = valueNoise(u - 4.2, v + 1.8, 54.0);
+      const speckle = valueNoise(u + 2.7, v - 3.9, 96.0);
+      const edgeCavity = band(r, 0.990, 0.014);
+      const handleZone = Math.max(
+        Math.exp(-Math.pow((Math.abs(x) - 0.07) / 0.06, 2)) * smoothstep(0.08, 0.42, Math.abs(z)),
+        Math.exp(-Math.pow(Math.abs(z - 0.28) / 0.045, 2)) * smoothstep(0.08, 0.48, Math.abs(x)),
+        Math.exp(-Math.pow(Math.abs(z + 0.28) / 0.045, 2)) * smoothstep(0.08, 0.48, Math.abs(x))
+      );
+      const patchMask = smoothstep(0.42, 0.76, patch * 0.46 + grain * 0.34 + fine * 0.10 + speckle * 0.10);
+      const contactWear = clamp01(edgeCavity * 0.40 + handleZone * 0.34 + patchMask * 0.58);
+      const oxide = clamp01(age * (0.12 + grain * 0.14) + contactWear * age * 0.58 + patchMask * age * 0.24);
+      const rust = smoothstep(0.72, 1.0, age) *
+        smoothstep(0.42, 0.82, patchMask * 0.54 + contactWear * 0.38 + speckle * 0.10);
+
+      const cleanSteel = [154, 153, 145];
+      const dullSteel = [92, 90, 83];
+      const oxideColor = [58, 56, 52];
+      const rustColor = [130, 60, 30];
+      const darkRust = [49, 29, 21];
+      let red = mix(cleanSteel[0], dullSteel[0], oxide);
+      let green = mix(cleanSteel[1], dullSteel[1], oxide);
+      let blue = mix(cleanSteel[2], dullSteel[2], oxide);
+      red = mix(red, oxideColor[0], oxide * 0.32);
+      green = mix(green, oxideColor[1], oxide * 0.32);
+      blue = mix(blue, oxideColor[2], oxide * 0.32);
+      red = mix(red, rustColor[0], rust);
+      green = mix(green, rustColor[1], rust);
+      blue = mix(blue, rustColor[2], rust);
+      red = mix(red, darkRust[0], rust * edgeCavity * 0.26);
+      green = mix(green, darkRust[1], rust * edgeCavity * 0.26);
+      blue = mix(blue, darkRust[2], rust * edgeCavity * 0.26);
+      red += (fine - 0.5) * 9;
+      green += (fine - 0.5) * 7;
+      blue += (fine - 0.5) * 5;
+
+      const roughness = clamp01(0.34 + age * 0.12 + grain * 0.07 + patchMask * age * 0.14 + oxide * 0.22 + rust * 0.34 + handleZone * age * 0.06);
+      const metallic = clamp01(1.0 - oxide * 0.30 - rust * 0.72 - handleZone * age * 0.08);
+      const height = clamp01(0.50 + grain * 0.018 + patchMask * 0.018 + fine * 0.008 + oxide * 0.022 + rust * 0.044 - edgeCavity * 0.028 - handleZone * age * 0.014);
+      const ao = 1 - clamp01(edgeCavity * 0.36 + handleZone * age * 0.16) * 0.52;
+      return { red, green, blue, roughness, metallic, height, ao };
+    }
+
+    function sampleLeather(u, v, age) {
+      const grain = fbm(u * 2.4, v * 3.0);
+      const fiber = valueNoise(u * 0.35 + 1.8, v + 0.2, 34.0);
+      const wrinkle = valueNoise(u + 3.5, v - 1.2, 34.0);
+      const dirt = clamp01(age * (0.30 + grain * 0.24) + smoothstep(0.58, 1.0, v) * age * 0.16);
+      const base = [148, 88, 45];
+      const warmGrain = [184, 112, 58];
+      const dirty = [55, 31, 18];
+      let red = mix(base[0], warmGrain[0], grain * 0.44 + fiber * 0.10);
+      let green = mix(base[1], warmGrain[1], grain * 0.40 + fiber * 0.08);
+      let blue = mix(base[2], warmGrain[2], grain * 0.34 + fiber * 0.06);
+      red = mix(red, dirty[0], dirt);
+      green = mix(green, dirty[1], dirt);
+      blue = mix(blue, dirty[2], dirt);
+      const roughness = clamp01(0.60 + grain * 0.14 + dirt * 0.22);
+      const metallic = 0.0;
+      const height = clamp01(0.50 + grain * 0.022 + fiber * 0.024 + wrinkle * 0.018);
+      const ao = 0.94 - grain * 0.06 - dirt * 0.08;
+      return { red, green, blue, roughness, metallic, height, ao };
+    }
+
+    function sampleSurface(profile, u, v, age) {
+      if (profile.kind === "steel") return sampleSteel(u, v, age, profile);
+      if (profile.kind === "brass") return sampleBrass(u, v, age, profile);
+      if (profile.kind === "leather") return sampleLeather(u, v, age);
+      if (profile.kind === "back") return sampleBack(u, v, age);
+      return sampleBody(u, v, age);
+    }
+
+    function writeColor(data, index, red, green, blue) {
+      data[index] = Math.round(clamp01(red / 255) * 255);
+      data[index + 1] = Math.round(clamp01(green / 255) * 255);
+      data[index + 2] = Math.round(clamp01(blue / 255) * 255);
+      data[index + 3] = 255;
+    }
+
+    function generateMaps(profile, age) {
+      const size = profile.size;
+      const albedoData = new ImageData(size, size);
+      const mrData = new ImageData(size, size);
+      const normalData = new ImageData(size, size);
+      const aoData = new ImageData(size, size);
+      const height = new Float32Array(size * size);
+
+      for (let y = 0; y < size; y++) {
+        const v = 1 - y / (size - 1);
+        for (let x = 0; x < size; x++) {
+          const u = x / (size - 1);
+          const pixel = y * size + x;
+          const index = pixel * 4;
+          const sample = sampleSurface(profile, u, v, age);
+
+          writeColor(albedoData.data, index, sample.red, sample.green, sample.blue);
+          mrData.data[index] = 0;
+          mrData.data[index + 1] = Math.round(clamp01(sample.roughness) * 255);
+          mrData.data[index + 2] = Math.round(clamp01(sample.metallic) * 255);
+          mrData.data[index + 3] = 255;
+
+          const aoValue = Math.round(mix(1.0, clamp01(sample.ao), 0.50) * 255);
+          aoData.data[index] = aoValue;
+          aoData.data[index + 1] = aoValue;
+          aoData.data[index + 2] = aoValue;
+          aoData.data[index + 3] = 255;
+          height[pixel] = sample.height;
+        }
+      }
+
+      const normalHeight = new Float32Array(size * size);
+      for (let y = 0; y < size; y++) {
+        const y0 = Math.max(0, y - 1);
+        const y1 = Math.min(size - 1, y + 1);
+        for (let x = 0; x < size; x++) {
+          const x0 = Math.max(0, x - 1);
+          const x1 = Math.min(size - 1, x + 1);
+          normalHeight[y * size + x] = (
+            height[y * size + x] * 4 +
+            height[y * size + x0] * 2 +
+            height[y * size + x1] * 2 +
+            height[y0 * size + x] * 2 +
+            height[y1 * size + x] * 2 +
+            height[y0 * size + x0] +
+            height[y0 * size + x1] +
+            height[y1 * size + x0] +
+            height[y1 * size + x1]
+          ) / 16;
+        }
+      }
+
+      for (let y = 0; y < size; y++) {
+        const y0 = Math.max(0, y - 1);
+        const y1 = Math.min(size - 1, y + 1);
+        for (let x = 0; x < size; x++) {
+          const x0 = Math.max(0, x - 1);
+          const x1 = Math.min(size - 1, x + 1);
+          const hL = normalHeight[y * size + x0];
+          const hR = normalHeight[y * size + x1];
+          const hU = normalHeight[y0 * size + x];
+          const hD = normalHeight[y1 * size + x];
+          const sx = (hR - hL) * profile.normalStrength;
+          const sy = (hD - hU) * profile.normalStrength;
+          let nx = -sx;
+          let ny = sy;
+          let nz = 1.0;
+          const length = Math.sqrt(nx * nx + ny * ny + nz * nz) || 1;
+          nx /= length;
+          ny /= length;
+          nz /= length;
+          const index = (y * size + x) * 4;
+          normalData.data[index] = Math.round((nx * 0.5 + 0.5) * 255);
+          normalData.data[index + 1] = Math.round((ny * 0.5 + 0.5) * 255);
+          normalData.data[index + 2] = Math.round((nz * 0.5 + 0.5) * 255);
+          normalData.data[index + 3] = 255;
+        }
+      }
+
+      return { albedoData, mrData, normalData, aoData };
+    }
+
+    function drawImageDataToTexture(texture, imageData) {
+      const ctx = texture.getContext();
+      ctx.putImageData(imageData, 0, 0);
+      texture.update(false);
+    }
+
+    function drawPreview(ctx, sourceImageData, channel) {
+      const width = ctx.canvas.width;
+      const height = ctx.canvas.height;
+      const preview = ctx.createImageData(width, height);
+      for (let y = 0; y < height; y++) {
+        const sy = sourceImageData.height - 1 - Math.floor((y / Math.max(1, height - 1)) * (sourceImageData.height - 1));
+        for (let x = 0; x < width; x++) {
+          const sx = Math.floor((x / Math.max(1, width - 1)) * (sourceImageData.width - 1));
+          const target = (y * width + x) * 4;
+          const source = (sy * sourceImageData.width + sx) * 4;
+          let value;
+          if (channel === "metallic") {
+            value = sourceImageData.data[source + 2];
+            preview.data[target] = value;
+            preview.data[target + 1] = value;
+            preview.data[target + 2] = value;
+          } else if (channel === "roughness") {
+            value = sourceImageData.data[source + 1];
+            preview.data[target] = value;
+            preview.data[target + 1] = value;
+            preview.data[target + 2] = value;
+          } else {
+            preview.data[target] = sourceImageData.data[source];
+            preview.data[target + 1] = sourceImageData.data[source + 1];
+            preview.data[target + 2] = sourceImageData.data[source + 2];
+          }
+          preview.data[target + 3] = 255;
+        }
+      }
+      ctx.putImageData(preview, 0, 0);
+    }
+
+    function updateActiveMRTexture(set) {
+      if (!set.latestMrData) return;
+
+      const size = set.profile.size;
+      const activeData = new ImageData(size, size);
+      const flatRoughnessValue = Math.round(set.profile.flatRoughness * 255);
+      const flatMetallicValue = Math.round(set.profile.flatMetallic * 255);
+
+      for (let i = 0; i < set.latestMrData.data.length; i += 4) {
+        activeData.data[i] = 0;
+        activeData.data[i + 1] = activeMaps.roughness ? set.latestMrData.data[i + 1] : flatRoughnessValue;
+        activeData.data[i + 2] = activeMaps.metallic ? set.latestMrData.data[i + 2] : flatMetallicValue;
+        activeData.data[i + 3] = 255;
+      }
+
+      drawImageDataToTexture(set.mrActiveTex, activeData);
+    }
+
+    function applyMapSelection() {
+      mapButtons.forEach((button) => {
+        const active = activeMaps[button.dataset.map];
+        button.style.background = active ? "#212529" : "#fff";
+        button.style.color = active ? "#fff" : "#212529";
+      });
+
+      materialSets.forEach((set) => {
+        const material = set.material;
+        material.albedoTexture = activeMaps.albedo ? set.albedoTex : null;
+        material.albedoColor = activeMaps.albedo ? new BABYLON.Color3(1, 1, 1) : set.profile.flatColor;
+
+        if (activeMaps.roughness || activeMaps.metallic) {
+          updateActiveMRTexture(set);
+          material.metallicTexture = set.mrActiveTex;
+          material.metallic = 1.0;
+          material.roughness = 1.0;
+        } else {
+          material.metallicTexture = null;
+          material.metallic = set.profile.flatMetallic;
+          material.roughness = set.profile.flatRoughness;
+        }
+
+        material.bumpTexture = activeMaps.normal ? set.normalTex : null;
+        if (material.bumpTexture) {
+          const age = set.currentAge || 0;
+          material.bumpTexture.level = set.profile.normalLevel * mix(0.34, 1.0, smoothstep(0.08, 1.0, age));
+        }
+
+        // Babylon PBRMaterial nutzt ambientTexture hier als lokale Occlusion-Map.
+        material.ambientTexture = activeMaps.ao ? set.aoTex : null;
+      });
+
+      const activeLabels = [];
+      if (activeMaps.albedo) activeLabels.push("Base Color");
+      if (activeMaps.roughness) activeLabels.push("Roughness");
+      if (activeMaps.metallic) activeLabels.push("Metallic");
+      if (activeMaps.normal) activeLabels.push("Normal");
+      if (activeMaps.ao) activeLabels.push("AO/Cavity");
+
+      modeTitle.textContent = "Aktiv:";
+      modeText.textContent = activeLabels.length
+        ? activeLabels.join(", ") + " werden aus dem aktuellen Alterungszustand gelesen."
+        : "Alle Maps sind aus. Das Schild verwendet konstante Materialwerte ohne lokale Mikrostruktur.";
+    }
+
+    let mapUpdateTimer = 0;
+
+    function updateAgingLabel() {
+      const age = Number(slider.value) / 100;
+      agingValue.textContent = Math.round(age * 100) + "%";
+      return age;
+    }
+
+    function scheduleMapUpdate() {
+      updateAgingLabel();
+      if (mapUpdateTimer) {
+        window.clearTimeout(mapUpdateTimer);
+      }
+      mapUpdateTimer = window.setTimeout(() => {
+        mapUpdateTimer = 0;
+        updateMaps();
+      }, 140);
+    }
+
+    function updateMaps() {
+      const age = updateAgingLabel();
+
+      materialSets.forEach((set) => {
+        const maps = generateMaps(set.profile, age);
+        drawImageDataToTexture(set.albedoTex, maps.albedoData);
+        drawImageDataToTexture(set.normalTex, maps.normalData);
+        drawImageDataToTexture(set.aoTex, maps.aoData);
+        set.latestAlbedoData = maps.albedoData;
+        set.latestAoData = maps.aoData;
+        set.latestMrData = maps.mrData;
+        set.latestNormalData = maps.normalData;
+        set.currentAge = age;
+      });
+
+      drawMapPreviews(getPreviewMaterialSet());
+
+      updateGemMaterials(age);
+      applyMapSelection();
+    }
+
+    function updateGemMaterials(age) {
+      const dulling = age * 0.10;
+      emeraldGemMaterial.roughness = 0.045 + dulling;
+      rubyGemMaterial.roughness = 0.050 + dulling;
+      emeraldGemMaterial.environmentIntensity = 1.62 - age * 0.18;
+      rubyGemMaterial.environmentIntensity = 1.66 - age * 0.18;
+    }
+
+    function assignImportedMaterials(meshes) {
+      meshes.forEach((mesh) => {
+        if (!mesh.getTotalVertices || mesh.getTotalVertices() === 0) {
+          mesh.parent = assetRoot;
+          return;
+        }
+
+        const name = mesh.name.toLowerCase();
+        const importedMaterialName = mesh.material ? mesh.material.name.toLowerCase() : "";
+        if (name.includes("backbody") || name.includes("plain")) {
+          mesh.material = backSet.material;
+        } else if (name.includes("leather") || importedMaterialName.includes("leather")) {
+          mesh.material = leatherSet.material;
+        } else if (name.includes("boss")) {
+          mesh.material = bossSet.material;
+        } else if (name.includes("emerald")) {
+          mesh.material = emeraldGemMaterial;
+        } else if (name.includes("ruby")) {
+          mesh.material = rubyGemMaterial;
+        } else if (name.includes("brassinlay") || name.includes("riminlay") || (name.includes("brass") && name.includes("rim"))) {
+          mesh.material = rimInlaySet.material;
+        } else if (name.includes("rivet")) {
+          const match = name.match(/rivet_(\d+)/);
+          const rivetIndex = match ? Math.max(0, Number(match[1]) - 1) : 0;
+          mesh.material = rivetSets[rivetIndex % rivetSets.length].material;
+        } else {
+          mesh.material = bodySet.material;
+        }
+        mesh.parent = assetRoot;
+        mesh.isPickable = false;
+      });
+    }
+
+    const assetReady = BABYLON.SceneLoader.ImportMeshAsync("", "../", "pbr_aging_buckler_noring.glb", scene).then((result) => {
+      assignImportedMaterials(result.meshes);
+    });
+
+    slider.addEventListener("input", scheduleMapUpdate);
+    zoomSlider.addEventListener("input", applyZoomFromSlider);
+    presetButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        if (mapUpdateTimer) {
+          window.clearTimeout(mapUpdateTimer);
+          mapUpdateTimer = 0;
+        }
+        slider.value = button.dataset.age;
+        updateMaps();
+      });
+    });
+    mapButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        activeMaps[button.dataset.map] = !activeMaps[button.dataset.map];
+        applyMapSelection();
+      });
+    });
+    if (previewMaterialSelect) {
+      previewMaterialSelect.addEventListener("change", () => {
+        drawMapPreviews(getPreviewMaterialSet());
+      });
+    }
+
+    let captureMode = false;
+
+    updateMaps();
+    applyZoomFromSlider();
+
+    window.agingDemo = {
+      ready: assetReady,
+      setCaptureMode(on) {
+        captureMode = !!on;
+        if (captureMode) assetRoot.rotation.y = 0;
+      },
+      setAgePercent(percent) {
+        if (mapUpdateTimer) {
+          window.clearTimeout(mapUpdateTimer);
+          mapUpdateTimer = 0;
+        }
+        slider.value = String(Math.max(0, Math.min(100, percent)));
+        updateMaps();
+        scene.render();
+      }
+    };
+
+    if (new URLSearchParams(window.location.search).get("capture") === "1") {
+      window.agingDemo.setCaptureMode(true);
+    }
+
+    engine.runRenderLoop(function () {
+      if (!captureMode) {
+        assetRoot.rotation.y = Math.sin(performance.now() * 0.00030) * 0.10;
+      }
+      scene.render();
+    });
+
+    window.addEventListener("resize", function () {
+      engine.resize();
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initAgingDemo);
+  } else {
+    initAgingDemo();
+  }
+})();
