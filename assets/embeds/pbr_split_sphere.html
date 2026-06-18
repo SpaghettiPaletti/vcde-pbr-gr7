@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PBR Split Sphere</title>
+  <style>
+    html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; background: #1a1520; font-family: system-ui, sans-serif; color: #ccc; }
+    .wrap { display: flex; flex-direction: column; height: 100%; padding: 4px 6px 2px; box-sizing: border-box; }
+    .row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-bottom: 4px; font-size: 0.72em; flex-shrink: 0; }
+    .tag { padding: 1px 6px; border-radius: 3px; background: rgba(255,255,255,0.08); white-space: nowrap; }
+    #pbrSplitCanvas { flex: 1; min-height: 0; width: 100%; border-radius: 6px; touch-action: none; display: block; background: #100d14; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="row">
+      <span class="tag">Links: nichtmetall · rau</span>
+      <span class="tag">Rechts: metall · glatt</span>
+      <span class="tag">Gleiche Base Color</span>
+      <span class="tag">Ohne IBL</span>
+    </div>
+    <canvas id="pbrSplitCanvas"></canvas>
+  </div>
+  <script src="https://cdn.babylonjs.com/babylon.js"></script>
+  <script>
+  (function () {
+    const canvas = document.getElementById("pbrSplitCanvas");
+    if (!canvas || typeof BABYLON === "undefined") return;
+    const engine = new BABYLON.Engine(canvas, true);
+    const scene = new BABYLON.Scene(engine);
+    scene.clearColor = new BABYLON.Color4(0.10, 0.08, 0.12, 1);
+
+    const camera = new BABYLON.ArcRotateCamera("cam", -Math.PI / 2, Math.PI / 2.4, 3.2, BABYLON.Vector3.Zero(), scene);
+    camera.attachControl(canvas, true);
+    camera.lowerRadiusLimit = camera.upperRadiusLimit = 3.2;
+
+    const key = new BABYLON.PointLight("key", new BABYLON.Vector3(-2.5, 3, -2), scene);
+    key.intensity = 4.5;
+    const fill = new BABYLON.PointLight("fill", new BABYLON.Vector3(3, 1.5, 2.5), scene);
+    fill.intensity = 1.2;
+    new BABYLON.HemisphericLight("hf", new BABYLON.Vector3(0, 1, 0), scene).intensity = 0.2;
+
+    const base = new BABYLON.Color3(0.77, 0.66, 0.51);
+
+    const dielectric = new BABYLON.PBRMetallicRoughnessMaterial("dielectric", scene);
+    dielectric.baseColor = base;
+    dielectric.metallic = 0.0;
+    dielectric.roughness = 0.58;
+    dielectric.environmentIntensity = 0.0;
+
+    const metal = new BABYLON.PBRMetallicRoughnessMaterial("metal", scene);
+    metal.baseColor = base;
+    metal.metallic = 1.0;
+    metal.roughness = 0.10;
+    metal.environmentIntensity = 0.0;
+
+    const left = BABYLON.MeshBuilder.CreateSphere("left", { diameter: 2, segments: 64, slice: 0.5, sideOrientation: BABYLON.Mesh.FRONTSIDE }, scene);
+    left.rotation.y = Math.PI / 2;
+    left.position.x = -0.002;
+    left.material = dielectric;
+
+    const right = BABYLON.MeshBuilder.CreateSphere("right", { diameter: 2, segments: 64, slice: 0.5, sideOrientation: BABYLON.Mesh.FRONTSIDE }, scene);
+    right.rotation.y = -Math.PI / 2;
+    right.position.x = 0.002;
+    right.material = metal;
+
+    engine.runRenderLoop(() => scene.render());
+    window.addEventListener("resize", () => engine.resize());
+  })();
+  </script>
+</body>
+</html>
