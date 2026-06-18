@@ -320,339 +320,213 @@
     ]
   },
   {
-    "objectID": "slides.html#bullet-listen",
-    "href": "slides.html#bullet-listen",
+    "objectID": "slides.html#agenda",
+    "href": "slides.html#agenda",
     "title": "Physically Based Rendering",
-    "section": "Bullet-Listen",
-    "text": "Bullet-Listen\nStandardmäßig auf einmal:\n\nErster Punkt\nZweiter Punkt\nDritter Punkt\n\n\nMit . . . (drei Punkte) kannst du manuell weitere Inhalte einblenden lassen."
-  },
-  {
-    "objectID": "slides.html#bullets-nacheinander-incremental",
-    "href": "slides.html#bullets-nacheinander-incremental",
-    "title": "Physically Based Rendering",
-    "section": "Bullets nacheinander (incremental)",
-    "text": "Bullets nacheinander (incremental)\n\nErst dieser Punkt\nDann dieser\nUnd dann dieser"
-  },
-  {
-    "objectID": "slides.html#bilder",
-    "href": "slides.html#bilder",
-    "title": "Physically Based Rendering",
-    "section": "Bilder",
-    "text": "Bilder\nBild aus eurem pages/images/ einbinden:\n![](images/beispiel.png){width=50%}\nMit Größenangabe: {width=60%} oder {height=400px}."
-  },
-  {
-    "objectID": "slides.html#latex-formeln",
-    "href": "slides.html#latex-formeln",
-    "title": "Physically Based Rendering",
-    "section": "LaTeX-Formeln",
-    "text": "LaTeX-Formeln\nInline: \\(E = mc^2\\) — funktioniert mitten im Text.\nBlock:\n\\[\nL_o(\\mathbf{x}, \\omega_o) = L_e + \\int_\\Omega f_r\\,L_i\\,(\\omega_i \\cdot \\mathbf{n})\\,d\\omega_i\n\\]"
-  },
-  {
-    "objectID": "slides.html#zwei-spalten",
-    "href": "slides.html#zwei-spalten",
-    "title": "Physically Based Rendering",
-    "section": "Zwei Spalten",
-    "text": "Zwei Spalten\n\n\nLinks: Phong\n\nEmpirisch\nPlastik-Look\nKein Fresnel\n\n\nRechts: PBR\n\nPhysikbasiert\nRealistisch\nEnergieerhaltend"
-  },
-  {
-    "objectID": "slides.html#tabellen",
-    "href": "slides.html#tabellen",
-    "title": "Physically Based Rendering",
-    "section": "Tabellen",
-    "text": "Tabellen\n\n\n\nModell\nEnergieerhaltung\nRealismus\n\n\n\n\nPhong\n❌\nniedrig\n\n\nCook-Torrance\n✅\nhoch\n\n\nDisney\n✅\nsehr hoch"
-  },
-  {
-    "objectID": "slides.html#fragments-schritt-für-schritt",
-    "href": "slides.html#fragments-schritt-für-schritt",
-    "title": "Physically Based Rendering",
-    "section": "Fragments (Schritt-für-Schritt)",
-    "text": "Fragments (Schritt-für-Schritt)\nDieser Teil ist sofort da.\nDieser Teil kommt erst beim ersten Klick.\nDieser Teil kommt beim zweiten Klick.\nUnd dieser hier sogar in Rot."
-  },
-  {
-    "objectID": "slides.html#code-blöcke-mit-syntax-highlighting",
-    "href": "slides.html#code-blöcke-mit-syntax-highlighting",
-    "title": "Physically Based Rendering",
-    "section": "Code-Blöcke mit Syntax-Highlighting",
-    "text": "Code-Blöcke mit Syntax-Highlighting\nimport numpy as np\n\ndef fresnel_schlick(cos_theta, F0):\n    return F0 + (1 - F0) * (1 - cos_theta) ** 5\n// In einem Fragment-Shader\nvec3 F = F0 + (1.0 - F0) * pow(1.0 - dot(N, V), 5.0);"
-  },
-  {
-    "objectID": "slides.html#ausführbares-python-plot",
-    "href": "slides.html#ausführbares-python-plot",
-    "title": "Physically Based Rendering",
-    "section": "Ausführbares Python (Plot)",
-    "text": "Ausführbares Python (Plot)\n\n\n\n\n\n\n\n\n\n→ Plots werden beim Rendern automatisch eingebettet."
-  },
-  {
-    "objectID": "slides.html#interaktive-3d-demo-babylon.js",
-    "href": "slides.html#interaktive-3d-demo-babylon.js",
-    "title": "Physically Based Rendering",
-    "section": "Interaktive 3D-Demo (Babylon.js)",
-    "text": "Interaktive 3D-Demo (Babylon.js)\n\n\n\n\nSpeaker-Note: Drehe die Kugel mit der Maus — die Demo läuft live in der Folie. Eindeutige Canvas-ID pro Folie!"
-  },
-  {
-    "objectID": "slides.html#callouts-hinweis-boxen",
-    "href": "slides.html#callouts-hinweis-boxen",
-    "title": "Physically Based Rendering",
-    "section": "Callouts (Hinweis-Boxen)",
-    "text": "Callouts (Hinweis-Boxen)\n\n\n\n\n\n\nNote\n\n\nNote-Box für allgemeine Hinweise.\n\n\n\n\n\n\n\n\n\nTip\n\n\nTipp für die Praxis.\n\n\n\n\n\n\n\n\n\nWarning\n\n\nAchtung-Box.\n\n\n\n\n\n\n\n\n\nImportant\n\n\nWichtige Aussage hervorheben."
-  },
-  {
-    "objectID": "slides.html#folien-hintergrundfarbe",
-    "href": "slides.html#folien-hintergrundfarbe",
-    "title": "Physically Based Rendering",
-    "section": "Folien-Hintergrundfarbe",
-    "text": "Folien-Hintergrundfarbe\nSetze hinter den Titel {background-color=\"#1f2937\"} — diese Section-Folie (# 🧪 SHOWCASE) macht genau das.\nAuch möglich: {background-image=\"bild.jpg\"} für Vollbild-Bilder."
-  },
-  {
-    "objectID": "slides.html#speaker-notes-für-s-view",
-    "href": "slides.html#speaker-notes-für-s-view",
-    "title": "Physically Based Rendering",
-    "section": "Speaker-Notes (für S-View)",
-    "text": "Speaker-Notes (für S-View)\nSchreibe so:\n::: {.notes}\nStichpunkte, die nur ihr im Speaker-View seht.\n:::\nMit S öffnet sich ein zweites Fenster mit Notizen + Timer + Vorschau der nächsten Folie."
-  },
-  {
-    "objectID": "slides.html#ende-showcase",
-    "href": "slides.html#ende-showcase",
-    "title": "Physically Based Rendering",
-    "section": "— Ende Showcase —",
-    "text": "— Ende Showcase —\n\n\n\n\n\n\nTip\n\n\nAb hier beginnt das eigentliche Grundgerüst eurer Präsentation. Alles davor kann gelöscht werden."
+    "section": "Agenda",
+    "text": "Agenda\n\nProblem & Motivation (Team)\n1 · Phong & seine Grenzen (Stefan)\n2 · PBR-Prinzipien (Celia)\n3 · Materialmodell (Alexander)\n4 · Image Based Lighting (Stefan)\nVertiefung: Materialalterung (Alexander)\nQuiz & Diskussion (Team)"
   },
   {
     "objectID": "slides.html#was-ist-pbr",
     "href": "slides.html#was-ist-pbr",
     "title": "Physically Based Rendering",
     "section": "Was ist PBR?",
-    "text": "Was ist PBR?\n\nTODO: Kernaussage aus index.qmd — physikalisch korrekte Simulation von Licht-Material-Interaktion.\n\n\nEmpirisch → physikbasiert\nMikrofacetten + Energieerhaltung"
+    "text": "Was ist PBR?\n\nPhysically Based Rendering simuliert die Interaktion von Licht und Material physikalisch korrekt — mathematisch approximiert\nStatt Lichteffekte visuell zu schätzen → echte physikalische Gesetze\nZwei Grundpfeiler: Mikrofacetten-Theorie und Energieerhaltung"
   },
   {
-    "objectID": "slides.html#warum-pbr",
-    "href": "slides.html#warum-pbr",
+    "objectID": "slides.html#warum-brauchen-wir-das",
+    "href": "slides.html#warum-brauchen-wir-das",
     "title": "Physically Based Rendering",
-    "section": "Warum PBR?",
-    "text": "Warum PBR?\n\nTODO: 3-4 Vorteile als Bullets (Fotorealismus, Konsistenz, Workflow, Industriestandard)."
+    "section": "Warum brauchen wir das?",
+    "text": "Warum brauchen wir das?\n\nFotorealismus — Industrie-Standard für moderne Echtzeitgrafik (Unreal, Unity) und Film\nPhysikalische Korrektheit — ein Objekt reflektiert nie mehr Licht als es empfängt\nKonsistenz — ein einmal erstelltes Material wirkt unter jeder Beleuchtung plausibel\nIntuitive Workflows — Artists arbeiten mit Roughness und Metallic, nicht mit Specular-Exponenten"
   },
   {
     "objectID": "slides.html#das-ziel-fotorealismus-in-echtzeit",
     "href": "slides.html#das-ziel-fotorealismus-in-echtzeit",
     "title": "Physically Based Rendering",
     "section": "Das Ziel: Fotorealismus in Echtzeit",
-    "text": "Das Ziel: Fotorealismus in Echtzeit\n\nTODO: Babylon-Goldkugel-Demo aus index.qmd einbetten (Canvas-ID anpassen!)."
+    "text": "Das Ziel: Fotorealismus in Echtzeit\n\n\n  Goldenes PBR-Material kombiniert mit Image Based Lighting — Vorgeschmack auf Sektion 3 + 4."
   },
   {
-    "objectID": "slides.html#was-war-phong",
-    "href": "slides.html#was-war-phong",
+    "objectID": "slides.html#einstieg-zwei-welten-eine-geometrie",
+    "href": "slides.html#einstieg-zwei-welten-eine-geometrie",
     "title": "Physically Based Rendering",
-    "section": "Was war Phong?",
-    "text": "Was war Phong?\n\nTODO: Kurz-Erinnerung, die drei Komponenten (Ambient, Diffuse, Specular)."
+    "section": "Einstieg — zwei Welten, eine Geometrie",
+    "text": "Einstieg — zwei Welten, eine Geometrie\n\nWas wir gleich sehen:\n\n\nIdentische Form, identische Beleuchtungssituation\nLinks: das klassische Phong-Modell\nRechts: ein modernes PBR-Material\n\n\n„Schaut hin — und entscheidet selbst, welches Material ihr für echt haltet.”"
   },
   {
     "objectID": "slides.html#phong-vs.-pbr-direkter-vergleich",
     "href": "slides.html#phong-vs.-pbr-direkter-vergleich",
     "title": "Physically Based Rendering",
-    "section": "Phong vs. PBR – direkter Vergleich",
-    "text": "Phong vs. PBR – direkter Vergleich\n\nTODO: Demo aus pages/1_phong_grenzen.qmd (zwei Canvases nebeneinander) übernehmen."
+    "section": "Phong vs. PBR — direkter Vergleich",
+    "text": "Phong vs. PBR — direkter Vergleich\n\n  \n    Klassisches Phong\n    \n    Harter Glanzpunkt, keine Energieerhaltung.\n  \n  \n    Physically Based Rendering\n    \n    Energieerhaltend, Fresnel an den Rändern."
   },
   {
-    "objectID": "slides.html#interaktive-analyse-der-komponenten",
-    "href": "slides.html#interaktive-analyse-der-komponenten",
+    "objectID": "slides.html#was-war-phong-nochmal",
+    "href": "slides.html#was-war-phong-nochmal",
     "title": "Physically Based Rendering",
-    "section": "Interaktive Analyse der Komponenten",
-    "text": "Interaktive Analyse der Komponenten\n\nTODO: Phong-Slider-Demo aus Kapitel 1."
+    "section": "Was war Phong nochmal?",
+    "text": "Was war Phong nochmal?\nPhong (Bui Tuong Phong, 1973) berechnet die Pixelfarbe als Summe von vier Beleuchtungs-Termen:\n\\[\\text{Farbe} = \\underbrace{e_{\\text{mat}}}_{\\text{Emissiv}} + \\underbrace{a_{\\text{light}} \\cdot a_{\\text{mat}}}_{\\text{Ambient}} + \\underbrace{(l \\cdot n) \\cdot d_{\\text{light}} \\cdot d_{\\text{mat}}}_{\\text{Diffus}} + \\underbrace{(h \\cdot n)^S \\cdot s_{\\text{light}} \\cdot s_{\\text{mat}}}_{\\text{Spekular}}\\]\n\n\n\\(l\\), \\(n\\), \\(h\\) = Licht-, Normalen- und Halbvektor (Halbvektor liegt zwischen Licht und Kamera)\n\\(S\\) = Shininess-Exponent (steuert die Schärfe des Glanzpunkts)\nIndex \\(\\text{light}\\) = Eigenschaft der Lichtquelle, Index \\(\\text{mat}\\) = Eigenschaft des Materials\nSkalarprodukte wie \\((l \\cdot n)\\) entsprechen dem Cosinus des Winkels zwischen den beiden Vektoren\n\n\n\nLokales Modell — kennt nur die direkte Beziehung Lichtquelle ↔︎ Pixel ↔︎ Kamera.\n\n\n→ Die Schwäche: Lichtwerte werden stur addiert — ohne Begrenzung."
   },
   {
-    "objectID": "slides.html#diskussion-mit-dem-publikum",
-    "href": "slides.html#diskussion-mit-dem-publikum",
+    "objectID": "slides.html#das-kern-problem-energieerhaltung",
+    "href": "slides.html#das-kern-problem-energieerhaltung",
     "title": "Physically Based Rendering",
-    "section": "Diskussion mit dem Publikum",
-    "text": "Diskussion mit dem Publikum\n\nTODO: Die Vergleichsfragen aus Kapitel 1 — als Bullets oder Frage-Fragments."
-  },
-  {
-    "objectID": "slides.html#warum-reichen-empirische-modelle-nicht",
-    "href": "slides.html#warum-reichen-empirische-modelle-nicht",
-    "title": "Physically Based Rendering",
-    "section": "Warum reichen empirische Modelle nicht?",
-    "text": "Warum reichen empirische Modelle nicht?\n\nTODO: Brücke zu Kapitel 2 — Motivation für physikalische Grundlagen."
+    "section": "Das Kern-Problem: Energieerhaltung",
+    "text": "Das Kern-Problem: Energieerhaltung\n\nPhong addiert blind → ein Objekt kann mehr Licht reflektieren als es empfängt\nIn der echten Welt ist das physikalisch unmöglich\nResultat: übersättigte, plastikartige Materialien — der typische „Phong-Look”\n\n\n→ PBR-Antwort: Eintreffendes Licht wird aufgeteilt in reflektierten und gestreuten Anteil. Was spiegelnd weggeht, kann nicht mehr diffus streuen. Das Budget bleibt gewahrt."
   },
   {
     "objectID": "slides.html#die-rendering-gleichung",
     "href": "slides.html#die-rendering-gleichung",
     "title": "Physically Based Rendering",
     "section": "Die Rendering-Gleichung",
-    "text": "Die Rendering-Gleichung\n\nTODO: Formel + kurze Worte zu jedem Term."
-  },
-  {
-    "objectID": "slides.html#die-brdf-f_r",
-    "href": "slides.html#die-brdf-f_r",
-    "title": "Physically Based Rendering",
-    "section": "Die BRDF \\(f_r\\)",
-    "text": "Die BRDF \\(f_r\\)\n\nTODO: Definition + Rolle in der Rendering-Gleichung."
+    "text": "Die Rendering-Gleichung\n\nTODO (Celia): Formel + 1-Satz-Erklärung pro Term."
   },
   {
     "objectID": "slides.html#mikrofacetten-theorie",
     "href": "slides.html#mikrofacetten-theorie",
     "title": "Physically Based Rendering",
     "section": "Mikrofacetten-Theorie",
-    "text": "Mikrofacetten-Theorie\n\nTODO: Grundidee — Oberflächen aus mikroskopischen Spiegelchen."
+    "text": "Mikrofacetten-Theorie\n\nTODO (Celia): Grundidee — Oberflächen als Wolke mikroskopischer Spiegel."
   },
   {
-    "objectID": "slides.html#cook-torrance-brdf",
-    "href": "slides.html#cook-torrance-brdf",
+    "objectID": "slides.html#cook-torrance-brdf-f-d-g",
+    "href": "slides.html#cook-torrance-brdf-f-d-g",
     "title": "Physically Based Rendering",
-    "section": "Cook-Torrance-BRDF",
-    "text": "Cook-Torrance-BRDF\n\nTODO: Die Formel mit den drei Termen F, D, G."
+    "section": "Cook-Torrance BRDF — F · D · G",
+    "text": "Cook-Torrance BRDF — F · D · G\n\nTODO (Celia): Die drei Terme in Übersicht. Vielleicht eine Folie pro Term mit Diagramm."
   },
   {
-    "objectID": "slides.html#fresnel-term-f",
-    "href": "slides.html#fresnel-term-f",
+    "objectID": "slides.html#energieerhaltung-in-pbr",
+    "href": "slides.html#energieerhaltung-in-pbr",
     "title": "Physically Based Rendering",
-    "section": "Fresnel-Term \\(F\\)",
-    "text": "Fresnel-Term \\(F\\)\n\nTODO: Schlick-Approximation + Diagramm (Python-Plot ist im Showcase)."
+    "section": "Energieerhaltung in PBR",
+    "text": "Energieerhaltung in PBR\n\nTODO (Celia): Zurückgreifen auf Stefans Pointe — jetzt mathematisch gelöst."
   },
   {
-    "objectID": "slides.html#normal-distribution-function-d",
-    "href": "slides.html#normal-distribution-function-d",
+    "objectID": "slides.html#verständnis-check-mini",
+    "href": "slides.html#verständnis-check-mini",
     "title": "Physically Based Rendering",
-    "section": "Normal Distribution Function \\(D\\)",
-    "text": "Normal Distribution Function \\(D\\)\n\nTODO: GGX/Trowbridge-Reitz — was steuert Roughness?"
-  },
-  {
-    "objectID": "slides.html#geometry-term-g",
-    "href": "slides.html#geometry-term-g",
-    "title": "Physically Based Rendering",
-    "section": "Geometry-Term \\(G\\)",
-    "text": "Geometry-Term \\(G\\)\n\nTODO: Self-Shadowing der Mikrofacetten."
-  },
-  {
-    "objectID": "slides.html#der-diffuse-anteil",
-    "href": "slides.html#der-diffuse-anteil",
-    "title": "Physically Based Rendering",
-    "section": "Der diffuse Anteil",
-    "text": "Der diffuse Anteil\n\nTODO: Lambert vs. Disney-Diffuse."
-  },
-  {
-    "objectID": "slides.html#energieerhaltung",
-    "href": "slides.html#energieerhaltung",
-    "title": "Physically Based Rendering",
-    "section": "Energieerhaltung",
-    "text": "Energieerhaltung\n\nTODO: \\(k_d + k_s \\leq 1\\) — warum das in Phong fehlt."
-  },
-  {
-    "objectID": "slides.html#zusammenspiel-der-prinzipien",
-    "href": "slides.html#zusammenspiel-der-prinzipien",
-    "title": "Physically Based Rendering",
-    "section": "Zusammenspiel der Prinzipien",
-    "text": "Zusammenspiel der Prinzipien\n\nTODO: Alles zusammensetzen — Cook-Torrance + diffuse + Energieerhaltung."
-  },
-  {
-    "objectID": "slides.html#verständnis-check",
-    "href": "slides.html#verständnis-check",
-    "title": "Physically Based Rendering",
-    "section": "Verständnis-Check",
-    "text": "Verständnis-Check\n\nTODO: Quizfrage(n) ans Publikum — vielleicht mit incremental-Reveal der Antwort."
+    "section": "Verständnis-Check (Mini)",
+    "text": "Verständnis-Check (Mini)\n\nTODO (Celia, optional): Eine Quiz-Frage als Brücke zum Materialmodell."
   },
   {
     "objectID": "slides.html#von-der-brdf-zum-metal-roughness-workflow",
     "href": "slides.html#von-der-brdf-zum-metal-roughness-workflow",
     "title": "Physically Based Rendering",
     "section": "Von der BRDF zum Metal-Roughness-Workflow",
-    "text": "Von der BRDF zum Metal-Roughness-Workflow\n\nKapitel 2: Cook-Torrance mit \\(D\\), \\(F\\), \\(G\\) – in der Engine nicht direkt einstellbar\nStattdessen: baseColor, metallic, roughness (+ Texture Maps)\nBabylon.js: PBRMetallicRoughnessMaterial als praktische Steuerungsebene\n\n\nAlexander Kohl · ~8,5 Min. gesamt (Kap. 3 + X, inkl. OpenPBR-Kurzfolie)\n~40 Sek. Brücke von Kap. 2. Nicht Formeln wiederholen – Fokus: Was stelle ich in der Praxis ein?"
+    "text": "Von der BRDF zum Metal-Roughness-Workflow\n\nKapitel 2: Cook-Torrance mit \\(D\\), \\(F\\), \\(G\\) – in der Engine nicht direkt einstellbar\nStattdessen: baseColor, metallic, roughness (+ Texture Maps)\nBabylon.js: PBRMetallicRoughnessMaterial als praktische Steuerungsebene"
   },
   {
     "objectID": "slides.html#base-color-metallic-roughness",
     "href": "slides.html#base-color-metallic-roughness",
     "title": "Physically Based Rendering",
     "section": "Base Color, Metallic & Roughness",
-    "text": "Base Color, Metallic & Roughness\n\n\n\n\n\nGleiche Base Color, unterschiedliche Bedeutung\nNichtmetall: Farbe überall sichtbar\nMetall: Farbe nur in Reflexionen\nRoughness: niedrig = fokussierte Reflexion, hoch = gestreute Reflexion\n\n\n\n~40 Sek. Verweis auf Babylon Intro to PBR – dort mit IBL; wir zeigen den Mechanismus isoliert.\nNichtmetall vs. Metall ausformulieren: Links ist die Base Color die sichtbare Körperfarbe. Rechts färbt sie nur Spiegelungen – dazwischen wirkt es dunkel, weil Metall kaum streuendes Licht abgibt (fehlendes Licht, nicht „schwarze Farbe“).\nRoughness: steuert, wie stark Reflexionen gestreut werden – glatte Oberfläche: kompakte Reflexion; raue Oberfläche: breit verteilte Reflexion (wie mattes Metall).\nDanach Fass: ein Objekt, verschiedene Materialwerte pro Texel."
+    "text": "Base Color, Metallic & Roughness\n\n\n\n\n\nGleiche Base Color, unterschiedliche Bedeutung\nNichtmetall: Farbe überall sichtbar\nMetall: Farbe nur in Reflexionen\nRoughness: niedrig = fokussierte Reflexion, hoch = gestreute Reflexion"
   },
   {
     "objectID": "slides.html#demo-holzfass-global-vs.-maps",
     "href": "slides.html#demo-holzfass-global-vs.-maps",
     "title": "Physically Based Rendering",
     "section": "Demo: Holzfass – global vs. Maps",
-    "text": "Demo: Holzfass – global vs. Maps\n\n  \n    Maps laden\n    Global aktiv\n    Mattes Dielektrikum\n    Glattes Metall\n    Metallic \n    Roughness \n  \n  \n\n\n\n\n\n~2,5 Min. LIVE: (1) Presets mit gleicher Farbe – Metallic-Effekt zeigen. (2) Maps laden → Holz vs. Eisenbänder. (3) Kurz: bewusst ohne IBL – Grenze folgt nach OpenPBR-Exkurs."
+    "text": "Demo: Holzfass – global vs. Maps\n\n  \n    Maps laden\n    Global aktiv\n    Mattes Dielektrikum\n    Glattes Metall\n    Metallic \n    Roughness"
   },
   {
     "objectID": "slides.html#exkurs-openpbr-über-metalroughness-hinaus",
     "href": "slides.html#exkurs-openpbr-über-metalroughness-hinaus",
     "title": "Physically Based Rendering",
     "section": "Exkurs: OpenPBR – über Metal/Roughness hinaus",
-    "text": "Exkurs: OpenPBR – über Metal/Roughness hinaus\n\n\n\nSchichtmodell · OpenPBR Spec.\n\n\nMetal/Roughness = Basisfall in Babylon.js\nOpenPBR: Coat, Fuzz, Subsurface, Thin-Film …\n\n\n\n\nBeispiel-Render · OpenPBR Shader Playground\n\n\nMaterialX: Referenzimplementierung im Browser\n\n\n\n\n~30 Sek. Optional/kurz: zeigt Breite des PBR-Ökosystems – nicht vertiefen. Das Shader-Playground-Beispiel zeigt Materialien, die mit drei Parametern (baseColor, metallic, roughness) nicht abbildbar sind – z. B. Lack über Holz (Coat), Stoff (Fuzz), Glas mit Dispersion."
+    "text": "Exkurs: OpenPBR – über Metal/Roughness hinaus\n\n\n\nSchichtmodell · OpenPBR Spec.\n\n\nMetal/Roughness = Basisfall in Babylon.js\nOpenPBR: Coat, Fuzz, Subsurface, Thin-Film …\n\n\n\n\nBeispiel-Render · OpenPBR Shader Playground\n\n\nMaterialX: Referenzimplementierung im Browser"
   },
   {
     "objectID": "slides.html#grenze-punktlicht-reicht-für-metall-nicht",
     "href": "slides.html#grenze-punktlicht-reicht-für-metall-nicht",
     "title": "Physically Based Rendering",
     "section": "Grenze: Punktlicht reicht für Metall nicht",
-    "text": "Grenze: Punktlicht reicht für Metall nicht\n\n\n\nOhne IBL · nur Punktlichter\n\n\n\n\nMit IBL · Umgebung sichtbar\n\n\n\n\n~30 Sek. Zwei getrennte Demos: links keine Environment Map (nur Punktlichter, leere Zwischenräume), rechts Stadt-IBL (Umgebung spiegelt sich). Übergabe an Stefan Jordan · Kap. 4."
+    "text": "Grenze: Punktlicht reicht für Metall nicht\n\n\n\nOhne IBL · nur Punktlichter\n\n\n\n\nMit IBL · Umgebung sichtbar"
   },
   {
-    "objectID": "slides.html#der-fehlende-baustein",
-    "href": "slides.html#der-fehlende-baustein",
+    "objectID": "slides.html#der-fehlende-baustein-im-pbr-system",
+    "href": "slides.html#der-fehlende-baustein-im-pbr-system",
     "title": "Physically Based Rendering",
-    "section": "Der fehlende Baustein",
-    "text": "Der fehlende Baustein\n\nTODO: Was bisher fehlt — indirekte Beleuchtung aus der Umgebung."
+    "section": "Der fehlende Baustein im PBR-System",
+    "text": "Der fehlende Baustein im PBR-System\n\nDas PBR-Material ist physikalisch korrekt — aber passiv\nIn einer schwarzen Welt bleibt selbst perfektes Gold schwarz\nWas fehlt: Lichtinformation aus der Umgebung\n\n\n„Das Materialmodell sagt wie ein Objekt auf Licht reagiert. IBL sagt welches Licht überhaupt da ist.”"
   },
   {
-    "objectID": "slides.html#was-ist-ibl",
-    "href": "slides.html#was-ist-ibl",
+    "objectID": "slides.html#was-ist-image-based-lighting",
+    "href": "slides.html#was-ist-image-based-lighting",
     "title": "Physically Based Rendering",
-    "section": "Was ist IBL?",
-    "text": "Was ist IBL?\n\nTODO: HDR-Environment-Maps, Cubemaps."
+    "section": "Was ist Image Based Lighting?",
+    "text": "Was ist Image Based Lighting?\n\nHDRI statt Punktlicht — 360°-Panorama der echten Welt (High Dynamic Range Image)\nJeder Pixel ist eine Lichtquelle — Sonne liefert viel Energie, Himmel sanftes Blau\nKonsequenz: Energiebudget aus allen Richtungen — nicht nur aus einer\n\n\nDrei Dinge, die IBL für PBR möglich macht:\n\n\nVervollständigt die Energieerhaltung (definiertes Umgebungs-Budget)\nMacht Metallizität sichtbar (Spiegel braucht etwas zum Spiegeln)\nLiefert den Kontext für den Fresnel-Effekt (Licht aus allen Winkeln)"
   },
   {
-    "objectID": "slides.html#demo-torus-knoten-in-verschiedenen-welten",
-    "href": "slides.html#demo-torus-knoten-in-verschiedenen-welten",
+    "objectID": "slides.html#live-demo-eine-kugel-fünf-welten",
+    "href": "slides.html#live-demo-eine-kugel-fünf-welten",
     "title": "Physically Based Rendering",
-    "section": "Demo: Torus-Knoten in verschiedenen Welten",
-    "text": "Demo: Torus-Knoten in verschiedenen Welten\n\nTODO: Interaktive Demo aus pages/4_ibl.qmd einbetten."
+    "section": "Live-Demo: Eine Kugel, fünf Welten",
+    "text": "Live-Demo: Eine Kugel, fünf Welten\n\n  \n    Umgebung:\n      \n        Stadt (Neutral)\n        Landschaft (Offen)\n        Wald (Grünlich)\n        Nacht (Dunkel)\n        Innenraum (Warm)"
   },
   {
-    "objectID": "slides.html#die-mathematische-lösung",
-    "href": "slides.html#die-mathematische-lösung",
+    "objectID": "slides.html#wie-schafft-das-die-gpu-in-echtzeit",
+    "href": "slides.html#wie-schafft-das-die-gpu-in-echtzeit",
     "title": "Physically Based Rendering",
-    "section": "Die mathematische Lösung",
-    "text": "Die mathematische Lösung\n\nTODO: Split-Sum-Approximation — Übersichtsfolie.\n\nPre-filtered Environment Map\n\nTODO: Vorfilterung nach Roughness.\n\nBRDF-Integration (Look-Up-Table)\n\nTODO: 2D-LUT, einmal pro Engine vorberechnet.\n\nZusammenführung\n\nTODO: \\(L_o \\approx \\text{Prefilter}(R, \\alpha) \\cdot \\text{LUT}(N\\cdot V, \\alpha)\\)."
+    "section": "Wie schafft das die GPU in Echtzeit?",
+    "text": "Wie schafft das die GPU in Echtzeit?\n\nEchtes Integral pro Pixel pro Frame?\n\n\n→ Viel zu teuer.\n\n\nTrick (Epic Games, 2013): Split-Sum-Approximation. Das Integral wird in zwei vorberechnete Teile zerlegt:\n\n\n\\[L_{\\text{IBL}} \\approx \\underbrace{\\text{PreFilteredMap}(R,\\,\\alpha)}_{\\text{Licht der Umgebung}} \\;\\cdot\\; \\underbrace{\\text{BRDF-LUT}(n\\cdot v,\\,\\alpha)}_{\\text{Material-Antwort}}\\]\n\n\n\n\\(R\\) = Reflexionsvektor, \\(\\alpha\\) = Rauheit (Roughness)\n\\(n \\cdot v\\) = Skalarprodukt aus Normale und Blickrichtung (= wie steil die Kamera auf die Fläche schaut)\n\\(\\text{PreFilteredMap}\\) = vorab erzeugte, je nach Rauheit unscharfe Versionen der Umgebung\n\\(\\text{BRDF-LUT}\\) = einmalig vorberechnete Look-Up-Textur mit den Material-Antworten"
   },
   {
     "objectID": "slides.html#warum-alterung-eine-pbr-frage-ist",
     "href": "slides.html#warum-alterung-eine-pbr-frage-ist",
     "title": "Physically Based Rendering",
     "section": "Warum Alterung eine PBR-Frage ist",
-    "text": "Warum Alterung eine PBR-Frage ist\n\nIn echten Szenen ändern sich Materialwerte: Oxidation, Schmutz, Abnutzung\nNicht nur Farbe, sondern auch Metallic, Roughness, Normal, AO/Cavity\nKernthese: realistische Alterung = mehrere Maps gemeinsam verändern\n\n\n~50 Sek. Anschluss nach IBL: Materialparameter sind nicht zeitlich konstant."
+    "text": "Warum Alterung eine PBR-Frage ist\n\nIn echten Szenen ändern sich Materialwerte: Oxidation, Schmutz, Abnutzung\nNicht nur Farbe, sondern auch Metallic, Roughness, Normal, AO/Cavity\nKernthese: realistische Alterung = mehrere Maps gemeinsam verändern"
   },
   {
     "objectID": "slides.html#vier-maps-ein-slider",
     "href": "slides.html#vier-maps-ein-slider",
     "title": "Physically Based Rendering",
     "section": "Vier Maps, ein Slider",
-    "text": "Vier Maps, ein Slider\n\n\n\n\n\nAlbedo: Rost, Patina, Verdunkelung\nRoughness: gealtert = matter – Reflexionen breiter gestreut\nMetallic: Oxid → nichtmetallisch\nNormal / AO: Mikrostruktur & Fugen (PBRMaterial Workflow)\n\n\n\n~45 Sek. GIF zeigen (0 % → 100 % Vorschau). Kein Untertitel auf der Folie – vermeidet Abschneiden."
+    "text": "Vier Maps, ein Slider\n\n\n\n\n\nAlbedo: Rost, Patina, Verdunkelung\nRoughness: gealtert = matter – Reflexionen breiter gestreut\nMetallic: Oxid → nichtmetallisch\nNormal / AO: Mikrostruktur & Fugen (PBRMaterial Workflow)"
   },
   {
     "objectID": "slides.html#demo-buckler-schild-altert",
     "href": "slides.html#demo-buckler-schild-altert",
     "title": "Physically Based Rendering",
     "section": "Demo: Buckler-Schild altert",
-    "text": "Demo: Buckler-Schild altert\n\n\n~2,5 Min. LIVE auf der Webseite: Slider 0→76→100, Map-Toggles einzeln aus, Presets. IBL ist hier aktiv (Gegensatz zum Fass). Kurz: prozedurale Maps, kein Chemie-Simulator."
+    "text": "Demo: Buckler-Schild altert"
   },
   {
     "objectID": "slides.html#grenzen-ausblick",
     "href": "slides.html#grenzen-ausblick",
     "title": "Physically Based Rendering",
     "section": "Grenzen & Ausblick",
-    "text": "Grenzen & Ausblick\n\nVereinfachung: prozedurale Masken, keine Korrosionsphysik\nIn Produktion: Maps aus Substance Painter oder vorgebaute AO-/Curvature-Maps aus Blender\nGleicher PBR-Workflow – nur detailliertere Texturen als Eingabe\n\n\n~40 Sek. Ehrlich Grenzen nennen.\nWas bedeutet der Produktions-Punkt? Unsere Demo erzeugt Maps per Shader im Browser. In echter Produktion malt man sie in Tools wie Substance Painter, oder Blender „baked“ (vorgebaut/exportiert) aus der Geometrie AO und Curvature in Texturen – z. B. dunkle Fugen, helle Kanten. Gleiche Maps (Albedo, Metallic, Roughness …), nur aus reicheren Quellen.\nOptional: „Details auf der Webseite · Vertiefung“."
+    "text": "Grenzen & Ausblick\n\nVereinfachung: prozedurale Masken, keine Korrosionsphysik\nIn Produktion: Maps aus Substance Painter oder vorgebaute AO-/Curvature-Maps aus Blender\nGleicher PBR-Workflow – nur detailliertere Texturen als Eingabe"
+  },
+  {
+    "objectID": "slides.html#lernzielabfrage-3-fragen",
+    "href": "slides.html#lernzielabfrage-3-fragen",
+    "title": "Physically Based Rendering",
+    "section": "Lernzielabfrage — 3 Fragen",
+    "text": "Lernzielabfrage — 3 Fragen\n\nWas ist der Unterschied zwischen Phong und PBR in einem Satz?\nWarum braucht PBR Image Based Lighting?\nWelche zwei zentralen Material-Parameter nutzt der PBR-Workflow?"
   },
   {
     "objectID": "slides.html#take-aways",
     "href": "slides.html#take-aways",
     "title": "Physically Based Rendering",
     "section": "Take-Aways",
-    "text": "Take-Aways\n\nTODO: 3–4 zentrale Botschaften als Bullets."
+    "text": "Take-Aways\n\nPhong war gut, aber blind für Physik (Energieerhaltung)\nPBR-Prinzipien (Mikrofacetten, F·D·G, Energieerhaltung) lösen das mathematisch\nMaterialmodell (Metallic/Roughness) macht es benutzbar für Artists\nIBL liefert das Licht — ohne sie ist PBR nur halb da\nAusblick: Material über Zeit (Alterung) ist die nächste Frontier"
   },
   {
-    "objectID": "slides.html#fragen",
-    "href": "slides.html#fragen",
+    "objectID": "slides.html#wer-hat-was-gemacht",
+    "href": "slides.html#wer-hat-was-gemacht",
     "title": "Physically Based Rendering",
-    "section": "Fragen?",
-    "text": "Fragen?\n\nVielen Dank! 🎨\n\n\nCelia Baumann · Stefan Jordan · Alexander Kohl"
+    "section": "Wer hat was gemacht?",
+    "text": "Wer hat was gemacht?\n\n\n\nKapitel\nWebseite\nPräsentation\n\n\n\n\nEinleitung\nTeam\nTeam\n\n\n1 · Phong & Grenzen\nStefan\nStefan\n\n\n2 · PBR-Prinzipien\nCelia\nCelia\n\n\n3 · Materialmodell\nAlexander\nAlexander\n\n\n4 · Image Based Lighting\nStefan\nStefan\n\n\nVertiefung · Materialalterung\nAlexander\nAlexander\n\n\nQuiz & Diskussion\n—\nTeam"
+  },
+  {
+    "objectID": "slides.html#vielen-dank",
+    "href": "slides.html#vielen-dank",
+    "title": "Physically Based Rendering",
+    "section": "Vielen Dank!",
+    "text": "Vielen Dank!\n\nFragen?\n\n\nCelia Baumann · Stefan Jordan · Alexander Kohl\n\n\nspaghettipaletti.github.io/vcde-pbr-gr7"
   }
 ]
