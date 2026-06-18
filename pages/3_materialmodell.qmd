@@ -65,7 +65,17 @@ Die Demonstration wird mit Babylon.js umgesetzt. Die Begriffe bleiben deshalb be
 | `metallic` | Mischung zwischen Nichtmetall und Metall | verändert die Gewichtung zwischen diffusem und spekularem Verhalten |
 | `roughness` | Rauheit der Oberfläche | beeinflusst die Breite der spekularen Reflexion und damit die Wirkung des $D$-Terms |
 
-Die Presets in der Demo setzen gezielt Grenzfälle mit gleicher Base Color. Dadurch wird sichtbar, dass die Farbe je nach `metallic`-Wert entweder als diffuse Körperfarbe oder als farbige spekulare Reflexion ausgewertet wird.
+### Zuerst isoliert: gleiche Base Color, anderes Material
+
+Bevor ein Objekt **gleichzeitig** Holz und Metall zeigt, lohnt sich ein Grenzfall an einer einfachen Geometrie. Die folgende Kugel ist in zwei Hälften geteilt – links ein Dielektrikum, rechts ein Metall, beide mit **derselben Base Color** und **ohne IBL** (nur Testlichter). Das Vorbild ähnelt der [Babylon.js Intro-to-PBR](https://doc.babylonjs.com/features/featuresDeepDive/materials/using/introToPBR)-Darstellung; dort wirkt die metallische Hälfte durch Umgebungsreflexionen deutlich überzeugender – genau deshalb folgt in Kapitel 4 IBL.
+
+```{=html}
+<iframe src="../assets/embeds/pbr_split_sphere.html" title="PBR Split Sphere" style="width:100%; max-width:720px; height:320px; border:0; border-radius:8px; background:#1a1520; margin:12px 0;"></iframe>
+```
+
+### Dann am Fass: globale Werte vs. Texture Maps
+
+Das **Holzfass** baut darauf auf: Ein zusammengesetztes Objekt braucht pro Bereich eigene Materialwerte – entweder separate Meshes mit Maps oder eine `metallicRoughnessTexture`, die pro Texel steuert, was Holz und was Eisen ist. Die Presets am Fass wiederholen denselben Grenzfall mit **globalen** Werten auf dem gesamten Objekt – erst die Maps trennen Holz und Metall sichtbar.
 
 ```{=html}
 <style>

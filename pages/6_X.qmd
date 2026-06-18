@@ -61,7 +61,7 @@ Der Alterungsslider verändert gemeinsam mehrere Maps:
 
 - **Base Color / Albedo:** Stahl dunkelt nach, Rost sammelt sich in Rillen,
   Nieten, Kanten und Dellen. Die Gold-Randeinlage bekommt fleckige Anlaufstellen,
-  dunkle Risse und glänzende Inseln — kein homogenes Vergilben.
+  dunkle Risse und glänzende Inseln – kein homogenes Vergilben.
 - **Roughness:** Gealterte Bereiche werden matter; der Specular-Lobe der
   Cook-Torrance-BRDF wird dadurch breiter.
 - **Metallic:** Rost und Leder verhalten sich nichtmetallisch, blanke
@@ -1636,13 +1636,13 @@ PBR-Erklärung ist die chemische Genauigkeit aber nicht der entscheidende Punkt.
 
 **Warum Buckel und Randeinlage unterschiedlich altern:** Beide starten blank
 und poliert, oxidieren aber nicht gleich. Der Buckel ist massives Messing mit
-hohem Kupferanteil — feuchte Luft und Fingerkontakt begünstigen **Verdigris**
+hohem Kupferanteil – feuchte Luft und Fingerkontakt begünstigen **Verdigris**
 (türkisfarbene Carbonat-/Sulfatpatina auf Kupferlegierungen). Die Randeinlage
 ist als **Blattgold** aufgebracht: Gold selbst oxidiert kaum, aber Schmutz,
 Schwefelverbindungen aus der Luft und durchscheinende Kupfer-/Silberanteile
 in der Vergoldung erzeugen **ocker- und braunfleckige Anläufe** statt Grün.
 Zusätzlich sammelt sich in den Zahnzwischenräumen mehr Schmutz als auf der
-gewölbten Buckeloberfläche. Das ist vereinfacht, aber materialplausibel — kein
+gewölbten Buckeloberfläche. Das ist vereinfacht, aber materialplausibel – kein
 Widerspruch, sondern unterschiedliche Werkstoffe und Mikroexposition.
 
 Die 2D-Map-Vorschau unten kann per Dropdown zwischen den wichtigsten

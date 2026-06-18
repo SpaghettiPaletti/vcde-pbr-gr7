@@ -304,21 +304,194 @@ Alles davor kann gelöscht werden.
 
 # 3 · Materialmodell {background-color="#1f2937"}
 
-## Von Cook-Torrance zum Disney-Workflow
+## Von der BRDF zum Metal-Roughness-Workflow
 
-> *TODO: Industriestandard, warum Disney die Parameter vereinfacht hat.*
+::: {.incremental}
+- Kapitel 2: Cook-Torrance mit $D$, $F$, $G$ – in der Engine nicht direkt einstellbar
+- Stattdessen: `baseColor`, `metallic`, `roughness` (+ Texture Maps)
+- Babylon.js: `PBRMetallicRoughnessMaterial` als praktische Steuerungsebene
+:::
 
-## Base Color & Albedo
+::: {.notes}
+**Alexander Kohl · ~8,5 Min. gesamt (Kap. 3 + X, inkl. OpenPBR-Kurzfolie)**  
+~40 Sek. Brücke von Kap. 2. Nicht Formeln wiederholen – Fokus: Was stelle ich in der Praxis ein?
+:::
 
-> *TODO: Exkurs aus Kapitel 3 — sRGB vs. linear, gemessene Werte.*
+## Base Color, Metallic & Roughness
 
-## Das Material-Labor
+:::: {.columns}
 
-> *TODO: Globale Parameter vs. Texture Maps — Demo aus Kapitel 3.*
+::: {.column width="60%"}
+```{=html}
+<iframe src="assets/embeds/pbr_split_sphere.html" title="Split Sphere PBR" style="width:100%; height:520px; border:0; border-radius:8px; background:#1a1520; display:block;"></iframe>
+```
+:::
 
-## Übergang zu IBL
+::: {.column width="40%"}
+::: {.incremental}
+- Gleiche Base Color, unterschiedliche Bedeutung
+- Nichtmetall: Farbe überall sichtbar
+- Metall: Farbe nur in Reflexionen
+- Roughness: niedrig = fokussierte Reflexion, hoch = gestreute Reflexion
+:::
+:::
 
-> *TODO: Warum direkte Beleuchtung alleine nicht reicht — Brücke zu Kapitel 4.*
+::::
+
+::: {.notes}
+~40 Sek. Verweis auf [Babylon Intro to PBR](https://doc.babylonjs.com/features/featuresDeepDive/materials/using/introToPBR) – dort mit IBL; wir zeigen den Mechanismus isoliert.
+
+**Nichtmetall vs. Metall ausformulieren:** Links ist die Base Color die sichtbare Körperfarbe. Rechts färbt sie nur Spiegelungen – dazwischen wirkt es dunkel, weil Metall kaum streuendes Licht abgibt (fehlendes Licht, nicht „schwarze Farbe“).
+
+**Roughness:** steuert, wie stark Reflexionen gestreut werden – glatte Oberfläche: kompakte Reflexion; raue Oberfläche: breit verteilte Reflexion (wie mattes Metall).
+
+Danach Fass: ein Objekt, **verschiedene** Materialwerte pro Texel.
+:::
+
+## Demo: Holzfass – global vs. Maps
+
+```{=html}
+<div style="font-size:0.82em; line-height:1.3;">
+  <div style="display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-bottom:8px;">
+    <button id="slideToggleMapsBtn" style="padding:4px 10px; cursor:pointer; font-weight:600;">Maps laden</button>
+    <span id="slideMapStatus" style="color:#aaa;">Global aktiv</span>
+    <button class="slidePresetBtn" data-color="#b86a43" data-metallic="0.0" data-roughness="0.70" style="padding:3px 8px; cursor:pointer;">Mattes Dielektrikum</button>
+    <button class="slidePresetBtn" data-color="#b86a43" data-metallic="1.0" data-roughness="0.38" style="padding:3px 8px; cursor:pointer;">Glattes Metall</button>
+    <label style="margin-left:6px;">Metallic <input type="range" id="slideMetallicSlider" min="0" max="1" step="0.01" value="0" style="vertical-align:middle; width:90px;"></label>
+    <label>Roughness <input type="range" id="slideRoughnessSlider" min="0" max="1" step="0.01" value="0.4" style="vertical-align:middle; width:90px;"></label>
+  </div>
+  <canvas id="slideBasisCanvas" style="width:100%; height:380px; border-radius:6px; touch-action:none; outline:none; background:#333;"></canvas>
+</div>
+<script src="https://cdn.babylonjs.com/babylon.js"></script>
+<script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
+<script>
+(function(){
+  const canvas = document.getElementById("slideBasisCanvas");
+  if (!canvas || typeof BABYLON === "undefined") return;
+  const engine = new BABYLON.Engine(canvas, true);
+  const scene = new BABYLON.Scene(engine);
+  scene.clearColor = new BABYLON.Color4(0.20, 0.20, 0.20, 1);
+  const camera = new BABYLON.ArcRotateCamera("slideCam", Math.PI * 0.58, Math.PI/2.35, 3.1, BABYLON.Vector3.Zero(), scene);
+  camera.lowerRadiusLimit = camera.upperRadiusLimit = 3.1;
+  camera.attachControl(canvas, true);
+  [["key",[-3,4,-3],5],["fill",[4,2.5,3],0.8],["rim",[-2.5,2.5,4],1.6]].forEach(([n,p,i])=>{
+    const l = new BABYLON.PointLight(n, new BABYLON.Vector3(...p), scene); l.intensity = i;
+  });
+  new BABYLON.HemisphericLight("hf", new BABYLON.Vector3(0,1,0), scene).intensity = 0.25;
+  const root = new BABYLON.TransformNode("slideRoot", scene);
+  const pbrMat = new BABYLON.PBRMetallicRoughnessMaterial("slideMat", scene);
+  pbrMat.environmentIntensity = 0.0;
+  let mapsActive = false;
+  const texSize = 512, STAVE_COUNT = 20;
+  const ATLAS_BODY = {u0:0,v0:0,u1:0.62,v1:1}, ATLAS_PLANK = {u0:0.66,v0:0.08,u1:0.96,v1:0.44}, ATLAS_METAL = {u0:0.66,v0:0.52,u1:0.96,v1:0.78};
+  const rectPx = r => ({x:r.u0*texSize,y:r.v0*texSize,w:(r.u1-r.u0)*texSize,h:(r.v1-r.v0)*texSize});
+  const drawWoodBody = ctx => { const r=rectPx(ATLAS_BODY); ctx.fillStyle="#6B4423"; ctx.fillRect(r.x,r.y,r.w,r.h); ctx.fillStyle="#3e2714"; for(let s=0;s<=STAVE_COUNT;s++){const x=r.x+(s/STAVE_COUNT)*r.w; ctx.fillRect(x-1,r.y,3,r.h);} };
+  const drawWoodPlank = ctx => { const r=rectPx(ATLAS_PLANK); ctx.fillStyle="#6B4423"; ctx.fillRect(r.x,r.y,r.w,r.h); ctx.fillStyle="#3e2714"; for(let i=0;i<=r.h;i+=16) ctx.fillRect(r.x,r.y+i,r.w,3); };
+  const drawMetal = (ctx,c) => { const r=rectPx(ATLAS_METAL); ctx.fillStyle=c; ctx.fillRect(r.x,r.y,r.w,r.h); };
+  const baseTex = new BABYLON.DynamicTexture("slideBase", texSize, scene, true);
+  const ctxA = baseTex.getContext(); ctxA.fillStyle="#5a3a22"; ctxA.fillRect(0,0,texSize,texSize); drawWoodBody(ctxA); drawWoodPlank(ctxA); drawMetal(ctxA,"#8A9094"); baseTex.update();
+  const mrTex = new BABYLON.DynamicTexture("slideMR", texSize, scene, true);
+  const ctxMR = mrTex.getContext(); ctxMR.fillStyle="rgb(0,220,0)"; ctxMR.fillRect(0,0,texSize,texSize); drawMetal(ctxMR,"rgb(0,120,255)"); mrTex.update();
+  BABYLON.SceneLoader.ImportMeshAsync("","assets/","materialmodell_barrel.glb",scene).then(res=>{
+    res.meshes.forEach(m=>{ if(m&&m.name!=="__root__"){ m.material=pbrMat; m.parent=root; }});
+  });
+  const met = document.getElementById("slideMetallicSlider");
+  const rog = document.getElementById("slideRoughnessSlider");
+  const apply = (color,metallic,roughness)=>{
+    met.value=metallic; rog.value=roughness;
+    pbrMat.baseColor = BABYLON.Color3.FromHexString(color);
+    pbrMat.metallic = +metallic; pbrMat.roughness = +roughness;
+  };
+  met.oninput = ()=>{ if(!mapsActive) pbrMat.metallic = +met.value; };
+  rog.oninput = ()=>{ if(!mapsActive) pbrMat.roughness = +rog.value; };
+  document.getElementById("slideToggleMapsBtn").onclick = ()=>{
+    mapsActive = !mapsActive;
+    document.getElementById("slideMapStatus").textContent = mapsActive ? "Maps aktiv" : "Global aktiv";
+    if(mapsActive){
+      pbrMat.baseTexture=baseTex; pbrMat.metallicRoughnessTexture=mrTex;
+      pbrMat.useMetallnessFromMetallicTextureBlue=true; pbrMat.useRoughnessFromMetallicTextureGreen=true;
+      pbrMat.roughness=1; pbrMat.metallic=1; pbrMat.baseColor=new BABYLON.Color3(1,1,1);
+      met.disabled=rog.disabled=true;
+    } else {
+      pbrMat.baseTexture=null; pbrMat.metallicRoughnessTexture=null;
+      met.disabled=rog.disabled=false;
+      pbrMat.metallic=+met.value; pbrMat.roughness=+rog.value;
+    }
+  };
+  document.querySelectorAll(".slidePresetBtn").forEach(b=>b.onclick=()=>{
+    if(mapsActive) document.getElementById("slideToggleMapsBtn").click();
+    apply(b.dataset.color,b.dataset.metallic,b.dataset.roughness);
+  });
+  engine.runRenderLoop(()=>scene.render());
+  window.addEventListener("resize",()=>engine.resize());
+})();
+</script>
+```
+
+::: {.notes}
+~2,5 Min. LIVE: (1) Presets mit **gleicher** Farbe – Metallic-Effekt zeigen. (2) Maps laden → Holz vs. Eisenbänder. (3) Kurz: bewusst **ohne IBL** – Grenze folgt nach OpenPBR-Exkurs.
+:::
+
+## Exkurs: OpenPBR – über Metal/Roughness hinaus
+
+:::: {.columns}
+
+::: {.column width="48%"}
+![](pages/images/OpenPbr_Schichtmodell.png){width=100% style="max-height:240px; object-fit:contain;"}
+
+*Schichtmodell · [OpenPBR Spec.](https://academysoftwarefoundation.github.io/OpenPBR/)*
+
+::: {.incremental style="font-size:0.9em; margin-top:0.35em;"}
+- Metal/Roughness = Basisfall in Babylon.js
+- OpenPBR: Coat, Fuzz, Subsurface, Thin-Film …
+:::
+:::
+
+::: {.column width="52%"}
+![](pages/images/openpbr_shader_playground.jpg){width=100% style="max-height:240px; object-fit:cover; border-radius:6px;"}
+
+*Beispiel-Render · [OpenPBR Shader Playground](https://academysoftwarefoundation.github.io/OpenPBR/)*
+
+::: {.incremental style="font-size:0.9em; margin-top:0.35em;"}
+- MaterialX: Referenzimplementierung im Browser
+:::
+:::
+
+::::
+
+::: {.notes}
+~30 Sek. Optional/kurz: zeigt Breite des PBR-Ökosystems – nicht vertiefen. Das Shader-Playground-Beispiel zeigt Materialien, die mit drei Parametern (baseColor, metallic, roughness) nicht abbildbar sind – z. B. Lack über Holz (Coat), Stoff (Fuzz), Glas mit Dispersion.
+:::
+
+## Grenze: Punktlicht reicht für Metall nicht
+
+:::: {.columns}
+
+::: {.column width="50%"}
+::: {style="font-size:0.85em; margin-bottom:0.25em; color:#ccc;"}
+Ohne IBL · nur Punktlichter
+:::
+
+```{=html}
+<iframe src="assets/embeds/pbr_metal_no_ibl.html" title="Metall ohne IBL" style="width:100%; height:480px; border:0; border-radius:8px; background:#100d14; display:block;"></iframe>
+```
+:::
+
+::: {.column width="50%"}
+::: {style="font-size:0.85em; margin-bottom:0.25em; color:#ccc;"}
+Mit IBL · Umgebung sichtbar
+:::
+
+```{=html}
+<iframe src="assets/embeds/pbr_metal_with_ibl.html" title="Metall mit IBL" style="width:100%; height:480px; border:0; border-radius:8px; background:#100d14; display:block;"></iframe>
+```
+:::
+
+::::
+
+::: {.notes}
+~30 Sek. Zwei getrennte Demos: links keine Environment Map (nur Punktlichter, leere Zwischenräume), rechts Stadt-IBL (Umgebung spiegelt sich). Übergabe an Stefan Jordan · Kap. 4.
+:::
 
 # 4 · Image Based Lighting (IBL) {background-color="#1f2937"}
 
@@ -352,21 +525,67 @@ Alles davor kann gelöscht werden.
 
 # X · Vertiefung: Materialalterung {background-color="#1f2937"}
 
-## Warum Materialalterung eine PBR-Frage ist
+## Warum Alterung eine PBR-Frage ist
 
-> *TODO: Aus Kapitel 6_X — Verbindung zwischen Material und Zeit.*
+::: {.incremental}
+- In echten Szenen ändern sich Materialwerte: Oxidation, Schmutz, Abnutzung
+- Nicht nur Farbe, sondern auch Metallic, Roughness, Normal, AO/Cavity
+- **Kernthese:** realistische Alterung = **mehrere Maps gemeinsam** verändern
+:::
 
-## Demo: Ein Kupferschild altert
+::: {.notes}
+~50 Sek. Anschluss nach IBL: Materialparameter sind nicht zeitlich konstant.
+:::
 
-> *TODO: Interaktive Demo aus `pages/6_X.qmd`.*
+## Vier Maps, ein Slider
 
-## Was an der Demo vereinfacht ist
+:::: {.columns}
 
-> *TODO: Grenzen ehrlich benennen.*
+::: {.column width="44%"}
+![](assets/aging_preview.gif){width=92% style="max-height:340px; object-fit:contain;"}
+:::
 
-## Ausblick
+::: {.column width="56%"}
+::: {.incremental}
+- **Albedo:** Rost, Patina, Verdunkelung
+- Roughness: gealtert = matter – Reflexionen breiter gestreut
+- **Metallic:** Oxid → nichtmetallisch
+- **Normal / AO:** Mikrostruktur & Fugen *(PBRMaterial Workflow)*
 
-> *TODO: Prozeduraler Entwurf → eigene Assets.*
+:::
+:::
+
+::::
+
+::: {.notes}
+~45 Sek. GIF zeigen (0 % → 100 % Vorschau). Kein Untertitel auf der Folie – vermeidet Abschneiden.
+:::
+
+## Demo: Buckler-Schild altert
+
+```{=html}
+<iframe src="assets/embeds/aging_demo.html" title="Buckler Alterung" style="width:100%; height:520px; border:0; border-radius:8px; background:#f8f9fa;"></iframe>
+```
+
+::: {.notes}
+~2,5 Min. LIVE auf der Webseite: Slider 0→76→100, Map-Toggles einzeln aus, Presets. IBL ist hier aktiv (Gegensatz zum Fass). Kurz: prozedurale Maps, kein Chemie-Simulator.
+:::
+
+## Grenzen & Ausblick
+
+::: {.incremental}
+- Vereinfachung: prozedurale Masken, keine Korrosionsphysik
+- In Produktion: Maps aus Substance Painter oder vorgebaute AO-/Curvature-Maps aus Blender
+- Gleicher PBR-Workflow – nur detailliertere Texturen als Eingabe
+:::
+
+::: {.notes}
+~40 Sek. Ehrlich Grenzen nennen.
+
+**Was bedeutet der Produktions-Punkt?** Unsere Demo erzeugt Maps per Shader im Browser. In echter Produktion malt man sie in Tools wie Substance Painter, oder Blender „baked“ (vorgebaut/exportiert) aus der Geometrie AO und Curvature in Texturen – z. B. dunkle Fugen, helle Kanten. Gleiche Maps (Albedo, Metallic, Roughness …), nur aus reicheren Quellen.
+
+Optional: „Details auf der Webseite · Vertiefung“.
+:::
 
 # Fazit {background-color="#1f2937"}
 
