@@ -13,7 +13,7 @@ website:
     contents:
       - text: "Einleitung"
         href: index.qmd
-      - text: "1. Phong und seine Schw‰chen"
+      - text: "1. Phong und seine Schw√§chen"
         href: pages/1_phong_grenzen.qmd
       - text: "2. PBR-Prinzipien"
         href: pages/2_pbr_prinzipien.qmd
