@@ -11,7 +11,14 @@ format:
     transition: slide
     width: 1280
     height: 720
-    embed-resources: true
+    # GLBs: pre-render erzeugt assets/glb_embedded.js fuer file://-Abgabe (_site kopieren).
+    embed-resources: false
+    include-in-header:
+      - text: |
+          <script src="https://cdn.babylonjs.com/babylon.js"></script>
+          <script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
+          <script src="assets/glb_embedded.js"></script>
+          <script src="assets/embeds/glb_loader.js"></script>
 jupyter: python3
 ---
 
@@ -53,7 +60,6 @@ jupyter: python3
 <p style="text-align: center; font-size: 0.55em; color: #888; margin-top: 6px;">
   Goldenes PBR-Material kombiniert mit Image Based Lighting — Vorgeschmack auf Sektion 3 + 4.
 </p>
-<script src="https://cdn.babylonjs.com/babylon.js"></script>
 <script>
   (function() {
     const canvas = document.getElementById("introGoldCanvas");
@@ -138,7 +144,6 @@ jupyter: python3
     <p style="font-size: 0.55em; color: #888; margin: 4px 0 0 0;">Energieerhaltend, Fresnel an den Rändern.</p>
   </div>
 </div>
-<script src="https://cdn.babylonjs.com/babylon.js"></script>
 <script>
   (function() {
     const setupScene = (canvasId, usePBR) => {
@@ -301,23 +306,26 @@ $$\text{Farbe} = \underbrace{e_{\text{mat}}}_{\text{Emissiv}} + \underbrace{a_{\
 ## Demo: Holzfass – global vs. Maps
 
 ```{=html}
-<div style="font-size:0.82em; line-height:1.3;">
-  <div style="display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-bottom:8px;">
+<div style="font-size:0.82em; line-height:1.25; margin-top:-0.15em;">
+  <div style="display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-bottom:4px;">
     <button id="slideToggleMapsBtn" style="padding:4px 10px; cursor:pointer; font-weight:600;">Maps laden</button>
     <span id="slideMapStatus" style="color:#888;">Global aktiv</span>
     <button class="slidePresetBtn" data-color="#b86a43" data-metallic="0.0" data-roughness="0.70" style="padding:3px 8px; cursor:pointer;">Mattes Dielektrikum</button>
     <button class="slidePresetBtn" data-color="#b86a43" data-metallic="1.0" data-roughness="0.38" style="padding:3px 8px; cursor:pointer;">Glattes Metall</button>
-    <label style="margin-left:6px;">Metallic <input type="range" id="slideMetallicSlider" min="0" max="1" step="0.01" value="0" style="vertical-align:middle; width:90px;"></label>
+    <label style="margin-left:4px;">Metallic <input type="range" id="slideMetallicSlider" min="0" max="1" step="0.01" value="0" style="vertical-align:middle; width:90px;"></label>
     <label>Roughness <input type="range" id="slideRoughnessSlider" min="0" max="1" step="0.01" value="0.4" style="vertical-align:middle; width:90px;"></label>
   </div>
-  <canvas id="slideBasisCanvas" style="width:100%; height:380px; border-radius:6px; touch-action:none; outline:none; background:#333;"></canvas>
+  <canvas id="slideBasisCanvas" style="width:100%; height:520px; border-radius:6px; touch-action:none; outline:none; background:#333; display:block;"></canvas>
 </div>
-<script src="https://cdn.babylonjs.com/babylon.js"></script>
-<script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
 <script>
 (function(){
-  const canvas = document.getElementById("slideBasisCanvas");
-  if (!canvas || typeof BABYLON === "undefined") return;
+  function initBarrelDemo() {
+    if (typeof BABYLON === "undefined" || typeof window.loadEmbedGlb !== "function") {
+      setTimeout(initBarrelDemo, 30);
+      return;
+    }
+    const canvas = document.getElementById("slideBasisCanvas");
+    if (!canvas) return;
   const engine = new BABYLON.Engine(canvas, true);
   const scene = new BABYLON.Scene(engine);
   scene.clearColor = new BABYLON.Color4(0.20, 0.20, 0.20, 1);
@@ -342,9 +350,9 @@ $$\text{Farbe} = \underbrace{e_{\text{mat}}}_{\text{Emissiv}} + \underbrace{a_{\
   const ctxA = baseTex.getContext(); ctxA.fillStyle="#5a3a22"; ctxA.fillRect(0,0,texSize,texSize); drawWoodBody(ctxA); drawWoodPlank(ctxA); drawMetal(ctxA,"#8A9094"); baseTex.update();
   const mrTex = new BABYLON.DynamicTexture("slideMR", texSize, scene, true);
   const ctxMR = mrTex.getContext(); ctxMR.fillStyle="rgb(0,220,0)"; ctxMR.fillRect(0,0,texSize,texSize); drawMetal(ctxMR,"rgb(0,120,255)"); mrTex.update();
-  BABYLON.SceneLoader.ImportMeshAsync("","assets/","materialmodell_barrel.glb",scene).then(res=>{
+  window.loadEmbedGlb(scene,"materialmodell_barrel.glb").then(res=>{
     res.meshes.forEach(m=>{ if(m&&m.name!=="__root__"){ m.material=pbrMat; m.parent=root; }});
-  });
+  }).catch(err=>console.error("Fass-GLB:",err));
   const met = document.getElementById("slideMetallicSlider");
   const rog = document.getElementById("slideRoughnessSlider");
   const apply = (color,metallic,roughness)=>{
@@ -373,7 +381,14 @@ $$\text{Farbe} = \underbrace{e_{\text{mat}}}_{\text{Emissiv}} + \underbrace{a_{\
     apply(b.dataset.color,b.dataset.metallic,b.dataset.roughness);
   });
   engine.runRenderLoop(()=>scene.render());
-  window.addEventListener("resize",()=>engine.resize());
+  const resize = () => engine.resize();
+  window.addEventListener("resize", resize);
+  if (window.Reveal && typeof Reveal.on === "function") {
+    Reveal.on("slidechanged", resize);
+    Reveal.on("resize", resize);
+  }
+  }
+  initBarrelDemo();
 })();
 </script>
 ```
@@ -481,7 +496,6 @@ IBL sagt **welches Licht** überhaupt da ist."
   </div>
   <canvas id="s4IblCanvas" style="width: 100%; height: 440px; border-radius: 4px; outline: none; touch-action: none;"></canvas>
 </div>
-<script src="https://cdn.babylonjs.com/babylon.js"></script>
 <script>
   (function() {
     const canvas = document.getElementById("s4IblCanvas");
@@ -600,7 +614,7 @@ $$L_{\text{IBL}} \approx \underbrace{\text{PreFilteredMap}(R,\,\alpha)}_{\text{L
 ## Demo: Buckler-Schild altert
 
 ```{=html}
-<iframe src="assets/embeds/aging_demo.html" title="Buckler Alterung" style="width:100%; height:520px; border:0; border-radius:8px; background:#f8f9fa;"></iframe>
+<iframe src="assets/embeds/aging_demo.html" title="Buckler Alterung" style="width:100%; height:680px; border:0; border-radius:8px; background:#f8f9fa; display:block; margin-top:-0.1em;"></iframe>
 ```
 
 ## Grenzen & Ausblick

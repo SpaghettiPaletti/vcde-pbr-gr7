@@ -1220,8 +1220,10 @@
       });
     }
 
-    const assetReady = BABYLON.SceneLoader.ImportMeshAsync("", "../", "pbr_aging_buckler_noring.glb", scene).then((result) => {
+    const assetReady = window.loadEmbedGlb(scene, "pbr_aging_buckler_noring.glb").then((result) => {
       assignImportedMaterials(result.meshes);
+    }).catch((err) => {
+      console.error("Buckler-GLB konnte nicht geladen werden:", err);
     });
 
     slider.addEventListener("input", scheduleMapUpdate);
@@ -1284,6 +1286,7 @@
     window.addEventListener("resize", function () {
       engine.resize();
     });
+    if (window.hookRevealResize) window.hookRevealResize(engine);
   }
 
   if (document.readyState === "loading") {

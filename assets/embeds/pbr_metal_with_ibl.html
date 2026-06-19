@@ -11,6 +11,7 @@
 </head>
 <body>
   <canvas id="canvas"></canvas>
+  <script src="embed_common.js"></script>
   <script src="https://cdn.babylonjs.com/babylon.js"></script>
   <script>
   (function () {
@@ -46,6 +47,7 @@
       camera.alpha = -Math.PI / 2 + Math.sin(t) * 0.3;
       scene.render();
     });
+    if (window.hookRevealResize) window.hookRevealResize(engine);
     window.addEventListener("resize", () => engine.resize());
   })();
   </script>
