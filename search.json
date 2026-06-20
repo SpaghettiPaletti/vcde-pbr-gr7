@@ -352,7 +352,7 @@
     "href": "slides.html#einstieg-zwei-welten-eine-geometrie",
     "title": "Physically Based Rendering",
     "section": "Einstieg — zwei Welten, eine Geometrie",
-    "text": "Einstieg — zwei Welten, eine Geometrie\n\nWas wir gleich sehen:\n\n\nIdentische Form, identische Beleuchtungssituation\nLinks: das klassische Phong-Modell\nRechts: ein modernes PBR-Material\n\n\n„Schaut hin — und entscheidet selbst, welches Material ihr für echt haltet.”"
+    "text": "Einstieg — zwei Welten, eine Geometrie\n\nWas wir gleich sehen:\n\n\nIdentische Form, identische Beleuchtungssituation\nLinks: das klassische Phong-Modell\nRechts: ein modernes PBR-Material"
   },
   {
     "objectID": "slides.html#phong-vs.-pbr-direkter-vergleich",
@@ -478,7 +478,7 @@
     "href": "slides.html#der-fehlende-baustein-im-pbr-system",
     "title": "Physically Based Rendering",
     "section": "Der fehlende Baustein im PBR-System",
-    "text": "Der fehlende Baustein im PBR-System\n\nDas PBR-Material ist physikalisch korrekt — aber passiv\nIn einer schwarzen Welt bleibt selbst perfektes Gold schwarz\nWas fehlt: Lichtinformation aus der Umgebung\n\n\n„Das Materialmodell sagt wie ein Objekt auf Licht reagiert. IBL sagt welches Licht überhaupt da ist.”"
+    "text": "Der fehlende Baustein im PBR-System\n\nDas PBR-Material ist physikalisch korrekt — aber passiv\nIn einer schwarzen Welt bleibt selbst perfektes Gold schwarz\nWas fehlt: Lichtinformation aus der Umgebung\nDas Materialmodell sagt wie ein Objekt auf Licht reagiert. IBL sagt welches Licht überhaupt da ist."
   },
   {
     "objectID": "slides.html#was-ist-image-based-lighting",
