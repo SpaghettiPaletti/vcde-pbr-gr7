@@ -254,23 +254,269 @@ $$\text{Farbe} = \underbrace{e_{\text{mat}}}_{\text{Emissiv}} + \underbrace{a_{\
 
 ## Die Rendering-Gleichung
 
-> *TODO (Celia): Formel + 1-Satz-Erklärung pro Term.*
+$$
+L_o(x,\omega_o)
+=
+L_e(x,\omega_o)
++
+\int_{\Omega}
+f_r(x,\omega_i,\omega_o)
+\,L_i(x,\omega_i)
+\,(n\cdot\omega_i)
+\,d\omega_i
+$$
+
+:::: {.columns}
+
+::: {.column width="55%"}
+
+::: {.incremental}
+- $L_i$ = einfallendes Licht
+- $L_o$ = ausgehendes Licht
+- $f_r$ = Materialantwort (BRDF)
+:::
+
+::: {.fragment}
+Für PBR ist besonders **$f_r$** interessant:
+
+→ beschreibt das Materialverhalten
+:::
+
+:::
+
+::: {.column width="45%"}
+
+![](pages/images/makroskopisch_v5.svg){width=200%}
+
+::: {style="font-size:0.45em; color:#888;"}
+l = Licht · v = Blick · n = Normale · h = Halfway
+:::
+
+:::
+
+::::
+
+---
 
 ## Mikrofacetten-Theorie
 
-> *TODO (Celia): Grundidee — Oberflächen als Wolke mikroskopischer Spiegel.*
+Reale Oberflächen wirken glatt – sind aber mikroskopisch rau.
 
-## Cook-Torrance BRDF — F · D · G
+:::: {.columns}
 
-> *TODO (Celia): Die drei Terme in Übersicht. Vielleicht eine Folie pro Term mit Diagramm.*
+::: {.column width="60%"}
 
-## Energieerhaltung in PBR
+![](pages/images/mikrofacetten_struktur_v6.svg){width=100%}
 
-> *TODO (Celia): Zurückgreifen auf Stefans Pointe — jetzt mathematisch gelöst.*
+:::
 
-## Verständnis-Check (Mini)
+::: {.column width="40%"}
 
-> *TODO (Celia, optional): Eine Quiz-Frage als Brücke zum Materialmodell.*
+::: {.incremental}
+- Oberfläche = Millionen winziger Spiegel
+- Diese Spiegel nennt man **Mikrofacetten**
+- Nur passend ausgerichtete Facetten reflektieren Licht direkt zur Kamera
+:::
+
+:::
+
+::::
+
+::: {.fragment style="margin-top:20px;"}
+→ Grundlage moderner PBR-Materialmodelle
+:::
+
+---
+
+## Cook-Torrance BRDF
+
+Der spekulare Anteil moderner PBR-Systeme basiert meist auf dem Cook-Torrance-Modell.
+
+$$
+f_s(\mathbf{v}, \mathbf{l})
+=
+\frac{
+F(\mathbf{v}, \mathbf{h})
+\cdot
+D(\mathbf{h})
+\cdot
+G(\mathbf{l}, \mathbf{v})
+}
+{
+4(\mathbf{n}\cdot\mathbf{l})
+(\mathbf{n}\cdot\mathbf{v})
+}
+$$
+
+::: {.incremental}
+- **F · Fresnel** → Wie viel Licht wird reflektiert?
+- **D · Distribution** → Wie sind die Mikrofacetten ausgerichtet?
+- **G · Geometry** → Wie viel Licht wird blockiert?
+:::
+
+---
+
+## Fresnel-Effekt
+
+:::: {.columns}
+
+::: {.column width="45%"}
+
+![](pages/images/Fresnel_Effect.jpg){width=100%}
+
+::: {style="font-size:0.45em; color:#888;"}
+Quelle: https://www.keheka.com/fresnel-reflections-in-nuke/
+:::
+
+:::
+
+::: {.column width="55%"}
+
+::: {.incremental}
+- Reflexion hängt vom Blickwinkel ab
+- Je flacher der Blickwinkel,
+  desto stärker die Spiegelung
+- Besonders sichtbar bei Wasser,
+  Glas und Metall
+:::
+
+::: {.fragment style="margin-top:20px;"}
+Phong berücksichtigt diesen Effekt nicht.
+:::
+
+:::
+
+::::
+
+---
+
+## Distribution
+
+### D · Distribution
+
+::: {.incremental}
+- Beschreibt die Verteilung der Mikrofacetten
+- Roughness steuert die Streuung
+- Glatte Oberfläche → scharfe Reflexion
+- Raue Oberfläche → breite Reflexion
+:::
+
+::: {.fragment style="margin-top:25px;"}
+D bestimmt, in welche Richtungen Licht reflektiert wird.
+:::
+
+---
+
+## Geometry
+
+### G · Geometry
+
+![](pages/images/microshadows.png){fig-align="center" width="95%"}
+
+::: {.incremental}
+- **Shadowing:** Mikrofacetten blockieren einfallendes Licht
+- **Masking:** Mikrofacetten verdecken reflektiertes Licht
+:::
+
+::: {.fragment}
+G berücksichtigt diese gegenseitige Abschattung.
+:::
+
+::: {style="font-size:0.4em; color:#888;"}
+Quelle: http://wiki.ktxsoftware.com/Physically-Based-Rendering.html
+:::
+
+---
+
+## Zusammenspiel der Cook-Torrance BRDF
+
+| Term | Aufgabe |
+|------|----------|
+| **F** | Wie viel Licht wird reflektiert? |
+| **D** | In welche Richtung wird reflektiert? |
+| **G** | Wie viel Licht wird blockiert? |
+| **Nenner** | Korrekte physikalische Skalierung |
+
+<div style="margin-top:40px;"></div>
+
+$$
+f_s =
+\frac{F \cdot D \cdot G}
+{4(n\cdot l)(n\cdot v)}
+$$
+
+::: {.fragment style="text-align:center; margin-top:30px; font-size:1.2em;"}
+
+→ Erst das Zusammenspiel aller Terme ergibt eine realistische Reflexion.
+
+:::
+
+---
+
+## Energieerhaltung
+
+$$
+E_{out} \le E_{in}
+$$
+
+Eine Oberfläche darf niemals mehr Licht reflektieren als sie empfängt.
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+### Problem bei Phong
+
+```text
+Diffuse  = 0.8
+Specular = 0.8
+```
+
+→ 160 % Reflexion
+
+→ physikalisch unmöglich
+
+:::
+
+::: {.column width="50%"}
+
+### Lösung in PBR
+
+- Mehr Spiegelung
+  ⇒ weniger Diffusion
+
+- Weniger Spiegelung
+  ⇒ mehr Diffusion
+
+- Gesamtenergie bleibt erhalten
+
+:::
+
+::::
+
+<div style="margin-top:20px;"></div>
+
+::: {.fragment style="text-align:center;"}
+
+**Reflexion und Diffusion teilen sich dasselbe Energiebudget.**
+
+:::
+
+---
+
+## Zusammenspiel der Prinzipien
+
+::: {.incremental}
+- Mikrofacetten beschreiben die Oberfläche
+- Fresnel bestimmt die Winkelabhängigkeit
+- Distribution beschreibt die Rauheit
+- Geometry berücksichtigt Abschattung
+- Energieerhaltung hält alles physikalisch plausibel
+:::
+
+::: {.fragment style="margin-top:35px; text-align:center; font-size:1.15em;"}
+Gemeinsam ermöglichen sie realistische Materialien unter jeder Beleuchtung.
+:::
 
 # 3 · Materialmodell {background-color="#1f2937"}
 
@@ -658,6 +904,11 @@ $$L_{\text{IBL}} \approx \underbrace{\text{PreFilteredMap}(R,\,\alpha)}_{\text{L
 | 4 · Image Based Lighting | Stefan | **Stefan** |
 | Vertiefung · Materialalterung | Alexander | **Alexander** |
 | Quiz & Diskussion | — | Team |
+
+## Bildquellen
+
+- Fresnel-Effekt:
+  https://www.keheka.com/fresnel-reflections-in-nuke/
 
 ## Vielen Dank!
 
