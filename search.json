@@ -324,7 +324,7 @@
     "href": "slides.html#agenda",
     "title": "Physically Based Rendering",
     "section": "Agenda",
-    "text": "Agenda\n\nProblem & Motivation (Team)\n1 · Phong & seine Grenzen (Stefan)\n2 · PBR-Prinzipien (Celia)\n3 · Materialmodell (Alexander)\n4 · Image Based Lighting (Stefan)\nVertiefung: Materialalterung (Alexander)\nQuiz & Diskussion (Team)"
+    "text": "Agenda\n\nProblem & Motivation (Stefan)\n1 · Phong & seine Grenzen (Stefan)\n2 · PBR-Prinzipien (Celia)\n3 · Materialmodell (Alexander)\n4 · Image Based Lighting (Stefan)\nVertiefung: Materialalterung (Alexander)\nQuiz & Diskussion (Team)"
   },
   {
     "objectID": "slides.html#was-ist-pbr",
