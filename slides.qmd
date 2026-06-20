@@ -891,13 +891,13 @@ $$L_{\text{IBL}} \approx \underbrace{\text{PreFilteredMap}(R,\,\alpha)}_{\text{L
 
 | Kapitel | Webseite | Präsentation |
 |---|---|---|
-| Einleitung | Team | Team |
+| Einleitung | Team | **Stefan** |
 | 1 · Phong & Grenzen | Stefan | **Stefan** |
 | 2 · PBR-Prinzipien | Celia | **Celia** |
 | 3 · Materialmodell | Alexander | **Alexander** |
 | 4 · Image Based Lighting | Stefan | **Stefan** |
 | Vertiefung · Materialalterung | Alexander | **Alexander** |
-| Quiz & Diskussion | — | Team |
+| Quiz & Diskussion | Team | **Team** |
 
 ## Bildquellen
 
