@@ -125,9 +125,6 @@ jupyter: python3
 - Rechts: ein modernes PBR-Material
 :::
 
-::: {.fragment style="margin-top: 40px; text-align: center; font-size: 1.1em;"}
-„Schaut hin — und entscheidet selbst, welches Material ihr für **echt** haltet."
-:::
 
 ## Phong vs. PBR — direkter Vergleich
 
@@ -700,11 +697,8 @@ Mit IBL · Umgebung sichtbar
 - Das PBR-Material ist **physikalisch korrekt** — aber **passiv**
 - In einer schwarzen Welt bleibt selbst perfektes Gold **schwarz**
 - Was fehlt: **Lichtinformation aus der Umgebung**
-:::
-
-::: {.fragment style="margin-top: 40px; text-align: center; font-size: 1.05em;"}
-„Das Materialmodell sagt **wie** ein Objekt auf Licht reagiert.
-IBL sagt **welches Licht** überhaupt da ist."
+- Das Materialmodell sagt **wie** ein Objekt auf Licht reagiert.
+IBL sagt **welches Licht** überhaupt da ist.
 :::
 
 ## Was ist Image Based Lighting?
