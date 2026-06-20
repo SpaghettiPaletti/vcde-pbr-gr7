@@ -300,11 +300,21 @@ window.addEventListener("resize", () => engine.resize());
 <p>IBL löst das Problem der komlpexen Lichtberechnung durch Vorberechnung (<strong>Pre-Filtering</strong>):</p>
 <ol type="1">
 <li><strong>Diffuse Irradiance:</strong> Ein weichgezeichnetes Abbild der Umgebung liefert das diffuse Licht.</li>
-<li><strong>Specular Reflection:</strong> Verschiedene Unschärfegrade der Umgebung werden für unterschiedliche <em>Rougchness</em>-Stufen genutzt.</li>
+<li><strong>Specular Reflection:</strong> Verschiedene Unschärfegrade der Umgebung werden für unterschiedliche <em>Roughness</em>-Stufen genutzt.</li>
 </ol>
 <p>Erst durch dieses Zusammenspiel von Umgebungslicht und den physikalischen Materialgesetzen wird PBR zu eine vollständigen, fotorealistischen System.</p>
-<p>Um IBL in EChtzeit zu ermöglichen, muss die Rendering-Gleichung für die Umgebung gelöst werden. Das INtegral für den spekularen Anteil lautet:</p>
-<p><span class="math display">\[L_o(p, \omega_o) = \int_{\Omega} L_i(p, \omega_i) \, f_r(p, \omega_i, \omega_o) \, (n \cdot \omega_i) \, d\omega_i\]</span></p>
+<p>Um IBL in Echtzeit zu ermöglichen, muss die Rendering-Gleichung für die Umgebung gelöst werden. Das Integral für den spekularen Anteil lautet:</p>
+<p><span class="math display">\[
+L_o(x,\omega_o)
+=
+L_e(x,\omega_o)
++
+\int_{\Omega}
+f_r(x,\omega_i,\omega_o)
+\, L_i(x,\omega_i)
+\, (n \cdot \omega_i)
+\, d\omega_i
+\]</span></p>
 <p>Da dieses Integral für jeden Frame und jeden Pixle zu rechenintensiv ist, nutzen modeerne Engines wie Babylon.js den von Epic Games entwickelten <strong>Split-Sum</strong> Ansatz. Dabei wird das Integral in zwei Teile zerlegt:</p>
 <section id="das-gefilterte-umgebungslicht-pre-filtered-map" class="level3">
 <h3 class="anchored" data-anchor-id="das-gefilterte-umgebungslicht-pre-filtered-map">1. Das gefilterte Umgebungslicht (Pre-filtered Map)</h3>
