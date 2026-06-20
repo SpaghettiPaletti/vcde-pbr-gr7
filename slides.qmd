@@ -27,7 +27,7 @@ jupyter: python3
 ## Agenda
 
 ::: {.incremental}
-- **Problem & Motivation** *(Team)*
+- **Problem & Motivation** *(Stefan)*
 - **1 · Phong & seine Grenzen** *(Stefan)*
 - **2 · PBR-Prinzipien** *(Celia)*
 - **3 · Materialmodell** *(Alexander)*
