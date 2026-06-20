@@ -85,13 +85,24 @@ window.addEventListener("resize", () => engine.resize());
 IBL löst das Problem der komlpexen Lichtberechnung durch Vorberechnung (**Pre-Filtering**):
 
 1. **Diffuse Irradiance:** Ein weichgezeichnetes Abbild der Umgebung liefert das diffuse Licht.
-2. **Specular Reflection:** Verschiedene Unschärfegrade der Umgebung werden für unterschiedliche *Rougchness*-Stufen genutzt.
+2. **Specular Reflection:** Verschiedene Unschärfegrade der Umgebung werden für unterschiedliche *Roughness*-Stufen genutzt.
 
 Erst durch dieses Zusammenspiel von Umgebungslicht und den physikalischen Materialgesetzen wird PBR zu eine vollständigen, fotorealistischen System.
 
-Um IBL in EChtzeit zu ermöglichen, muss die Rendering-Gleichung für die Umgebung gelöst werden. Das INtegral für den spekularen Anteil lautet:
+Um IBL in Echtzeit zu ermöglichen, muss die Rendering-Gleichung für die Umgebung gelöst werden. Das Integral für den spekularen Anteil lautet:
 
-$$L_o(p, \omega_o) = \int_{\Omega} L_i(p, \omega_i) \, f_r(p, \omega_i, \omega_o) \, (n \cdot \omega_i) \, d\omega_i$$
+
+$$
+L_o(x,\omega_o)
+=
+L_e(x,\omega_o)
++
+\int_{\Omega}
+f_r(x,\omega_i,\omega_o)
+\, L_i(x,\omega_i)
+\, (n \cdot \omega_i)
+\, d\omega_i
+$$
 
 Da dieses Integral für jeden Frame und jeden Pixle zu rechenintensiv ist, nutzen modeerne Engines wie Babylon.js den von Epic Games entwickelten **Split-Sum** Ansatz. Dabei wird das Integral in zwei Teile zerlegt:
 
