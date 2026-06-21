@@ -387,28 +387,28 @@
     "href": "slides.html#mikrofacetten-theorie",
     "title": "Physically Based Rendering",
     "section": "Mikrofacetten-Theorie",
-    "text": "Mikrofacetten-Theorie\nReale Oberflächen wirken glatt – sind aber mikroskopisch rau.\n\n\n\n\n\nOberfläche = Millionen winziger Spiegel\nDiese Spiegel nennt man Mikrofacetten\nNur passend ausgerichtete Facetten reflektieren Licht direkt zur Kamera\n\n\n\n→ Grundlage moderner PBR-Materialmodelle"
+    "text": "Mikrofacetten-Theorie\nReale Oberflächen wirken glatt – sind aber mikroskopisch rau.\n\n\n\n\n\nOberfläche = Millionen winziger Spiegel\nDiese Spiegel nennt man Mikrofacetten\nNur passend ausgerichtete Facetten reflektieren Licht direkt zur Kamera\n\n\n\n→ Grundlage moderner PBR-Materialmodelle\n\n\nQuelle: https://www.mathematik.uni-marburg.de/~thormae/lectures/graphics2/graphics_4_3_ger_web.html#1"
   },
   {
     "objectID": "slides.html#cook-torrance-brdf",
     "href": "slides.html#cook-torrance-brdf",
     "title": "Physically Based Rendering",
     "section": "Cook-Torrance BRDF",
-    "text": "Cook-Torrance BRDF\nDer spekulare Anteil moderner PBR-Systeme basiert meist auf dem Cook-Torrance-Modell.\n\\[\nf_s(\\mathbf{v}, \\mathbf{l})\n=\n\\frac{\nF(\\mathbf{v}, \\mathbf{h})\n\\cdot\nD(\\mathbf{h})\n\\cdot\nG(\\mathbf{l}, \\mathbf{v})\n}\n{\n4(\\mathbf{n}\\cdot\\mathbf{l})\n(\\mathbf{n}\\cdot\\mathbf{v})\n}\n\\]\n\nF · Fresnel → Wie viel Licht wird reflektiert?\nD · Distribution → Wie sind die Mikrofacetten ausgerichtet?\nG · Geometry → Wie viel Licht wird blockiert?"
+    "text": "Cook-Torrance BRDF\nDiffuser und spekularer Anteil von BRDF: \\[\nf_r(\\mathbf{v}, \\mathbf{l}) = f_d(\\mathbf{v}, \\mathbf{l}) + f_s(\\mathbf{v}, \\mathbf{l})\n\\]\n\nDer spekulare Anteil basiert meist auf dem Cook-Torrance-Modell: \\[\nf_s(\\mathbf{v}, \\mathbf{l})\n=\n\\frac{\nF(\\mathbf{v}, \\mathbf{h})\n\\cdot\nD(\\mathbf{h})\n\\cdot\nG(\\mathbf{l}, \\mathbf{v})\n}\n{\n4(\\mathbf{n}\\cdot\\mathbf{l})\n(\\mathbf{n}\\cdot\\mathbf{v})\n}\n\\]\n\n\nF · Fresnel → Wie viel Licht wird reflektiert?\nD · NDF → Wie konzentriert sind die Mikrofacetten-Normalen?\nG · Geometry → Wie viel Licht wird blockiert?"
   },
   {
     "objectID": "slides.html#fresnel-effekt",
     "href": "slides.html#fresnel-effekt",
     "title": "Physically Based Rendering",
     "section": "Fresnel-Effekt",
-    "text": "Fresnel-Effekt\n\n\n\n\nQuelle: https://www.keheka.com/fresnel-reflections-in-nuke/\n\n\n\nReflexion hängt vom Blickwinkel ab\nJe flacher der Blickwinkel, desto stärker die Spiegelung\nBesonders sichtbar bei Wasser, Glas und Metall\n\n\nPhong berücksichtigt diesen Effekt nicht."
+    "text": "Fresnel-Effekt\nF · Fresnel\n\n\n\n\nQuelle: https://www.keheka.com/fresnel-reflections-in-nuke/\n\n\n\nReflexion hängt vom Blickwinkel ab\nJe flacher der Blickwinkel, desto stärker die Spiegelung\nBesonders sichtbar bei Wasser, Glas und Metall\nIn der Praxis: Schlick-Approximation statt exakter Formel"
   },
   {
     "objectID": "slides.html#distribution",
     "href": "slides.html#distribution",
     "title": "Physically Based Rendering",
     "section": "Distribution",
-    "text": "Distribution\nD · Distribution\n\nBeschreibt die Verteilung der Mikrofacetten\nRoughness steuert die Streuung\nGlatte Oberfläche → scharfe Reflexion\nRaue Oberfläche → breite Reflexion\n\n\nD bestimmt, in welche Richtungen Licht reflektiert wird."
+    "text": "Distribution\nD · NDF (Normal Distribution Function)\n\nBeschreibt die Verteilung der Mikrofacetten-Normalen\nRoughness steuert die Streuung\nGlatte Oberfläche → enge Verteilung → scharfe Reflexion\nRaue Oberfläche → breite Verteilung → diffuse Spiegelung\n\n\n→ D bestimmt, wie konzentriert oder gestreut die Reflexion wirkt.\n\n\nIn der Praxis wird meist GGX verwendet – es erzeugt realistischere, länger auslaufende Glanzlichter als ältere Modelle."
   },
   {
     "objectID": "slides.html#geometry",
@@ -422,21 +422,21 @@
     "href": "slides.html#zusammenspiel-der-cook-torrance-brdf",
     "title": "Physically Based Rendering",
     "section": "Zusammenspiel der Cook-Torrance BRDF",
-    "text": "Zusammenspiel der Cook-Torrance BRDF\n\n\n\nTerm\nAufgabe\n\n\n\n\nF\nWie viel Licht wird reflektiert?\n\n\nD\nIn welche Richtung wird reflektiert?\n\n\nG\nWie viel Licht wird blockiert?\n\n\nNenner\nKorrekte physikalische Skalierung\n\n\n\n\n\n\n\\[\nf_s =\n\\frac{F \\cdot D \\cdot G}\n{4(n\\cdot l)(n\\cdot v)}\n\\]\n\n→ Erst das Zusammenspiel aller Terme ergibt eine realistische Reflexion."
+    "text": "Zusammenspiel der Cook-Torrance BRDF\n\n\n\nTerm\nAufgabe\n\n\n\n\nF\nWie viel Licht wird reflektiert?\n\n\nD\nWie konzentriert sind die Reflexionen?\n\n\nG\nWie viel Licht wird blockiert?\n\n\nNenner\nKorrekte physikalische Skalierung\n\n\n\n\n\n\n\\[\nf_s =\n\\frac{F \\cdot D \\cdot G}\n{4(n\\cdot l)(n\\cdot v)}\n\\]\n\n→ Erst das Zusammenspiel aller Terme ergibt eine realistische Reflexion."
   },
   {
     "objectID": "slides.html#energieerhaltung",
     "href": "slides.html#energieerhaltung",
     "title": "Physically Based Rendering",
     "section": "Energieerhaltung",
-    "text": "Energieerhaltung\n\\[\nE_{out} \\le E_{in}\n\\]\nEine Oberfläche darf niemals mehr Licht reflektieren als sie empfängt.\n\n\nProblem bei Phong\nDiffuse  = 0.8\nSpecular = 0.8\n→ 160 % Reflexion\n→ physikalisch unmöglich\n\nLösung in PBR\n\nMehr Spiegelung ⇒ weniger Diffusion\nWeniger Spiegelung ⇒ mehr Diffusion\nGesamtenergie bleibt erhalten\n\n\n\n\n\n\nReflexion und Diffusion teilen sich dasselbe Energiebudget."
+    "text": "Energieerhaltung\n\\[\nE_{out} \\le E_{in}\n\\]\nEine Oberfläche darf niemals mehr Licht reflektieren als sie empfängt.\n\n\n\nProblem bei Phong\n\n\n\nDiffuse und Specular sind unabhängig voneinander\n\n\n\n\nDiffuse = 0.8\nSpecular = 0.8\n→ 160 % Reflexion\n\n\n\n→ Physikalisch unmöglich\n\n\n\nLösung in PBR\n\\[\nk_d = (1-F)(1-\\text{metalness})\n\\]\n\n\n→ Mehr Spiegelung bedeutet automatisch weniger Diffusion – Energie bleibt erhalten."
   },
   {
     "objectID": "slides.html#zusammenspiel-der-prinzipien",
     "href": "slides.html#zusammenspiel-der-prinzipien",
     "title": "Physically Based Rendering",
     "section": "Zusammenspiel der Prinzipien",
-    "text": "Zusammenspiel der Prinzipien\n\nMikrofacetten beschreiben die Oberfläche\nFresnel bestimmt die Winkelabhängigkeit\nDistribution beschreibt die Rauheit\nGeometry berücksichtigt Abschattung\nEnergieerhaltung hält alles physikalisch plausibel\n\n\nGemeinsam ermöglichen sie realistische Materialien unter jeder Beleuchtung."
+    "text": "Zusammenspiel der Prinzipien\n\nMikrofacetten beschreiben die Oberfläche\nFresnel bestimmt die Winkelabhängigkeit\nNDF beschreibt die Konzentration der Reflexion\nGeometry berücksichtigt Abschattung\nEnergieerhaltung hält alles physikalisch plausibel\n\n\n→ Diese Prinzipien stecken in jedem modernen Materialshader – von Unreal über Blender bis Unity."
   },
   {
     "objectID": "slides.html#von-der-brdf-zum-metal-roughness-workflow",
@@ -549,13 +549,6 @@
     "title": "Physically Based Rendering",
     "section": "Wer hat was gemacht?",
     "text": "Wer hat was gemacht?\n\n\n\nKapitel\nWebseite\nPräsentation\n\n\n\n\nEinleitung\nTeam\nStefan\n\n\n1 · Phong & Grenzen\nStefan\nStefan\n\n\n2 · PBR-Prinzipien\nCelia\nCelia\n\n\n3 · Materialmodell\nAlexander\nAlexander\n\n\n4 · Image Based Lighting\nStefan\nStefan\n\n\nVertiefung · Materialalterung\nAlexander\nAlexander\n\n\nQuiz & Diskussion\nTeam\nTeam"
-  },
-  {
-    "objectID": "slides.html#bildquellen",
-    "href": "slides.html#bildquellen",
-    "title": "Physically Based Rendering",
-    "section": "Bildquellen",
-    "text": "Bildquellen\n\nFresnel-Effekt: https://www.keheka.com/fresnel-reflections-in-nuke/"
   },
   {
     "objectID": "slides.html#vielen-dank",

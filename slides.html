@@ -32,72 +32,6 @@
       margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
       vertical-align: middle;
     }
-    /* CSS for syntax highlighting */
-    html { -webkit-text-size-adjust: 100%; }
-    pre > code.sourceCode { white-space: pre; position: relative; }
-    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-    pre > code.sourceCode > span:empty { height: 1.2em; }
-    .sourceCode { overflow: visible; }
-    code.sourceCode > span { color: inherit; text-decoration: inherit; }
-    div.sourceCode { margin: 1em 0; }
-    pre.sourceCode { margin: 0; }
-    @media screen {
-    div.sourceCode { overflow: auto; }
-    }
-    @media print {
-    pre > code.sourceCode { white-space: pre-wrap; }
-    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-    }
-    pre.numberSource code
-      { counter-reset: source-line 0; }
-    pre.numberSource code > span
-      { position: relative; left: -4em; counter-increment: source-line; }
-    pre.numberSource code > span > a:first-child::before
-      { content: counter(source-line);
-        position: relative; left: -1em; text-align: right; vertical-align: baseline;
-        border: none; display: inline-block;
-        -webkit-touch-callout: none; -webkit-user-select: none;
-        -khtml-user-select: none; -moz-user-select: none;
-        -ms-user-select: none; user-select: none;
-        padding: 0 4px; width: 4em;
-        color: #aaaaaa;
-      }
-    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
-    div.sourceCode
-      { color: #003b4f; background-color: #f1f3f5; }
-    @media screen {
-    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-    }
-    code span { color: #003b4f; } /* Normal */
-    code span.al { color: #ad0000; } /* Alert */
-    code span.an { color: #5e5e5e; } /* Annotation */
-    code span.at { color: #657422; } /* Attribute */
-    code span.bn { color: #ad0000; } /* BaseN */
-    code span.bu { } /* BuiltIn */
-    code span.cf { color: #003b4f; font-weight: bold; } /* ControlFlow */
-    code span.ch { color: #20794d; } /* Char */
-    code span.cn { color: #8f5902; } /* Constant */
-    code span.co { color: #5e5e5e; } /* Comment */
-    code span.cv { color: #5e5e5e; font-style: italic; } /* CommentVar */
-    code span.do { color: #5e5e5e; font-style: italic; } /* Documentation */
-    code span.dt { color: #ad0000; } /* DataType */
-    code span.dv { color: #ad0000; } /* DecVal */
-    code span.er { color: #ad0000; } /* Error */
-    code span.ex { } /* Extension */
-    code span.fl { color: #ad0000; } /* Float */
-    code span.fu { color: #4758ab; } /* Function */
-    code span.im { color: #00769e; } /* Import */
-    code span.in { color: #5e5e5e; } /* Information */
-    code span.kw { color: #003b4f; font-weight: bold; } /* Keyword */
-    code span.op { color: #5e5e5e; } /* Operator */
-    code span.ot { color: #003b4f; } /* Other */
-    code span.pp { color: #ad0000; } /* Preprocessor */
-    code span.sc { color: #5e5e5e; } /* SpecialChar */
-    code span.ss { color: #20794d; } /* SpecialString */
-    code span.st { color: #20794d; } /* String */
-    code span.va { color: #111111; } /* Variable */
-    code span.vs { color: #20794d; } /* VerbatimString */
-    code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   </style>
   <link rel="stylesheet" href="site_libs/revealjs/dist/theme/quarto-0427d8d92a431aa6a6430e53ec02a470.css">
   <link href="site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
@@ -477,7 +411,7 @@ f_r(x,\omega_i,\omega_o)
 <p>Reale Oberflächen wirken glatt – sind aber mikroskopisch rau.</p>
 <div class="columns">
 <div class="column" style="width:60%;">
-<p><img data-src="pages/images/mikrofacetten_struktur_v6.svg" style="width:100.0%"></p>
+<p><img data-src="pages/images/microfacet_model.png" style="width:60.0%"></p>
 </div><div class="column" style="width:40%;">
 <ul>
 <li class="fragment">Oberfläche = Millionen winziger Spiegel</li>
@@ -488,11 +422,17 @@ f_r(x,\omega_i,\omega_o)
 <div class="fragment" style="margin-top:20px;">
 <p>→ Grundlage moderner PBR-Materialmodelle</p>
 </div>
+<div style="font-size:0.45em; color:#888;">
+<p>Quelle: https://www.mathematik.uni-marburg.de/~thormae/lectures/graphics2/graphics_4_3_ger_web.html#1</p>
+</div>
 </section>
 <section id="cook-torrance-brdf" class="slide level2">
 <h2>Cook-Torrance BRDF</h2>
-<p>Der spekulare Anteil moderner PBR-Systeme basiert meist auf dem Cook-Torrance-Modell.</p>
-<p><span class="math display">\[
+<p>Diffuser und spekularer Anteil von BRDF: <span class="math display">\[
+f_r(\mathbf{v}, \mathbf{l}) = f_d(\mathbf{v}, \mathbf{l}) + f_s(\mathbf{v}, \mathbf{l})
+\]</span></p>
+<div class="fragment">
+<p>Der spekulare Anteil basiert meist auf dem Cook-Torrance-Modell: <span class="math display">\[
 f_s(\mathbf{v}, \mathbf{l})
 =
 \frac{
@@ -507,17 +447,19 @@ G(\mathbf{l}, \mathbf{v})
 (\mathbf{n}\cdot\mathbf{v})
 }
 \]</span></p>
+</div>
 <ul>
 <li class="fragment"><strong>F · Fresnel</strong> → Wie viel Licht wird reflektiert?</li>
-<li class="fragment"><strong>D · Distribution</strong> → Wie sind die Mikrofacetten ausgerichtet?</li>
+<li class="fragment"><strong>D · NDF</strong> → Wie konzentriert sind die Mikrofacetten-Normalen?</li>
 <li class="fragment"><strong>G · Geometry</strong> → Wie viel Licht wird blockiert?</li>
 </ul>
 </section>
 <section id="fresnel-effekt" class="slide level2">
 <h2>Fresnel-Effekt</h2>
+<h3 id="f-fresnel">F · Fresnel</h3>
 <div class="columns">
 <div class="column" style="width:45%;">
-<p><img data-src="pages/images/Fresnel_Effect.jpg" style="width:100.0%"></p>
+<p><img data-src="pages/images/Fresnel_Effect.jpg" style="width:80.0%"></p>
 <div style="font-size:0.45em; color:#888;">
 <p>Quelle: https://www.keheka.com/fresnel-reflections-in-nuke/</p>
 </div>
@@ -526,23 +468,24 @@ G(\mathbf{l}, \mathbf{v})
 <li class="fragment">Reflexion hängt vom Blickwinkel ab</li>
 <li class="fragment">Je flacher der Blickwinkel, desto stärker die Spiegelung</li>
 <li class="fragment">Besonders sichtbar bei Wasser, Glas und Metall</li>
+<li class="fragment">In der Praxis: Schlick-Approximation statt exakter Formel</li>
 </ul>
-<div class="fragment" style="margin-top:20px;">
-<p>Phong berücksichtigt diesen Effekt nicht.</p>
-</div>
 </div></div>
 </section>
 <section id="distribution" class="slide level2">
 <h2>Distribution</h2>
-<h3 id="d-distribution">D · Distribution</h3>
+<h3 id="d-ndf-normal-distribution-function">D · NDF (Normal Distribution Function)</h3>
 <ul>
-<li class="fragment">Beschreibt die Verteilung der Mikrofacetten</li>
+<li class="fragment">Beschreibt die Verteilung der Mikrofacetten-Normalen</li>
 <li class="fragment">Roughness steuert die Streuung</li>
-<li class="fragment">Glatte Oberfläche → scharfe Reflexion</li>
-<li class="fragment">Raue Oberfläche → breite Reflexion</li>
+<li class="fragment">Glatte Oberfläche → enge Verteilung → scharfe Reflexion</li>
+<li class="fragment">Raue Oberfläche → breite Verteilung → diffuse Spiegelung</li>
 </ul>
 <div class="fragment" style="margin-top:25px;">
-<p>D bestimmt, in welche Richtungen Licht reflektiert wird.</p>
+<p>→ D bestimmt, wie <strong>konzentriert oder gestreut</strong> die Reflexion wirkt.</p>
+</div>
+<div class="fragment" style="margin-top:15px;">
+<p>In der Praxis wird meist <strong>GGX</strong> verwendet – es erzeugt realistischere, länger auslaufende Glanzlichter als ältere Modelle.</p>
 </div>
 </section>
 <section id="geometry" class="slide level2">
@@ -576,7 +519,7 @@ G(\mathbf{l}, \mathbf{v})
 </tr>
 <tr class="even">
 <td><strong>D</strong></td>
-<td>In welche Richtung wird reflektiert?</td>
+<td>Wie konzentriert sind die Reflexionen?</td>
 </tr>
 <tr class="odd">
 <td><strong>G</strong></td>
@@ -608,37 +551,47 @@ E_{out} \le E_{in}
 <p>Eine Oberfläche darf niemals mehr Licht reflektieren als sie empfängt.</p>
 <div class="columns">
 <div class="column" style="width:50%;">
+<div class="fragment">
 <h3 id="problem-bei-phong">Problem bei Phong</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource text number-lines code-with-copy"><code class="sourceCode"><span id="cb1-1"><a></a>Diffuse  = 0.8</span>
-<span id="cb1-2"><a></a>Specular = 0.8</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>→ 160 % Reflexion</p>
-<p>→ physikalisch unmöglich</p>
-</div><div class="column" style="width:50%;">
-<h3 id="lösung-in-pbr">Lösung in PBR</h3>
+</div>
+<div class="fragment">
 <ul>
-<li><p>Mehr Spiegelung ⇒ weniger Diffusion</p></li>
-<li><p>Weniger Spiegelung ⇒ mehr Diffusion</p></li>
-<li><p>Gesamtenergie bleibt erhalten</p></li>
+<li>Diffuse und Specular sind unabhängig voneinander</li>
 </ul>
+</div>
+<div class="fragment">
+<div style="font-family: monospace; background:#f0f0f0; padding:10px; font-size:0.8em;">
+<p>Diffuse = 0.8<br>
+Specular = 0.8<br>
+→ 160 % Reflexion</p>
+</div>
+</div>
+<div class="fragment">
+<p>→ Physikalisch unmöglich</p>
+</div>
+</div><div class="column" style="width:50%;">
+<div class="fragment">
+<h3 id="lösung-in-pbr">Lösung in PBR</h3>
+<p><span class="math display">\[
+k_d = (1-F)(1-\text{metalness})
+\]</span></p>
+</div>
+<div class="fragment">
+<p>→ Mehr Spiegelung bedeutet automatisch weniger Diffusion – Energie bleibt erhalten.</p>
+</div>
 </div></div>
-<div style="margin-top:20px;">
-
-</div>
-<div class="fragment" style="text-align:center;">
-<p><strong>Reflexion und Diffusion teilen sich dasselbe Energiebudget.</strong></p>
-</div>
 </section>
 <section id="zusammenspiel-der-prinzipien" class="slide level2">
 <h2>Zusammenspiel der Prinzipien</h2>
 <ul>
 <li class="fragment">Mikrofacetten beschreiben die Oberfläche</li>
 <li class="fragment">Fresnel bestimmt die Winkelabhängigkeit</li>
-<li class="fragment">Distribution beschreibt die Rauheit</li>
+<li class="fragment">NDF beschreibt die Konzentration der Reflexion</li>
 <li class="fragment">Geometry berücksichtigt Abschattung</li>
 <li class="fragment">Energieerhaltung hält alles physikalisch plausibel</li>
 </ul>
-<div class="fragment" style="margin-top:35px; text-align:center; font-size:1.15em;">
-<p>Gemeinsam ermöglichen sie realistische Materialien unter jeder Beleuchtung.</p>
+<div class="fragment" style="text-align:center; margin-top:30px;">
+<p>→ Diese Prinzipien stecken in jedem modernen Materialshader – von Unreal über Blender bis Unity.</p>
 </div>
 </section></section>
 <section>
@@ -1035,12 +988,6 @@ E_{out} \le E_{in}
 </tr>
 </tbody>
 </table>
-</section>
-<section id="bildquellen" class="slide level2">
-<h2>Bildquellen</h2>
-<ul>
-<li>Fresnel-Effekt: https://www.keheka.com/fresnel-reflections-in-nuke/</li>
-</ul>
 </section>
 <section id="vielen-dank" class="slide level2">
 <h2>Vielen Dank!</h2>
