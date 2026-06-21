@@ -303,7 +303,7 @@ Reale Oberflächen wirken glatt – sind aber mikroskopisch rau.
 
 ::: {.column width="60%"}
 
-![](pages/images/mikrofacetten_struktur_v6.svg){width=100%}
+![](pages/images/microfacet_model.png){width=60%}
 
 :::
 
@@ -323,12 +323,21 @@ Reale Oberflächen wirken glatt – sind aber mikroskopisch rau.
 → Grundlage moderner PBR-Materialmodelle
 :::
 
+::: {style="font-size:0.45em; color:#888;"}
+Quelle: https://www.mathematik.uni-marburg.de/~thormae/lectures/graphics2/graphics_4_3_ger_web.html#1
+:::
+
 ---
 
 ## Cook-Torrance BRDF
 
-Der spekulare Anteil moderner PBR-Systeme basiert meist auf dem Cook-Torrance-Modell.
+Diffuser und spekularer Anteil von BRDF:
+$$
+f_r(\mathbf{v}, \mathbf{l}) = f_d(\mathbf{v}, \mathbf{l}) + f_s(\mathbf{v}, \mathbf{l})
+$$
 
+::: {.fragment}
+Der spekulare Anteil basiert meist auf dem Cook-Torrance-Modell:
 $$
 f_s(\mathbf{v}, \mathbf{l})
 =
@@ -344,10 +353,11 @@ G(\mathbf{l}, \mathbf{v})
 (\mathbf{n}\cdot\mathbf{v})
 }
 $$
+:::
 
 ::: {.incremental}
 - **F · Fresnel** → Wie viel Licht wird reflektiert?
-- **D · Distribution** → Wie sind die Mikrofacetten ausgerichtet?
+- **D · NDF** → Wie konzentriert sind die Mikrofacetten-Normalen?
 - **G · Geometry** → Wie viel Licht wird blockiert?
 :::
 
@@ -355,11 +365,13 @@ $$
 
 ## Fresnel-Effekt
 
+### F · Fresnel
+
 :::: {.columns}
 
 ::: {.column width="45%"}
 
-![](pages/images/Fresnel_Effect.jpg){width=100%}
+![](pages/images/Fresnel_Effect.jpg){width=80%}
 
 ::: {style="font-size:0.45em; color:#888;"}
 Quelle: https://www.keheka.com/fresnel-reflections-in-nuke/
@@ -371,14 +383,9 @@ Quelle: https://www.keheka.com/fresnel-reflections-in-nuke/
 
 ::: {.incremental}
 - Reflexion hängt vom Blickwinkel ab
-- Je flacher der Blickwinkel,
-  desto stärker die Spiegelung
-- Besonders sichtbar bei Wasser,
-  Glas und Metall
-:::
-
-::: {.fragment style="margin-top:20px;"}
-Phong berücksichtigt diesen Effekt nicht.
+- Je flacher der Blickwinkel, desto stärker die Spiegelung
+- Besonders sichtbar bei Wasser, Glas und Metall
+- In der Praxis: Schlick-Approximation statt exakter Formel
 :::
 
 :::
@@ -389,17 +396,22 @@ Phong berücksichtigt diesen Effekt nicht.
 
 ## Distribution
 
-### D · Distribution
+### D · NDF (Normal Distribution Function)
 
 ::: {.incremental}
-- Beschreibt die Verteilung der Mikrofacetten
+- Beschreibt die Verteilung der Mikrofacetten-Normalen
 - Roughness steuert die Streuung
-- Glatte Oberfläche → scharfe Reflexion
-- Raue Oberfläche → breite Reflexion
+- Glatte Oberfläche → enge Verteilung → scharfe Reflexion
+- Raue Oberfläche → breite Verteilung → diffuse Spiegelung
 :::
 
 ::: {.fragment style="margin-top:25px;"}
-D bestimmt, in welche Richtungen Licht reflektiert wird.
+→ D bestimmt, wie **konzentriert oder gestreut** die Reflexion wirkt.
+:::
+
+::: {.fragment style="margin-top:15px;"}
+In der Praxis wird meist **GGX** verwendet –
+es erzeugt realistischere, länger auslaufende Glanzlichter als ältere Modelle.
 :::
 
 ---
@@ -430,7 +442,7 @@ Quelle: http://wiki.ktxsoftware.com/Physically-Based-Rendering.html
 | Term | Aufgabe |
 |------|----------|
 | **F** | Wie viel Licht wird reflektiert? |
-| **D** | In welche Richtung wird reflektiert? |
+| **D** | Wie konzentriert sind die Reflexionen? |
 | **G** | Wie viel Licht wird blockiert? |
 | **Nenner** | Korrekte physikalische Skalierung |
 
@@ -443,9 +455,7 @@ f_s =
 $$
 
 ::: {.fragment style="text-align:center; margin-top:30px; font-size:1.2em;"}
-
 → Erst das Zusammenspiel aller Terme ergibt eine realistische Reflexion.
-
 :::
 
 ---
@@ -462,43 +472,45 @@ Eine Oberfläche darf niemals mehr Licht reflektieren als sie empfängt.
 
 ::: {.column width="50%"}
 
+::: {.fragment}
 ### Problem bei Phong
+:::
 
-```text
-Diffuse  = 0.8
-Specular = 0.8
-```
+::: {.fragment}
+- Diffuse und Specular sind unabhängig voneinander
+:::
 
+::: {.fragment}
+::: {style="font-family: monospace; background:#f0f0f0; padding:10px; font-size:0.8em;"}
+Diffuse  = 0.8  
+Specular = 0.8  
 → 160 % Reflexion
+:::
+:::
 
-→ physikalisch unmöglich
+::: {.fragment}
+→ Physikalisch unmöglich
+:::
 
 :::
 
 ::: {.column width="50%"}
 
+::: {.fragment}
 ### Lösung in PBR
 
-- Mehr Spiegelung
-  ⇒ weniger Diffusion
+$$
+k_d = (1-F)(1-\text{metalness})
+$$
+:::
 
-- Weniger Spiegelung
-  ⇒ mehr Diffusion
-
-- Gesamtenergie bleibt erhalten
+::: {.fragment}
+→ Mehr Spiegelung bedeutet automatisch weniger Diffusion – Energie bleibt erhalten.
+:::
 
 :::
 
 ::::
-
-<div style="margin-top:20px;"></div>
-
-::: {.fragment style="text-align:center;"}
-
-**Reflexion und Diffusion teilen sich dasselbe Energiebudget.**
-
-:::
-
 ---
 
 ## Zusammenspiel der Prinzipien
@@ -506,13 +518,14 @@ Specular = 0.8
 ::: {.incremental}
 - Mikrofacetten beschreiben die Oberfläche
 - Fresnel bestimmt die Winkelabhängigkeit
-- Distribution beschreibt die Rauheit
+- NDF beschreibt die Konzentration der Reflexion
 - Geometry berücksichtigt Abschattung
 - Energieerhaltung hält alles physikalisch plausibel
 :::
 
-::: {.fragment style="margin-top:35px; text-align:center; font-size:1.15em;"}
-Gemeinsam ermöglichen sie realistische Materialien unter jeder Beleuchtung.
+::: {.fragment style="text-align:center; margin-top:30px;"}
+→ Diese Prinzipien stecken in jedem modernen Materialshader –
+von Unreal über Blender bis Unity.
 :::
 
 # 3 · Materialmodell {background-color="#1f2937"}
@@ -898,11 +911,6 @@ $$L_{\text{IBL}} \approx \underbrace{\text{PreFilteredMap}(R,\,\alpha)}_{\text{L
 | 4 · Image Based Lighting | Stefan | **Stefan** |
 | Vertiefung · Materialalterung | Alexander | **Alexander** |
 | Quiz & Diskussion | Team | **Team** |
-
-## Bildquellen
-
-- Fresnel-Effekt:
-  https://www.keheka.com/fresnel-reflections-in-nuke/
 
 ## Vielen Dank!
 
