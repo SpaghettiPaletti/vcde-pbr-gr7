@@ -302,7 +302,7 @@ window.Quarto = {
 <p><strong>Warum sehen die Objekte so unterschiedlich aus?</strong></p>
 <p>Chrom ist ein Material, das seine Erscheinung fast vollständig aus der Spiegelung der Umgebung bezieht. Hier werden die theoretischen Grenzen von Phong besonders deutlich:</p>
 <ul>
-<li><p><strong>Klassisches Phong:</strong> Damit Phing überhaupt eine Möglichkeit hat, Chrom darzustellen, wird es hier mit einer Reflection Map kombiniert. Da das Modell kein Verständnis für echtes Metall hat, wirkt die Reflexion wie ein “Aufkleber”. Es fehlt die physikalische Tiefe und das Objekt wirkt unnatürlich hell, weil das einfallende Licht der Umgebung ohne Begrenzung (keine Energieerhaltung) auf die Pixelfarbe addiert wird.</p></li>
+<li><p><strong>Klassisches Phong:</strong> Damit Phong überhaupt eine Möglichkeit hat, Chrom darzustellen, wird es hier mit einer Reflection Map kombiniert. Da das Modell kein Verständnis für echtes Metall hat, wirkt die Reflexion wie ein “Aufkleber”. Es fehlt die physikalische Tiefe und das Objekt wirkt unnatürlich hell, weil das einfallende Licht der Umgebung ohne Begrenzung (keine Energieerhaltung) auf die Pixelfarbe addiert wird.</p></li>
 <li><p><strong>Physically Based Rendering:</strong> Bei PBR erkennt man, dass die Reflexionen an den Rändern des Knotens (flacher Blickwinkel) stärker und klarer als in der Mitte sind (Fresnel-Effekt). Zudem sorgt die <strong>Energieerhaltung</strong> dafür, dass das Material “schwer” und massiv wirkt. Das gespiegelte Licht kann nicht gleichzeitig die Oberfläche erhellen. Dadurch entsteht ein tiefer, realistischer Metall-Look.</p></li>
 </ul>
 <section id="was-war-phong-doch-gleich-wieder" class="level3">
@@ -312,7 +312,7 @@ window.Quarto = {
 <p>Die finale Farbe berechnet sich dabei als simple Addition aus vier Komponenten:</p>
 <ol type="1">
 <li><strong>Emissiv:</strong> Eigenleuchten des Materials.</li>
-<li><strong>Ambient:</strong> Eine konstante für das globale, indirekte Grundlicht.</li>
+<li><strong>Ambient:</strong> Eine Konstante für das globale, indirekte Grundlicht.</li>
 <li><strong>Diffus:</strong> Die raue, matte Lichtstreuung (Lambert).</li>
 <li><strong>Spekular:</strong> Der glänzende, spiegelnde Lichtfleck.</li>
 </ol>

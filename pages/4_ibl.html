@@ -232,11 +232,11 @@ window.Quarto = {
 </section>
 <section id="warum-ibl-für-die-vollständigkeit-nötig-ist" class="level2">
 <h2 class="anchored" data-anchor-id="warum-ibl-für-die-vollständigkeit-nötig-ist">Warum IBL für die Vollständigkeit nötig ist</h2>
-<p>Ohne IBL bleibt PBR unvollständig. In der klassischen Grafik (Phong) haben wir die Punktlicher manuell platziert. In der Realität kommt Licht jedoch von überall.</p>
+<p>Ohne IBL bleibt PBR unvollständig. In der klassischen Grafik (Phong) haben wir die Punktlichter manuell platziert. In der Realität kommt Licht jedoch von überall.</p>
 <ul>
 <li><strong>Vervollständigung der Energieerhaltung:</strong> Wie wir gelernt haben, darf ein Objekt nicht mehr Licht reflektieren, als es erhält. IBL liefert ein definiertes “Budget” an Umgebungslicht, das das Materialmodell dann physikalisch korrekt aufteilt.</li>
-<li><strong>Interaktion mit dem Materialmodell:</strong> Ein hoher <em>Metallic</em>-Wert macht ein Objekt zum spiegel. Ohne IBL hätte dieser Spiegel jedoch nichts, was er zeigen könnte. Erst die Umgebnungsinformaionen machen den Unterschied zwischen Metall und einem nicht spiegelnden Objekt greifbar.</li>
-<li><strong>Kontext für den Fresnel-Effekt:</strong> Der Fresnel-Effekt sorgt dafür, dass Reflexionen am Radn stärker werden. Damit dieser Effekt sichtbar wird, muss die Umgebung Licht aus allen Winkeln (0° bis 90°) liefern - genau das leistet eine HDRI-Umgebungskarte.</li>
+<li><strong>Interaktion mit dem Materialmodell:</strong> Ein hoher <em>Metallic</em>-Wert macht ein Objekt zum Spiegel. Ohne IBL hätte dieser Spiegel jedoch nichts, was er zeigen könnte. Erst die Umgebungsinformaionen machen den Unterschied zwischen Metall und einem nicht spiegelnden Objekt greifbar.</li>
+<li><strong>Kontext für den Fresnel-Effekt:</strong> Der Fresnel-Effekt sorgt dafür, dass Reflexionen am Rand stärker werden. Damit dieser Effekt sichtbar wird, muss die Umgebung Licht aus allen Winkeln (0° bis 90°) liefern - genau das leistet eine HDRI-Umgebungskarte.</li>
 </ul>
 </section>
 <section id="die-lichtquelle-was-ist-ibl" class="level2">
@@ -244,13 +244,13 @@ window.Quarto = {
 <p>Anstatt einzelne Lichtpunkte im Raum zu verteilen, nutzen wir beim IBL die gesamte Umgebung als Lichtquelle:</p>
 <ul>
 <li><strong>HDRI statt Punktlicht:</strong> Wir nutzen 360°-Panorama-Bilder der echten Welt (High Dynamic Range Images).</li>
-<li><strong>Pixel als Emitter:</strong> Jeder einzelne Pixel des Bildes wird als winzige Lichtquelle behandelt. Ein HDRI mit einer Sonne liefert dort extream viel Energie, während die blauen Pixel des Himmels sanftes, farbiges Licht beisteuern.</li>
+<li><strong>Pixel als Emitter:</strong> Jeder einzelne Pixel des Bildes wird als winzige Lichtquelle behandelt. Ein HDRI mit einer Sonne liefert dort extrem viel Energie, während die blauen Pixel des Himmels sanftes, farbiges Licht beisteuern.</li>
 </ul>
 <hr>
 </section>
 <section id="interaktive-analyse-der-torus-knoten-und-verschiedenen-welten" class="level2">
 <h2 class="anchored" data-anchor-id="interaktive-analyse-der-torus-knoten-und-verschiedenen-welten">Interaktive Analyse: Der Torus-Knoten und verschiedenen Welten</h2>
-<p>Um die Konsistenz zu wahren, nutzen wir wieder den <strong>Torus-Knoten</strong> von Seite 1. Beaobachtet, wie das Material (kosntant auf Chrom/Metall eingestellt) allein druch den Wechsel der Umgebung seine Identität verändert. Das Materialmodell bleibt gleich, aber die Lichtinformation ändert sich.</p>
+<p>Um die Konsistenz zu wahren, nutzen wir wieder den <strong>Torus-Knoten</strong> von Seite 1. Beobachtet, wie das Material (konstant auf Chrom/Metall eingestellt) allein durch den Wechsel der Umgebung seine Identität verändert. Das Materialmodell bleibt gleich, aber die Lichtinformation ändert sich.</p>
 <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
 <div style="margin-bottom: 15px;">
 <p><label><strong>Umgebung wählen:</strong> </label> <select id="envSwitch" style="padding: 8px; border-radius: 4px; border: 1px solid #ccc;"> <option value="https://playground.babylonjs.com/textures/environment.env">Stadt (Neutral)</option> <option value="https://playground.babylonjs.com/textures/country.env">Landlandschaft (Offen)</option> <option value="https://playground.babylonjs.com/textures/forest.env">Wald (Grünlich)</option> <option value="https://playground.babylonjs.com/textures/night.env">Nacht (Dunkel/Kontrastreich)</option> <option value="https://playground.babylonjs.com/textures/room.env">Innenraum (Warm)</option> </select></p>
@@ -302,8 +302,8 @@ window.addEventListener("resize", () => engine.resize());
 <li><strong>Diffuse Irradiance:</strong> Ein weichgezeichnetes Abbild der Umgebung liefert das diffuse Licht.</li>
 <li><strong>Specular Reflection:</strong> Verschiedene Unschärfegrade der Umgebung werden für unterschiedliche <em>Roughness</em>-Stufen genutzt.</li>
 </ol>
-<p>Erst durch dieses Zusammenspiel von Umgebungslicht und den physikalischen Materialgesetzen wird PBR zu eine vollständigen, fotorealistischen System.</p>
-<p>Um IBL in Echtzeit zu ermöglichen, muss die Rendering-Gleichung für die Umgebung gelöst werden. Das Integral für den spekularen Anteil lautet:</p>
+<p>Erst durch dieses Zusammenspiel von Umgebungslicht und den physikalischen Materialgesetzen wird PBR zu einem vollständigen, fotorealistischen System.</p>
+<p>Um IBL in Echtzeit zu ermöglichen, muss die Rendering-Gleichung für die Umgebung gelöst werden. Sie lautet:</p>
 <p><span class="math display">\[
 L_o(x,\omega_o)
 =
@@ -315,24 +315,34 @@ f_r(x,\omega_i,\omega_o)
 \, (n \cdot \omega_i)
 \, d\omega_i
 \]</span></p>
-<p>Da dieses Integral für jeden Frame und jeden Pixle zu rechenintensiv ist, nutzen modeerne Engines wie Babylon.js den von Epic Games entwickelten <strong>Split-Sum</strong> Ansatz. Dabei wird das Integral in zwei Teile zerlegt:</p>
+<p>Aufgeteilt in diffusen und spekularen Anteil (<span class="math inline">\(f_r = f_d + f_s\)</span>) ist für IBL vor allem das spekulare Integral relevant:</p>
+<p><span class="math display">\[
+\underbrace{
+\int_{\Omega}
+f_s(x,\omega_i,\omega_o)
+\, L_i(x,\omega_i)
+\, (n \cdot \omega_i)
+\, d\omega_i
+}_{\text{spekularer Anteil}\;\longrightarrow\;\text{Split-Sum}}
+\]</span></p>
+<p>Für den spekularen Anteil wird dieses Integral durch den <strong>Split-Sum-Ansatz</strong> (Epic Games; Zerlegung des Integrals in das Produkt zweier Terme) approximiert, da die Berechnung für jeden Frame und jeden Pixel zu rechenintensiv ist.</p>
 <section id="das-gefilterte-umgebungslicht-pre-filtered-map" class="level3">
 <h3 class="anchored" data-anchor-id="das-gefilterte-umgebungslicht-pre-filtered-map">1. Das gefilterte Umgebungslicht (Pre-filtered Map)</h3>
 <p>Der erste Teil des Produkts berechnet die eintreffende Strahlung für verschiedene Rauheitsgrade:</p>
 <p><span class="math display">\[S_1 \approx \frac{1}{N} \sum_{i=1}^{N} L_i(\omega_i)\]</span></p>
-<p>Dabei wird das Umgebungslicht vorab mit einem Gauß-Filter weichgezeichnet. Je höher die <em>Roughness</em> des Materials, desto unschärfer ist die Version der Textur, die ausgelesen wird.</p>
+<p>Dabei wird das Umgebungslicht vorab passend zur Rauheit weichgezeichnet. Je höher die <em>Roughness</em> des Materials, desto unschärfer ist die Version der Textur, die ausgelesen wird.</p>
 </section>
 <section id="die-brdf-integration-look-up-table" class="level3">
 <h3 class="anchored" data-anchor-id="die-brdf-integration-look-up-table">2. Die BRDF-Integration (Look-Up Table)</h3>
 <p>Der zweite Teil berechnet den Rest der Gleichung, der vom Betrachtungswinkel (<span class="math inline">\(\theta\)</span>) und der Rauheit abhängt:</p>
-<p><span class="math display">\[S_2 \approx \int_{\Omega} f_r(p, \omega_i, \omega_o) \, (n \cdot \omega_i) \, d\omega_i\]</span></p>
+<p><span class="math display">\[S_2 \approx \int_{\Omega} f_s(p, \omega_i, \omega_o) \, (n \cdot \omega_i) \, d\omega_i\]</span></p>
 <p>Diese Werte werden in einer speziellen Textur, der <strong>BRDF-LUT</strong>, gespeichert. Sie kombiniert den Fresnel-Effekt mit der Geometrie-Abschattung.</p>
 </section>
 <section id="zusammenführung" class="level3">
 <h3 class="anchored" data-anchor-id="zusammenführung">Zusammenführung</h3>
 <p>In der Grafikkarte werden diese beiden Werte schließlich einfach multipliziert:</p>
 <p><span class="math display">\[L_{IBL} = S_1 \cdot (F_0 \cdot \text{Scale} + \text{Bias})\]</span></p>
-<p>Dies ermöglich die Darstellung von komplexen physikalischen Reflexionen mit nur zwei Texturzugriffen pro Pixel.</p>
+<p>Dies ermöglicht die Darstellung von komplexen physikalischen Reflexionen mit nur zwei Texturzugriffen pro Pixel.</p>
 
 
 </section>
