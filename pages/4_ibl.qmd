@@ -13,22 +13,22 @@ Bisher haben wir uns mit den **PBR-Prinzipien** (wie der Energieerhaltung und de
 Doch ein physikalisch korrektes Material ist nur die halbe Miete. In einer rein schwarzen Umgebung ohne Lichtquellen würde selbst das perfekteste Gold-Material schwarz erscheinen. Hier kommt **Image Based Lighting (IBL)** ins Spiel: Es liefert die notwendigen Lichtinformationen, um die mathematischen Modelle, die wir auf den vorherigen Seiten gelernt haben, zum Leben zu erwecken.
 
 ## Warum IBL für die Vollständigkeit nötig ist
-Ohne IBL bleibt PBR unvollständig. In der klassischen Grafik (Phong) haben wir die Punktlicher manuell platziert. In der Realität kommt Licht jedoch von überall.
+Ohne IBL bleibt PBR unvollständig. In der klassischen Grafik (Phong) haben wir die Punktlichter manuell platziert. In der Realität kommt Licht jedoch von überall.
 
 - **Vervollständigung der Energieerhaltung:** Wie wir gelernt haben, darf ein Objekt nicht mehr Licht reflektieren, als es erhält. IBL liefert ein definiertes "Budget" an Umgebungslicht, das das Materialmodell dann physikalisch korrekt aufteilt.
-- **Interaktion mit dem Materialmodell:** Ein hoher *Metallic*-Wert macht ein Objekt zum spiegel. Ohne IBL hätte dieser Spiegel jedoch nichts, was er zeigen könnte. Erst die Umgebnungsinformaionen machen den Unterschied zwischen Metall und einem nicht spiegelnden Objekt greifbar.
-- **Kontext für den Fresnel-Effekt:** Der Fresnel-Effekt sorgt dafür, dass Reflexionen am Radn stärker werden. Damit dieser Effekt sichtbar wird, muss die Umgebung Licht aus allen Winkeln (0° bis 90°) liefern - genau das leistet eine HDRI-Umgebungskarte.
+- **Interaktion mit dem Materialmodell:** Ein hoher *Metallic*-Wert macht ein Objekt zum Spiegel. Ohne IBL hätte dieser Spiegel jedoch nichts, was er zeigen könnte. Erst die Umgebungsinformaionen machen den Unterschied zwischen Metall und einem nicht spiegelnden Objekt greifbar.
+- **Kontext für den Fresnel-Effekt:** Der Fresnel-Effekt sorgt dafür, dass Reflexionen am Rand stärker werden. Damit dieser Effekt sichtbar wird, muss die Umgebung Licht aus allen Winkeln (0° bis 90°) liefern - genau das leistet eine HDRI-Umgebungskarte.
 
 ## Die Lichtquelle: Was ist IBL?
 Anstatt einzelne Lichtpunkte im Raum zu verteilen, nutzen wir beim IBL die gesamte Umgebung als Lichtquelle:
 
 - **HDRI statt Punktlicht:** Wir nutzen 360°-Panorama-Bilder der echten Welt (High Dynamic Range Images).
-- **Pixel als Emitter:** Jeder einzelne Pixel des Bildes wird als winzige Lichtquelle behandelt. Ein HDRI mit einer Sonne liefert dort extream viel Energie, während die blauen Pixel des Himmels sanftes, farbiges Licht beisteuern.
+- **Pixel als Emitter:** Jeder einzelne Pixel des Bildes wird als winzige Lichtquelle behandelt. Ein HDRI mit einer Sonne liefert dort extrem viel Energie, während die blauen Pixel des Himmels sanftes, farbiges Licht beisteuern.
 
 ---
 
 ## Interaktive Analyse: Der Torus-Knoten und verschiedenen Welten
-Um die Konsistenz zu wahren, nutzen wir wieder den **Torus-Knoten** von Seite 1. Beaobachtet, wie das Material (kosntant auf Chrom/Metall eingestellt) allein druch den Wechsel der Umgebung seine Identität verändert. Das Materialmodell bleibt gleich, aber die Lichtinformation ändert sich.
+Um die Konsistenz zu wahren, nutzen wir wieder den **Torus-Knoten** von Seite 1. Beobachtet, wie das Material (konstant auf Chrom/Metall eingestellt) allein durch den Wechsel der Umgebung seine Identität verändert. Das Materialmodell bleibt gleich, aber die Lichtinformation ändert sich.
 
 <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
 <div style="margin-bottom: 15px;">
@@ -87,9 +87,9 @@ IBL löst das Problem der komlpexen Lichtberechnung durch Vorberechnung (**Pre-F
 1. **Diffuse Irradiance:** Ein weichgezeichnetes Abbild der Umgebung liefert das diffuse Licht.
 2. **Specular Reflection:** Verschiedene Unschärfegrade der Umgebung werden für unterschiedliche *Roughness*-Stufen genutzt.
 
-Erst durch dieses Zusammenspiel von Umgebungslicht und den physikalischen Materialgesetzen wird PBR zu eine vollständigen, fotorealistischen System.
+Erst durch dieses Zusammenspiel von Umgebungslicht und den physikalischen Materialgesetzen wird PBR zu einem vollständigen, fotorealistischen System.
 
-Um IBL in Echtzeit zu ermöglichen, muss die Rendering-Gleichung für die Umgebung gelöst werden. Das Integral für den spekularen Anteil lautet:
+Um IBL in Echtzeit zu ermöglichen, muss die Rendering-Gleichung für die Umgebung gelöst werden. Sie lautet:
 
 
 $$
@@ -104,19 +104,31 @@ f_r(x,\omega_i,\omega_o)
 \, d\omega_i
 $$
 
-Da dieses Integral für jeden Frame und jeden Pixle zu rechenintensiv ist, nutzen modeerne Engines wie Babylon.js den von Epic Games entwickelten **Split-Sum** Ansatz. Dabei wird das Integral in zwei Teile zerlegt:
+Aufgeteilt in diffusen und spekularen Anteil ($f_r = f_d + f_s$) ist für IBL vor allem das spekulare Integral relevant:
+
+$$
+\underbrace{
+\int_{\Omega}
+f_s(x,\omega_i,\omega_o)
+\, L_i(x,\omega_i)
+\, (n \cdot \omega_i)
+\, d\omega_i
+}_{\text{spekularer Anteil}\;\longrightarrow\;\text{Split-Sum}}
+$$
+
+Für den spekularen Anteil wird dieses Integral durch den **Split-Sum-Ansatz** (Epic Games; Zerlegung des Integrals in das Produkt zweier Terme) approximiert, da die Berechnung für jeden Frame und jeden Pixel zu rechenintensiv ist.
 
 ### 1. Das gefilterte Umgebungslicht (Pre-filtered Map)
 Der erste Teil des Produkts berechnet die eintreffende Strahlung für verschiedene Rauheitsgrade:
 
 $$S_1 \approx \frac{1}{N} \sum_{i=1}^{N} L_i(\omega_i)$$
 
-Dabei wird das Umgebungslicht vorab mit einem Gauß-Filter weichgezeichnet. Je höher die *Roughness* des Materials, desto unschärfer ist die Version der Textur, die ausgelesen wird.
+Dabei wird das Umgebungslicht vorab passend zur Rauheit weichgezeichnet. Je höher die *Roughness* des Materials, desto unschärfer ist die Version der Textur, die ausgelesen wird.
 
 ### 2. Die BRDF-Integration (Look-Up Table)
 Der zweite Teil berechnet den Rest der Gleichung, der vom Betrachtungswinkel ($\theta$) und der Rauheit abhängt:
 
-$$S_2 \approx \int_{\Omega} f_r(p, \omega_i, \omega_o) \, (n \cdot \omega_i) \, d\omega_i$$
+$$S_2 \approx \int_{\Omega} f_s(p, \omega_i, \omega_o) \, (n \cdot \omega_i) \, d\omega_i$$
 
 
 Diese Werte werden in einer speziellen Textur, der **BRDF-LUT**, gespeichert. Sie kombiniert den Fresnel-Effekt mit der Geometrie-Abschattung.
@@ -126,4 +138,4 @@ In der Grafikkarte werden diese beiden Werte schließlich einfach multipliziert:
 
 $$L_{IBL} = S_1 \cdot (F_0 \cdot \text{Scale} + \text{Bias})$$
 
-Dies ermöglich die Darstellung von komplexen physikalischen Reflexionen mit nur zwei Texturzugriffen pro Pixel.
+Dies ermöglicht die Darstellung von komplexen physikalischen Reflexionen mit nur zwei Texturzugriffen pro Pixel.

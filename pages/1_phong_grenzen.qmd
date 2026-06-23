@@ -94,7 +94,7 @@ Beide Szenen nutzen eine identische Beleuchtungssituation: Ein **Hemispheric Lig
 Chrom ist ein Material, das seine Erscheinung fast vollständig aus der Spiegelung der Umgebung bezieht. Hier werden die theoretischen Grenzen von Phong besonders deutlich:
 
 - **Klassisches Phong:**
-Damit Phing überhaupt eine Möglichkeit hat, Chrom darzustellen, wird es hier mit einer Reflection Map kombiniert. Da das Modell kein Verständnis für echtes Metall hat, wirkt die Reflexion wie ein "Aufkleber". Es fehlt die physikalische Tiefe und das Objekt wirkt unnatürlich hell, weil das einfallende Licht der Umgebung ohne Begrenzung (keine Energieerhaltung) auf die Pixelfarbe addiert wird.
+Damit Phong überhaupt eine Möglichkeit hat, Chrom darzustellen, wird es hier mit einer Reflection Map kombiniert. Da das Modell kein Verständnis für echtes Metall hat, wirkt die Reflexion wie ein "Aufkleber". Es fehlt die physikalische Tiefe und das Objekt wirkt unnatürlich hell, weil das einfallende Licht der Umgebung ohne Begrenzung (keine Energieerhaltung) auf die Pixelfarbe addiert wird.
 
 - **Physically Based Rendering:**
 Bei PBR erkennt man, dass die Reflexionen an den Rändern des Knotens (flacher Blickwinkel) stärker und klarer als in der Mitte sind (Fresnel-Effekt). Zudem sorgt die **Energieerhaltung** dafür, dass das Material "schwer" und massiv wirkt. Das gespiegelte Licht kann nicht gleichzeitig die Oberfläche erhellen. Dadurch entsteht ein tiefer, realistischer Metall-Look.
@@ -108,7 +108,7 @@ Die Farbe jedes Pixels wird nur anhand der direkten Beziehung zwischen Lichtquel
 Die finale Farbe berechnet sich dabei als simple Addition aus vier Komponenten:
 
 1. **Emissiv:** Eigenleuchten des Materials.
-2. **Ambient:** Eine konstante für das globale, indirekte Grundlicht.
+2. **Ambient:** Eine Konstante für das globale, indirekte Grundlicht.
 3. **Diffus:** Die raue, matte Lichtstreuung (Lambert).
 4. **Spekular:** Der glänzende, spiegelnde Lichtfleck.
 
