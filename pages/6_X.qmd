@@ -5,8 +5,6 @@ format:
   html:
     theme: cosmo
     toc: true
-jupyter: python3
-bibliography: ../references.bib
 ---
 
 ## Warum Materialalterung eine PBR-Frage ist

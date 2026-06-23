@@ -5,8 +5,6 @@ format:
   html:
     theme: cosmo
     toc: true
-jupyter: python3
-bibliography: ../references.bib
 ---
 
 ## Phong vs PBR - ein direkter visueller Vergleich

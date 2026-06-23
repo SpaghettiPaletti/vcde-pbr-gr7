@@ -17,7 +17,6 @@ format:
           ul, ol { margin-top: 0.2rem; margin-bottom: 0.4rem; }
           .callout { margin-top: 0.6rem; margin-bottom: 0.6rem; }
         </style>
-bibliography: ../references.bib
 ---
 
 Im Gegensatz zum klassischen Phong-Modell basiert **Physically Based Rendering (PBR)** auf physikalisch motivierten Materialmodellen. Ziel ist es, das Reflexionsverhalten realer Oberflächen möglichst plausibel zu approximieren.
