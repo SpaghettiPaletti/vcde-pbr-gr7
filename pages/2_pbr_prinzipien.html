@@ -251,7 +251,6 @@ window.Quarto = {
 <p>Im Gegensatz zum klassischen Phong-Modell basiert <strong>Physically Based Rendering (PBR)</strong> auf physikalisch motivierten Materialmodellen. Ziel ist es, das Reflexionsverhalten realer Oberflächen möglichst plausibel zu approximieren.</p>
 <p>Die zentralen Prinzipien sind:</p>
 <ul>
-<li><strong>BRDF-basierte Materialbeschreibung</strong></li>
 <li><strong>Mikrofacettentheorie</strong></li>
 <li><strong>Fresnel-Effekt</strong></li>
 <li><strong>Energieerhaltung</strong></li>
@@ -307,7 +306,7 @@ f_s(\omega_o,\omega_i)
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Phong vs.&nbsp;PBR
+<span class="screen-reader-only">Note</span>Phong
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -332,9 +331,9 @@ f_s(\omega_o,\omega_i)
 <h2 class="anchored" data-anchor-id="grundidee">Grundidee</h2>
 <p>Reale Oberflächen erscheinen makroskopisch glatt, besitzen jedoch auf mikroskopischer Ebene eine raue Struktur. Diese kann als Ansammlung vieler kleiner Spiegel – sogenannter Mikrofacetten – modelliert werden.</p>
 <p>Nur Mikrofacetten, deren Normale mit dem Halfway-Vektor <span class="math inline">\(\mathbf{h}\)</span> übereinstimmt, reflektieren Licht direkt vom Lichtstrahl zum Betrachter.</p>
-<div style="display: flex; justify-content: center; align-items: center; gap: 1rem; margin: 1rem 0;">
-<div style="text-align: center; flex: 0 0 auto;">
-<p><img src="images/makroskopisch_v5.svg" class="img-fluid" style="width:90.0%"></p>
+<div style="display: flex; justify-content: right; align-items: right; gap: 0rem; margin: 1rem 0;">
+<div style="text-align: right; flex: 0 0 auto;">
+<p><img src="images/makroskopisch_v5.svg" class="img-fluid" style="width:60.0%"></p>
 </div>
 <div style="text-align: left; flex: 0 0 auto;">
 <ul>
@@ -347,14 +346,28 @@ f_s(\omega_o,\omega_i)
 </div>
 <div style="display: flex; justify-content: center; margin: 1rem 0;">
 <div style="text-align: center;">
-<p><img src="images/mikrofacetten_struktur_v6.svg" class="img-fluid" width="460"></p>
+<p><img src="images/mikrofacetten_struktur_v6.svg" class="img-fluid" width="500"></p>
 </div>
 </div>
 <p>Die Mikrofacettentheorie bildet die Grundlage moderner spekularer Reflexionsmodelle in PBR.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Phong
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Phong arbeitet nicht mit Mikrofacetten. Die Oberfläche wird als ideal glatt angenommen, Rauheit wird nur indirekt über den Glanzlicht-Exponenten <span class="math inline">\(s\)</span> simuliert, ohne dass dem eine physikalische Grundlage zugrunde liegt.</p>
+</div>
+</div>
 </section>
 </section>
 <section id="cook-torrance-brdf" class="level1">
 <h1>Cook-Torrance-BRDF</h1>
+<p>Im Folgenden wird die in der Echtzeit-Grafik übliche Vektor-Schreibweise verwendet: <span class="math inline">\(\mathbf{v}\)</span> (Blickrichtung) entspricht <span class="math inline">\(\omega_o\)</span>, <span class="math inline">\(\mathbf{l}\)</span> (Lichtrichtung) entspricht <span class="math inline">\(\omega_i\)</span> aus der Rendering-Gleichung. Zusätzlich wird der Halfway-Vektor <span class="math inline">\(\mathbf{h}\)</span> benötigt, der genau zwischen <span class="math inline">\(\mathbf{v}\)</span> und <span class="math inline">\(\mathbf{l}\)</span> liegt.</p>
 <p>Der spekulare Anteil wird in modernen PBR-Systemen meist durch die <strong>Cook-Torrance-BRDF</strong> beschrieben:</p>
 <p><span class="math display">\[
 f_s(\mathbf{v}, \mathbf{l})
@@ -389,7 +402,7 @@ F_0
 (1-F_0)
 (1-\cos\theta)^5
 \]</span></p>
-<p>Dabei bezeichnet <span class="math inline">\(F_0\)</span> die Basisreflektivität des Materials bei senkrechtem Einfall (<span class="math inline">\(\theta = 0°\)</span>) – also den Anteil des Lichts, der reflektiert wird, wenn der Betrachter direkt auf die Oberfläche schaut. Dieser Wert ist materialspezifisch: Nichtmetalle (Dielektrika) haben typischerweise ein <span class="math inline">\(F_0\)</span> zwischen 0,02 und 0,08, während Metalle deutlich höhere Werte erreichen. Der Term <span class="math inline">\((1-\cos\theta)^5\)</span> sorgt dafür, dass die Reflektivität mit zunehmendem Winkel <span class="math inline">\(\theta\)</span> – also flacherem Blickwinkel – stark ansteigt und bei streifendem Einfall gegen 1 konvergiert.</p>
+<p>Dabei ist <span class="math inline">\(\theta\)</span> der Winkel zwischen der Blickrichtung <span class="math inline">\(\mathbf{v}\)</span> (bzw. der Lichtrichtung <span class="math inline">\(\mathbf{l}\)</span>) und dem Halfway-Vektor <span class="math inline">\(\mathbf{h}\)</span>. <span class="math inline">\(F_0\)</span> bezeichnet die Basisreflektivität des Materials bei senkrechtem Einfall (<span class="math inline">\(\theta = 0°\)</span>), also den Anteil des Lichts, der reflektiert wird, wenn der Betrachter direkt auf die Oberfläche schaut. Dieser Wert ist materialspezifisch: Nichtmetalle (Dielektrika) haben typischerweise ein <span class="math inline">\(F_0\)</span> zwischen 0,02 und 0,08, während Metalle deutlich höhere Werte erreichen. Der Term <span class="math inline">\((1-\cos\theta)^5\)</span> sorgt dafür, dass die Reflektivität mit zunehmendem Winkel <span class="math inline">\(\theta\)</span>, also flacherem Blickwinkel, stark ansteigt und bei streifendem Einfall gegen 1 konvergiert.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -461,7 +474,7 @@ G_1(v)
 (\mathbf{n}\cdot\mathbf{v})(1-k)+k
 }
 \]</span></p>
-<p>Dabei ist <span class="math inline">\(\mathbf{n}\cdot\mathbf{v}\)</span> das Skalarprodukt zwischen Normaler und Blickrichtung – ein Maß dafür, wie senkrecht der Betrachter auf die Fläche schaut. Bei flachen Winkeln wird dieser Wert klein, was die Abschattung verstärkt. Der Parameter <span class="math inline">\(k\)</span> leitet sich aus der Roughness ab und steuert, wie stark die Geometrie-Dämpfung einsetzt. <span class="math inline">\(G_1\)</span> berechnet den Abschattungsanteil für eine einzelne Richtung (Licht oder Betrachter).</p>
+<p>Dabei ist <span class="math inline">\(\mathbf{n}\cdot\mathbf{v}\)</span> das Skalarprodukt zwischen Normaler und Blickrichtung, was ein Maß dafür ist, wie senkrecht der Betrachter auf die Fläche schaut. Bei flachen Winkeln wird dieser Wert klein, was die Abschattung verstärkt. Der Parameter <span class="math inline">\(k\)</span> leitet sich aus der Roughness ab und steuert, wie stark die Geometrie-Dämpfung einsetzt. <span class="math inline">\(G_1\)</span> berechnet den Abschattungsanteil für eine einzelne Richtung (Licht oder Betrachter).</p>
 <p>Der vollständige Geometry-Term ergibt sich aus:</p>
 <p><span class="math display">\[
 G(\mathbf{l},\mathbf{v})
@@ -481,8 +494,7 @@ G_1(\mathbf{v})
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Das Phong-Modell berücksichtigt weder Shadowing noch Masking zwischen Mikrofacetten.</p>
-<p>Dadurch können Reflexionen bei flachen Winkeln unnatürlich hell erscheinen.</p>
+<p>Da Phong keine Mikrofacetten kennt, existiert auch kein Konzept für gegenseitige Verdeckung zwischen ihnen. Schattierungs- und Verdeckungseffekte bei flachen Blickwinkeln werden dadurch gar nicht erst modelliert, was zu unnatürlich hellen Reflexionen führen kann.</p>
 </div>
 </div>
 </section>
@@ -539,18 +551,7 @@ Specular = 0.8</code></pre>
 </section>
 <section id="energieerhaltung-in-pbr" class="level2">
 <h2 class="anchored" data-anchor-id="energieerhaltung-in-pbr">Energieerhaltung in PBR</h2>
-<p>In PBR sind diffuser und spekularer Anteil nicht unabhängig voneinander.</p>
-<p>Der Fresnel-Term bestimmt zunächst, welcher Anteil des Lichts spiegelnd reflektiert wird.</p>
-<p>Der verbleibende Anteil steht anschließend für die diffuse Reflexion zur Verfügung:</p>
-<p><span class="math display">\[
-k_d
-=
-(1-F)
-\cdot
-(1-\text{metalness})
-\]</span></p>
-<p>Erhöht sich der spekulare Anteil, reduziert sich automatisch der diffuse Anteil.</p>
-<p>Dadurch bleibt die Gesamtenergie stets physikalisch plausibel.</p>
+<p>In PBR sind diffuser und spekularer Anteil nicht unabhängig voneinander, sondern über <span class="math inline">\(k_d = (1-F)(1-\text{metalness})\)</span> gekoppelt: Erhöht sich der spekulare Anteil, reduziert sich automatisch der diffuse Anteil. Dadurch bleibt die Gesamtenergie stets physikalisch plausibel.</p>
 </section>
 </section>
 <section id="zusammenspiel-der-prinzipien" class="level1">
@@ -581,10 +582,15 @@ Warum verwendet PBR die Mikrofacettentheorie?
 </details>
 <details>
 <summary>
-Warum verletzt das folgende Phong-Material die Energieerhaltung?
+Welche Rolle spielen die NDF <span class="math inline">\(D\)</span> und der Geometry-Term <span class="math inline">\(G\)</span> in der Cook-Torrance-BRDF?
 </summary>
-<pre class="text"><code>Diffuse = 0.8
-Specular = 0.8</code></pre>
+<p>Die NDF <span class="math inline">\(D\)</span> beschreibt, wie stark die Mikrofacetten-Normalen um die Makronormale streuen, und bestimmt damit Schärfe und Breite eines Glanzlichts.</p>
+<p>Der Geometry-Term <span class="math inline">\(G\)</span> modelliert die gegenseitige Verdeckung der Mikrofacetten (Shadowing und Masking) und verhindert, dass bei flachen Winkeln zu viel Licht reflektiert wird.</p>
+</details>
+<details>
+<summary>
+Warum verletzt ein Phong-Material mit <code>Diffuse = 0.8</code> und <code>Specular = 0.8</code> die Energieerhaltung?
+</summary>
 <p>Die Summe der reflektierten Anteile beträgt bereits 160 % des einfallenden Lichts.</p>
 <p>Damit reflektiert die Oberfläche mehr Energie als sie erhält, was physikalisch unmöglich ist.</p>
 </details>
