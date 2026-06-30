@@ -17,13 +17,13 @@ format:
           ul, ol { margin-top: 0.2rem; margin-bottom: 0.4rem; }
           .callout { margin-top: 0.6rem; margin-bottom: 0.6rem; }
         </style>
+bibliography: ../references.bib
 ---
 
 Im Gegensatz zum klassischen Phong-Modell basiert **Physically Based Rendering (PBR)** auf physikalisch motivierten Materialmodellen. Ziel ist es, das Reflexionsverhalten realer Oberflächen möglichst plausibel zu approximieren.
 
 Die zentralen Prinzipien sind:
 
-- **BRDF-basierte Materialbeschreibung**
 - **Mikrofacettentheorie**
 - **Fresnel-Effekt**
 - **Energieerhaltung**
@@ -83,7 +83,7 @@ $$
 Der diffuse Anteil wird häufig mit dem Lambert-Modell beschrieben, der spekulare Anteil mit der Cook-Torrance-BRDF.
 
 ::: {.callout-note}
-## Phong vs. PBR
+## Phong
 
 Im Phong-Modell wird die Fragmentfarbe als Summe aus Ambient-, Diffuse- und Specular-Anteil berechnet:
 
@@ -108,10 +108,10 @@ Reale Oberflächen erscheinen makroskopisch glatt, besitzen jedoch auf mikroskop
 
 Nur Mikrofacetten, deren Normale mit dem Halfway-Vektor $\mathbf{h}$ übereinstimmt, reflektieren Licht direkt vom Lichtstrahl zum Betrachter.
 
-::: {style="display: flex; justify-content: center; align-items: center; gap: 1rem; margin: 1rem 0;"}
+::: {style="display: flex; justify-content: right; align-items: right; gap: 0rem; margin: 1rem 0;"}
 
-::: {style="text-align: center; flex: 0 0 auto;"}
-![](images/makroskopisch_v5.svg){width=90%}
+::: {style="text-align: right; flex: 0 0 auto;"}
+![](images/makroskopisch_v5.svg){width=60%}
 :::
 
 ::: {style="text-align: left; flex: 0 0 auto;"}
@@ -126,15 +126,22 @@ Nur Mikrofacetten, deren Normale mit dem Halfway-Vektor $\mathbf{h}$ übereinsti
 ::: {style="display: flex; justify-content: center; margin: 1rem 0;"}
 
 ::: {style="text-align: center;"}
-![](images/mikrofacetten_struktur_v6.svg){width="460px"}
+![](images/mikrofacetten_struktur_v6.svg){width="500px"}
 :::
 
 :::
-
 
 Die Mikrofacettentheorie bildet die Grundlage moderner spekularer Reflexionsmodelle in PBR.
 
+::: {.callout-note}
+## Phong
+
+Phong arbeitet nicht mit Mikrofacetten. Die Oberfläche wird als ideal glatt angenommen, Rauheit wird nur indirekt über den Glanzlicht-Exponenten $s$ simuliert, ohne dass dem eine physikalische Grundlage zugrunde liegt.
+:::
+
 # Cook-Torrance-BRDF
+
+Im Folgenden wird die in der Echtzeit-Grafik übliche Vektor-Schreibweise verwendet: $\mathbf{v}$ (Blickrichtung) entspricht $\omega_o$, $\mathbf{l}$ (Lichtrichtung) entspricht $\omega_i$ aus der Rendering-Gleichung. Zusätzlich wird der Halfway-Vektor $\mathbf{h}$ benötigt, der genau zwischen $\mathbf{v}$ und $\mathbf{l}$ liegt.
 
 Der spekulare Anteil wird in modernen PBR-Systemen meist durch die **Cook-Torrance-BRDF** beschrieben:
 
@@ -176,7 +183,7 @@ F_0
 (1-\cos\theta)^5
 $$
 
-Dabei bezeichnet $F_0$ die Basisreflektivität des Materials bei senkrechtem Einfall ($\theta = 0°$) – also den Anteil des Lichts, der reflektiert wird, wenn der Betrachter direkt auf die Oberfläche schaut. Dieser Wert ist materialspezifisch: Nichtmetalle (Dielektrika) haben typischerweise ein $F_0$ zwischen 0,02 und 0,08, während Metalle deutlich höhere Werte erreichen. Der Term $(1-\cos\theta)^5$ sorgt dafür, dass die Reflektivität mit zunehmendem Winkel $\theta$ – also flacherem Blickwinkel – stark ansteigt und bei streifendem Einfall gegen 1 konvergiert.
+Dabei ist $\theta$ der Winkel zwischen der Blickrichtung $\mathbf{v}$ (bzw. der Lichtrichtung $\mathbf{l}$) und dem Halfway-Vektor $\mathbf{h}$. $F_0$ bezeichnet die Basisreflektivität des Materials bei senkrechtem Einfall ($\theta = 0°$), also den Anteil des Lichts, der reflektiert wird, wenn der Betrachter direkt auf die Oberfläche schaut. Dieser Wert ist materialspezifisch: Nichtmetalle (Dielektrika) haben typischerweise ein $F_0$ zwischen 0,02 und 0,08, während Metalle deutlich höhere Werte erreichen. Der Term $(1-\cos\theta)^5$ sorgt dafür, dass die Reflektivität mit zunehmendem Winkel $\theta$, also flacherem Blickwinkel, stark ansteigt und bei streifendem Einfall gegen 1 konvergiert.
 
 ::: {.callout-note}
 ## Phong
@@ -243,7 +250,7 @@ G_1(v)
 }
 $$
 
-Dabei ist $\mathbf{n}\cdot\mathbf{v}$ das Skalarprodukt zwischen Normaler und Blickrichtung – ein Maß dafür, wie senkrecht der Betrachter auf die Fläche schaut. Bei flachen Winkeln wird dieser Wert klein, was die Abschattung verstärkt. Der Parameter $k$ leitet sich aus der Roughness ab und steuert, wie stark die Geometrie-Dämpfung einsetzt. $G_1$ berechnet den Abschattungsanteil für eine einzelne Richtung (Licht oder Betrachter).
+Dabei ist $\mathbf{n}\cdot\mathbf{v}$ das Skalarprodukt zwischen Normaler und Blickrichtung, was ein Maß dafür ist, wie senkrecht der Betrachter auf die Fläche schaut. Bei flachen Winkeln wird dieser Wert klein, was die Abschattung verstärkt. Der Parameter $k$ leitet sich aus der Roughness ab und steuert, wie stark die Geometrie-Dämpfung einsetzt. $G_1$ berechnet den Abschattungsanteil für eine einzelne Richtung (Licht oder Betrachter).
 
 Der vollständige Geometry-Term ergibt sich aus:
 
@@ -260,9 +267,7 @@ Das Produkt aus beiden Einzeltermen erfasst sowohl Shadowing (Lichtrichtung $\ma
 ::: {.callout-note}
 ## Phong
 
-Das Phong-Modell berücksichtigt weder Shadowing noch Masking zwischen Mikrofacetten.
-
-Dadurch können Reflexionen bei flachen Winkeln unnatürlich hell erscheinen.
+Da Phong keine Mikrofacetten kennt, existiert auch kein Konzept für gegenseitige Verdeckung zwischen ihnen. Schattierungs- und Verdeckungseffekte bei flachen Blickwinkeln werden dadurch gar nicht erst modelliert, was zu unnatürlich hellen Reflexionen führen kann.
 :::
 
 # Der diffuse Anteil
@@ -321,23 +326,7 @@ Dies verletzt die Energieerhaltung und kann zu unnatürlich hellen Materialien f
 
 ## Energieerhaltung in PBR
 
-In PBR sind diffuser und spekularer Anteil nicht unabhängig voneinander.
-
-Der Fresnel-Term bestimmt zunächst, welcher Anteil des Lichts spiegelnd reflektiert wird.
-
-Der verbleibende Anteil steht anschließend für die diffuse Reflexion zur Verfügung:
-
-$$
-k_d
-=
-(1-F)
-\cdot
-(1-\text{metalness})
-$$
-
-Erhöht sich der spekulare Anteil, reduziert sich automatisch der diffuse Anteil.
-
-Dadurch bleibt die Gesamtenergie stets physikalisch plausibel.
+In PBR sind diffuser und spekularer Anteil nicht unabhängig voneinander, sondern über $k_d = (1-F)(1-\text{metalness})$ gekoppelt: Erhöht sich der spekulare Anteil, reduziert sich automatisch der diffuse Anteil. Dadurch bleibt die Gesamtenergie stets physikalisch plausibel.
 
 # Zusammenspiel der Prinzipien
 
@@ -370,12 +359,16 @@ Die Mikrofacettentheorie modelliert eine Oberfläche als Ansammlung vieler klein
 </details>
 
 <details>
-<summary>Warum verletzt das folgende Phong-Material die Energieerhaltung?</summary>
+<summary>Welche Rolle spielen die NDF $D$ und der Geometry-Term $G$ in der Cook-Torrance-BRDF?</summary>
 
-```text
-Diffuse = 0.8
-Specular = 0.8
-```
+Die NDF $D$ beschreibt, wie stark die Mikrofacetten-Normalen um die Makronormale streuen, und bestimmt damit Schärfe und Breite eines Glanzlichts.
+
+Der Geometry-Term $G$ modelliert die gegenseitige Verdeckung der Mikrofacetten (Shadowing und Masking) und verhindert, dass bei flachen Winkeln zu viel Licht reflektiert wird.
+
+</details>
+
+<details>
+<summary>Warum verletzt ein Phong-Material mit `Diffuse = 0.8` und `Specular = 0.8` die Energieerhaltung?</summary>
 
 Die Summe der reflektierten Anteile beträgt bereits 160 % des einfallenden Lichts.
 
